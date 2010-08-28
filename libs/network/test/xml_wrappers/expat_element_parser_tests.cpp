@@ -5,14 +5,14 @@
 
 
 
-#define BOOST_TEST_MODULE XMPP XML parsers
+#define BOOST_TEST_MODULE expat wrapper tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/protocol/xmpp/parser_backends/expat/element_parser.hpp>
-#include <boost/network/protocol/xmpp/element.hpp>
+#include <boost/network/detail/xml_wrappers/parser_backends/expat/element_parser.hpp>
+#include <boost/network/detail/xml_wrappers/element.hpp>
 
 
-using namespace boost::network::xmpp;
-using boost::network::xmpp::element;
+using namespace boost::network::detail;
+using boost::network::detail::element;
 
 
 basic_expat_element_parser<boost::network::tags::default_> element_parser;

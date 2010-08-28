@@ -4,8 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_ELEMENT_CHILDREN_INC__
-# define __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_ELEMENT_CHILDREN_INC__
+#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__
+# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__
 
 
 # include <boost/network/tags.hpp>
@@ -15,7 +15,7 @@
 
 namespace boost {
 namespace network {
-namespace xmpp {
+namespace detail {
 template <
     class Tag
     >
@@ -34,9 +34,9 @@ template <>
 struct element_children<tags::default_> {
     typedef std::list<boost::shared_ptr<basic_element<tags::default_> > > type;
 };
-} // namespace xmpp
+} // namespace detail
 } // namespace network
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_ELEMENT_CHILDREN_INC__
+#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__

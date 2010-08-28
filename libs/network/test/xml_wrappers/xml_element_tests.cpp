@@ -4,14 +4,14 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#define BOOST_TEST_MODULE XMPP element tests
+#define BOOST_TEST_MODULE XML element tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/protocol/xmpp/element.hpp>
-#include <boost/network/protocol/xmpp/element_io.hpp>
+#include <boost/network/detail/xml_wrappers/element.hpp>
+#include <boost/network/detail/xml_wrappers/element_io.hpp>
 
 
-using namespace boost::network::xmpp;
-using boost::network::xmpp::element;
+using namespace boost::network::detail;
+using boost::network::detail::element;
 
 
 BOOST_AUTO_TEST_CASE(default_constructor_test) {
