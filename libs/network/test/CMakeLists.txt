@@ -48,7 +48,19 @@ if (Boost_FOUND)
         target_link_libraries(cpp-netlib-https_localhost_tests ${OPENSSL_LIBRARIES} )
         target_link_libraries(cpp-netlib-url_test ${OPENSSL_LIBRARIES} )
     endif()
-    set_target_properties(cpp-netlib-http_incremental_parser cpp-netlib-hello_world cpp-netlib-http_1_0_test cpp-netlib-http_1_1_test cpp-netlib-message_test cpp-netlib-http_message_test cpp-netlib-message_transform_test cpp-netlib-http_localhost_tests cpp-netlib-https_localhost_tests cpp-netlib-url_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
+
+    set_target_properties(cpp-netlib-http_incremental_parser
+                          cpp-netlib-hello_world
+                          cpp-netlib-http_1_0_test 
+			  cpp-netlib-http_1_1_test 
+			  cpp-netlib-message_test
+			  cpp-netlib-http_message_test 
+			  cpp-netlib-message_transform_test 
+			  cpp-netlib-http_localhost_tests
+			  cpp-netlib-https_localhost_tests
+			  cpp-netlib-url_test 
+			  PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
+
     add_test(cpp-netlib-http_incremental_parser ../../../build/tests/cpp-netlib-http_incremental_parser)
     add_test(cpp-netlib-hello_world python httplib_acceptance.py ../../../build/tests/cpp-netlib-hello_world ../../../build/tests/cpp-netlib-hello_world.passed)
     add_test(cpp-netlib-http_1_0_test ../../../build/tests/cpp-netlib-http_1_0_test)
@@ -59,38 +71,52 @@ if (Boost_FOUND)
     add_test(cpp-netlib-http_message_test ../../../build/tests/cpp-netlib-http_message_test)
     add_test(cpp-netlib-url_test ../../../build/tests/cpp-netlib-url_test)
 
-    add_executable(cpp-netlib-xmpp_element_tests xmpp/xmpp_element_tests.cpp)
-    add_executable(cpp-netlib-xmpp_message_tests xmpp/xmpp_message_tests.cpp)
-    add_executable(cpp-netlib-xmpp_presence_tests xmpp/xmpp_presence_tests.cpp)
-    add_executable(cpp-netlib-xmpp_iq_tests xmpp/xmpp_iq_tests.cpp)
-    target_link_libraries(cpp-netlib-xmpp_element_tests ${Boost_LIBRARIES})
-    target_link_libraries(cpp-netlib-xmpp_message_tests ${Boost_LIBRARIES})
-    target_link_libraries(cpp-netlib-xmpp_presence_tests ${Boost_LIBRARIES})
-    target_link_libraries(cpp-netlib-xmpp_iq_tests ${Boost_LIBRARIES})
-    add_test(cpp-netlib-xmpp_element_tests ../../../build/tests/cpp-netlib-xmpp_element_tests)
-    add_test(cpp-netlib-xmpp_message_tests ../../../build/tests/cpp-netlib-xmpp_message_tests)
-    add_test(cpp-netlib-xmpp_presence_tests ../../../build/tests/cpp-netlib-xmpp_presence_tests)
-    add_test(cpp-netlib-xmpp_iq_tests ../../../build/tests/cpp-netlib-xmpp_iq_tests)
+    add_executable(cpp-netlib-xml_element_tests xml_wrappers/xml_element_tests.cpp)
+    target_link_libraries(cpp-netlib-xml_element_tests ${Boost_LIBRARIES})
+    add_test(cpp-netlib-xml_element_tests ../../../build/tests/cpp-netlib-xml_element_tests)
+
+    set_target_properties(cpp-netlib-xml_element_tests
+                          PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
 
     if (EXPAT_FOUND)
       include_directories( ${EXPAT_INCLUDE_DIRS} )
-      add_executable(cpp-netlib-expat_element_parser_tests xmpp/expat_element_parser_tests.cpp)
-      add_executable(cpp-netlib-expat_stanza_parser_tests xmpp/expat_stanza_parser_tests.cpp)
+      add_executable(cpp-netlib-expat_element_parser_tests xml_wrappers/expat_element_parser_tests.cpp)
       target_link_libraries(cpp-netlib-expat_element_parser_tests ${Boost_LIBRARIES} ${EXPAT_LIBRARIES})
-      target_link_libraries(cpp-netlib-expat_stanza_parser_tests ${Boost_LIBRARIES} ${EXPAT_LIBRARIES})
       add_test(cpp-netlib-expat_element_parser_tests ../../../build/tests/cpp-netlib-expat_element_parser_tests)
-      add_test(cpp-netlib-expat_stanza_parser_tests ../../../build/tests/cpp-netlib-expat_stanza_parser_tests)
+
+      # add_executable(cpp-netlib-expat_stanza_parser_tests xml_wrappers/expat_stanza_parser_tests.cpp)
+      # target_link_libraries(cpp-netlib-expat_stanza_parser_tests ${Boost_LIBRARIES} ${EXPAT_LIBRARIES})
+      # add_test(cpp-netlib-expat_stanza_parser_tests ../../../build/tests/cpp-netlib-expat_stanza_parser_tests)
+
+      set_target_properties(cpp-netlib-expat_element_parser_tests
+                            PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
     endif()
 
     if (LIBXML2_FOUND)
       include_directories( ${LIBXML2_INCLUDE_DIR} )
-      add_executable(cpp-netlib-libxml2_element_parser_tests xmpp/libxml2_element_parser_tests.cpp)
-      add_executable(cpp-netlib-libxml2_stanza_parser_tests xmpp/libxml2_stanza_parser_tests.cpp)
+      add_executable(cpp-netlib-libxml2_element_parser_tests xml_wrappers/libxml2_element_parser_tests.cpp)
       target_link_libraries(cpp-netlib-libxml2_element_parser_tests ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES})
-      target_link_libraries(cpp-netlib-libxml2_stanza_parser_tests ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES})
-      add_test(cpp-netlib-libxml2_element_parser_tests ../../../build/tests/cpp-netlib-libxml2_element_parserg_tests)
-      add_test(cpp-netlib-libxml2_stanza_parser_tests ../../../build/tests/cpp-netlib-libxml2_stanza_parserg_tests)
+      add_test(cpp-netlib-libxml2_element_parser_tests ../../../build/tests/cpp-netlib-libxml2_element_parser_tests)
+
+      # add_executable(cpp-netlib-libxml2_stanza_parser_tests xml_wrappers/libxml2_stanza_parser_tests.cpp)
+      # target_link_libraries(cpp-netlib-libxml2_stanza_parser_tests ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES})
+      # add_test(cpp-netlib-libxml2_stanza_parser_tests ../../../build/tests/cpp-netlib-libxml2_stanza_parser_tests)
+      set_target_properties(cpp-netlib-libxml2_element_parser_tests
+                            PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
     endif()
 
-endif()
+    add_executable(cpp-netlib-xmpp_message_tests xmpp/xmpp_message_tests.cpp)
+    add_executable(cpp-netlib-xmpp_presence_tests xmpp/xmpp_presence_tests.cpp)
+    add_executable(cpp-netlib-xmpp_iq_tests xmpp/xmpp_iq_tests.cpp)
+    target_link_libraries(cpp-netlib-xmpp_message_tests ${Boost_LIBRARIES})
+    target_link_libraries(cpp-netlib-xmpp_presence_tests ${Boost_LIBRARIES})
+    target_link_libraries(cpp-netlib-xmpp_iq_tests ${Boost_LIBRARIES})
+    set_target_properties(cpp-netlib-xmpp_message_tests
+                          cpp-netlib-xmpp_presence_tests
+                          cpp-netlib-xmpp_iq_tests
+                          PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
+    add_test(cpp-netlib-xmpp_message_tests ../../../build/tests/cpp-netlib-xmpp_message_tests)
+    add_test(cpp-netlib-xmpp_presence_tests ../../../build/tests/cpp-netlib-xmpp_presence_tests)
+    add_test(cpp-netlib-xmpp_iq_tests ../../../build/tests/cpp-netlib-xmpp_iq_tests)
 
+endif()

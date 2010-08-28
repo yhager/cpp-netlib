@@ -4,8 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__
-# define __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__
+#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__
+# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__
 
 
 # include <boost/network/traits/string.hpp>
@@ -16,7 +16,7 @@
 
 namespace boost {
 namespace network {
-namespace xmpp {
+namespace detail {
 template <
     class Tag
     >
@@ -119,9 +119,9 @@ private:
     int depth_;
     
 };
-} // namespace xmpp
+} // namespace detail
 } // namespace network
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__
+#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_STANZA_PARSER_INC__

@@ -4,16 +4,16 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_PARSER_INC__
-# define __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_PARSER_INC__
+#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_PARSER_INC__
+# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_PARSER_INC__
 
 
-# include <boost/network/protocol/xmpp/parser_backends/libxml2/element_parser.hpp>
+# include <boost/network/detail/xml_wrappers/parser_backends/libxml2/element_parser.hpp>
 
 
 namespace boost {
 namespace network {
-namespace xmpp {
+namespace detail {
 template <
     class Tag
     >
@@ -23,9 +23,9 @@ class basic_libxml2_parser
 public:
 
 };
-} // namespace xmpp
+} // namespace detail
 } // namespace network
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_PROTOCOL_XMPP_PARSER_BACKENDS_LIBXML2_PARSER_INC__
+#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_LIBXML2_PARSER_INC__

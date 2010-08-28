@@ -4,8 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_PARSER_BACKEND_INC__
-# define __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_PARSER_BACKEND_INC__
+#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_PARSER_BACKEND_INC__
+# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_PARSER_BACKEND_INC__
 
 
 # include <boost/network/tags.hpp>
@@ -14,7 +14,7 @@
 
 namespace boost {
 namespace network {
-namespace xmpp {
+namespace detail {
 template <
     class Tag
     >
@@ -33,9 +33,9 @@ template <>
 struct parser_backend<tags::default_> {
     typedef basic_expat_parser<tags::default_> type;
 };
-} // namespace xmpp
+} // namespace detail
 } // namespace network
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_PROTOCOL_XMPP_TRAITS_PARSER_BACKEND_INC__
+#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_PARSER_BACKEND_INC__

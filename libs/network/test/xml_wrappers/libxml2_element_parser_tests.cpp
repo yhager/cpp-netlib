@@ -5,14 +5,14 @@
 
 
 
-#define BOOST_TEST_MODULE XMPP XML parsers
+#define BOOST_TEST_MODULE libxml2 wrapper tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/protocol/xmpp/parser_backends/libxml2_parser.hpp>
-#include <boost/network/protocol/xmpp/element.hpp>
+#include <boost/network/detail/xml_wrappers/parser_backends/libxml2_parser.hpp>
+#include <boost/network/detail/xml_wrappers/element.hpp>
 
 
-using namespace boost::network::xmpp;
-using boost::network::xmpp::element;
+using namespace boost::network::detail;
+using boost::network::detail::element;
 
 
 basic_libxml2_parser<boost::network::tags::default_> libxml2_parser;
