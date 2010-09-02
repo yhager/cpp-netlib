@@ -29,7 +29,7 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_iq() {
-        
+        set_name("iq");
     }
 
     basic_iq(const basic_iq &other)

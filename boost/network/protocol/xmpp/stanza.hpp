@@ -9,6 +9,7 @@
 
 
 # include <boost/network/message.hpp>
+# include <boost/network/detail/xml_wrappers/element.hpp>
 
 
 namespace boost {
@@ -26,31 +27,30 @@ public:
 
     typedef typename base_type::string_type string_type;
 
-    void set_name(const string_type &name) {
-        name_ = name;
+    explicit basic_stanza(const string_type &name) {
+        
     }
 
-    string_type name() const {
-        return name_;
+    void set_name(const string_type &name) {
+        element_.set_name(name);
+    }
+
+    string_type get_name() const {
+        return element_.get_name();
     }
 
     void set_attribute(const string_type &key, const string_type &value) {
-        this->headers().insert(std::make_pair(key, value));
+        element_.set_attribute(key, value);
     }
 
-    string_type attribute(const string_type &key) const {
-        typename headers_range<basic_stanza<Tag> >::type range
-            = this->headers().equal_range(key);
-        if (boost::begin(range) == boost::end(range)) {
-            return string_type();
-        }
-
-        return boost::begin(range)->second;
+    string_type get_attribute(const string_type &key) const {
+        boost::optional<string_type> attr = element_.get_attribute(key);
+        return attr? *attr : string_type();
     }
 
 private:
 
-    string_type name_;
+    detail::basic_element<Tag> element_;
     
 };
 

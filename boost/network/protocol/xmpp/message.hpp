@@ -29,7 +29,7 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_message() {
-        
+        set_name("message");
     }
 
     basic_message(const basic_message &other)
@@ -58,7 +58,7 @@ public:
 
     string_type type() const {
         static const char *type_ = "type";
-        return attribute(string_type(type_, type_ + std::strlen(type_)));
+        return get_attribute(string_type(type_, type_ + std::strlen(type_)));
     }
 
     void set_id(const string_type &id) {
@@ -68,7 +68,7 @@ public:
 
     string_type id() const {
         static const char *id_ = "id";
-        return attribute(string_type(id_, id_ + std::strlen(id_)));
+        return get_attribute(string_type(id_, id_ + std::strlen(id_)));
     }
     
 };

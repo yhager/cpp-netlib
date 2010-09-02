@@ -29,7 +29,7 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_presence() {
-        
+        set_name("presence");
     }
 
     basic_presence(const basic_presence &other)
