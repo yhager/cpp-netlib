@@ -29,7 +29,8 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_iq() {
-        set_name("iq");
+        static const char name[] = {'i', 'q'};
+        base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_iq(const basic_iq &other)

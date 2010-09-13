@@ -29,7 +29,8 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_presence() {
-        set_name("presence");
+        static const char name[] = {'p', 'r', 'e', 's', 'e', 'n', 'c', 'e'};
+        base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_presence(const basic_presence &other)

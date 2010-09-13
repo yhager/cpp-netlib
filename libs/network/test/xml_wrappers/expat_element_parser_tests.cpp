@@ -4,7 +4,6 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-
 #define BOOST_TEST_MODULE expat wrapper tests
 #include <boost/test/unit_test.hpp>
 #include <boost/network/detail/xml_wrappers/parser_backends/expat/element_parser.hpp>
