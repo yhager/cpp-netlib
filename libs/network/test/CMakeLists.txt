@@ -60,6 +60,20 @@ if (Boost_FOUND)
     set_target_properties(cpp-netlib-xml_element_tests
                           PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
 
+    add_executable(cpp-netlib-xmpp_message_tests xmpp/xmpp_message_tests.cpp)
+    add_executable(cpp-netlib-xmpp_presence_tests xmpp/xmpp_presence_tests.cpp)
+    add_executable(cpp-netlib-xmpp_iq_tests xmpp/xmpp_iq_tests.cpp)
+    target_link_libraries(cpp-netlib-xmpp_message_tests ${Boost_LIBRARIES})
+    target_link_libraries(cpp-netlib-xmpp_presence_tests ${Boost_LIBRARIES})
+    target_link_libraries(cpp-netlib-xmpp_iq_tests ${Boost_LIBRARIES})
+    set_target_properties(cpp-netlib-xmpp_message_tests
+                          cpp-netlib-xmpp_presence_tests
+                          cpp-netlib-xmpp_iq_tests
+                          PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
+    add_test(cpp-netlib-xmpp_message_tests ../../../build/tests/cpp-netlib-xmpp_message_tests)
+    add_test(cpp-netlib-xmpp_presence_tests ../../../build/tests/cpp-netlib-xmpp_presence_tests)
+    add_test(cpp-netlib-xmpp_iq_tests ../../../build/tests/cpp-netlib-xmpp_iq_tests)
+
     if (EXPAT_FOUND)
       include_directories( ${EXPAT_INCLUDE_DIRS} )
       add_executable(cpp-netlib-expat_element_parser_tests xml_wrappers/expat_element_parser_tests.cpp)
@@ -69,8 +83,18 @@ if (Boost_FOUND)
       # add_executable(cpp-netlib-expat_stanza_parser_tests xml_wrappers/expat_stanza_parser_tests.cpp)
       # target_link_libraries(cpp-netlib-expat_stanza_parser_tests ${Boost_LIBRARIES} ${EXPAT_LIBRARIES})
       # add_test(cpp-netlib-expat_stanza_parser_tests ../../../build/tests/cpp-netlib-expat_stanza_parser_tests)
+      
+      add_executable(cpp-netlib-xmpp_stanza_tests xmpp/xmpp_stanza_tests.cpp)
+      target_link_libraries(cpp-netlib-xmpp_stanza_tests ${Boost_LIBRARIES} ${EXPAT_LIBRARIES})
+      add_test(cpp-netlib-xmpp_stanza_tests ../../../build/tests/cpp-netlib-xmpp_stanza_tests)
 
+      add_executable(cpp-netlib-xmpp_client_tests xmpp/xmpp_client_tests.cpp)
+      target_link_libraries(cpp-netlib-xmpp_client_tests ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${EXPAT_LIBRARIES})
+      add_test(cpp-netlib-xmpp_client_tests ../../../build/tests/cpp-netlib-xmpp_client_tests)
+      
       set_target_properties(cpp-netlib-expat_element_parser_tests
+                            cpp-netlib-xmpp_stanza_tests
+                            cpp-netlib-xmpp_client_tests
                             PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
     endif()
 
@@ -86,19 +110,5 @@ if (Boost_FOUND)
       set_target_properties(cpp-netlib-libxml2_element_parser_tests
                             PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
     endif()
-
-    add_executable(cpp-netlib-xmpp_message_tests xmpp/xmpp_message_tests.cpp)
-    add_executable(cpp-netlib-xmpp_presence_tests xmpp/xmpp_presence_tests.cpp)
-    add_executable(cpp-netlib-xmpp_iq_tests xmpp/xmpp_iq_tests.cpp)
-    target_link_libraries(cpp-netlib-xmpp_message_tests ${Boost_LIBRARIES})
-    target_link_libraries(cpp-netlib-xmpp_presence_tests ${Boost_LIBRARIES})
-    target_link_libraries(cpp-netlib-xmpp_iq_tests ${Boost_LIBRARIES})
-    set_target_properties(cpp-netlib-xmpp_message_tests
-                          cpp-netlib-xmpp_presence_tests
-                          cpp-netlib-xmpp_iq_tests
-                          PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
-    add_test(cpp-netlib-xmpp_message_tests ../../../build/tests/cpp-netlib-xmpp_message_tests)
-    add_test(cpp-netlib-xmpp_presence_tests ../../../build/tests/cpp-netlib-xmpp_presence_tests)
-    add_test(cpp-netlib-xmpp_iq_tests ../../../build/tests/cpp-netlib-xmpp_iq_tests)
 
 endif()

@@ -27,8 +27,12 @@ public:
 
     typedef typename base_type::string_type string_type;
 
-    explicit basic_stanza(const string_type &name) {
+    explicit basic_stanza() {
         
+    }
+
+    explicit basic_stanza(const string_type &name) {
+        element_.set_name(name);
     }
 
     void set_name(const string_type &name) {
@@ -46,6 +50,10 @@ public:
     string_type get_attribute(const string_type &key) const {
         boost::optional<string_type> attr = element_.get_attribute(key);
         return attr? *attr : string_type();
+    }
+
+    detail::basic_element<Tag> &element() {
+        return element_;
     }
 
 private:

@@ -29,7 +29,8 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_message() {
-        set_name("message");
+        static const char name[] = {'m', 'e', 's', 's', 'a', 'g', 'e'};
+        base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_message(const basic_message &other)

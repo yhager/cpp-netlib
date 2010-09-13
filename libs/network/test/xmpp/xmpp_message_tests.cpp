@@ -57,13 +57,13 @@ BOOST_AUTO_TEST_CASE(xmpp_message_id_accessor_test) {
 }
 
 
-// BOOST_AUTO_TEST_CASE(xmpp_message_type_directive_test) {
-//     message instance;
-//     instance << xmpp::type("chat");
-//     BOOST_CHECK_EQUAL("chat", xmpp::type(instance));
-// }
-// 
-// 
+BOOST_AUTO_TEST_CASE(xmpp_message_type_directive_test) {
+    // xmpp::message instance;
+    // instance << xmpp::type("chat");
+    // BOOST_CHECK_EQUAL("chat", xmpp::type(instance));
+}
+
+
 // BOOST_AUTO_TEST_CASE(xmpp_message_id_directive_test) {
 //     message instance;
 //     instance << xmpp::id("t2w4qax3");
