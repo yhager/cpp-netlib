@@ -12,11 +12,14 @@
 # include <boost/network/traits/string.hpp>
 # include <boost/cstdint.hpp>
 # include <boost/bind.hpp>
+# include <boost/network/protocol/xmpp/namespaces.hpp>
 # include <boost/network/protocol/xmpp/message.hpp>
 # include <boost/network/protocol/xmpp/presence.hpp>
 # include <boost/network/protocol/xmpp/iq.hpp>
 # include <boost/asio/io_service.hpp>
+# include <boost/asio/placeholders.hpp>
 # include <boost/asio/ip/tcp.hpp>
+# include <deque>
 
 
 namespace boost {
@@ -24,13 +27,15 @@ namespace network {
 namespace xmpp {
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
 class basic_client : boost::noncopyable {
 
 private:
 
-    typedef basic_client<Tag, Handler> this_type;
+    typedef basic_client<Tag, version_major, version_minor, Handler> this_type;
     
 public:
 
@@ -44,13 +49,14 @@ public:
 
     ~basic_client();
 
-    void connect(const string_type &proxy_host,
-                 const string_type &proxy_port);
+    void set_lang(const string_type &lang);
+
+    void connect(const string_type &jid,
+                 const string_type &password);
+
+    void run();
 
     void disconnect();
-
-    void authenticate(const string_type &jid,
-                      const string_type &password);
 
     void send_message(const message_type &message);
 
@@ -58,14 +64,15 @@ public:
 
     void send_iq(const iq_type &iq);
 
-    void set_jid(const string_type &jid);
-
     string_type get_jid() const;
 
 private:
 
-    void write_stanza(const basic_stanza<Tag> &stanza);
-    void close_socket();
+    void handle_connect(const boost::system::error_code &error,
+                        boost::asio::ip::tcp::resolver::iterator iterator);
+    void handle_write_stanza(const basic_stanza<Tag> &stanza);
+    void handle_read_stanza(const boost::system::error_code &ec);
+    void handle_disconnect();
 
     Handler &handler_;
 
@@ -83,123 +90,216 @@ private:
 
     // xml parser
 
+    // std::deque<std::string> stanza_queue_;
+    
 };
 
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-basic_client<Tag, Handler>::basic_client(Handler &handler)
+basic_client<Tag, version_major, version_minor, Handler>::basic_client(Handler &handler)
     : handler_(handler), socket_(io_service_) {
-    // set the handlers
-}
-
-
-template <
-    class Tag,
-    class Handler
-    >
-basic_client<Tag, Handler>::~basic_client() {
     
 }
 
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::connect(const string_type &proxy_host,
-                                         const string_type &proxy_port) {
+basic_client<Tag, version_major, version_minor, Handler>::~basic_client() {
+    
+}
+
+template <
+    class Tag,
+    unsigned version_major,
+    unsigned version_minor,
+    class Handler
+    >
+void basic_client<Tag, version_major, version_minor, Handler>::set_lang(const string_type &lang) {
+    
+}
+
+
+template <
+    class Tag,
+    unsigned version_major,
+    unsigned version_minor,
+    class Handler
+    >
+void basic_client<Tag, version_major, version_minor, Handler>::connect(const string_type &jid,
+                                                                       const string_type &password) {
+    using boost::asio::ip::tcp;
+    
     // get the JID domain
-    // default port is 52222
+    // default port is 5222
     // open socket
     // socket has a state
     // signal connection handler
+
+    jid_ = jid;
+
+    string_type host = "127.0.0.1";
+    string_type port = "5222";
+
+    tcp::resolver resolver(io_service_);
+    tcp::resolver::query query(host, port);
+    tcp::resolver::iterator iterator = resolver.resolve(query);
+    socket_.async_connect(&this_type::handle_connect,
+                          this,
+                          boost::asio::placeholders::error,
+                          iterator);
 }
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::disconnect() {
-    // close socket
-    // signal connection handler
+void basic_client<Tag, version_major, version_minor, Handler>::run() {
+    io_service_.run();
+}
+
+template <
+    class Tag,
+    unsigned version_major,
+    unsigned version_minor,
+    class Handler
+    >
+void basic_client<Tag, version_major, version_minor, Handler>::disconnect() {
     io_service_.post(
-        boost::bind(&this_type::close_socket, this));
+        boost::bind(&this_type::handle_disconnect, this));
 }
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::authenticate(const string_type &jid,
-                                              const string_type &password) {
-    
-}
-
-template <
-    class Tag,
-    class Handler
-    >
-void basic_client<Tag, Handler>::send_message(const message_type &message) {
+void basic_client<Tag, version_major, version_minor, Handler>::send_message(const message_type &message) {
     io_service_.post(
-        boost::bind(&this_type::write_stanza, this, boost::ref(message)));
+        boost::bind(&this_type::handle_write_stanza, this, boost::ref(message)));
 }
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::send_presence(const presence_type &presence) {
+void basic_client<Tag, version_major, version_minor, Handler>::send_presence(const presence_type &presence) {
     io_service_.post(
-        boost::bind(&this_type::write_stanza, this, boost::ref(presence)));
+        boost::bind(&this_type::handle_write_stanza, this, boost::ref(presence)));
 }
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::send_iq(const iq_type &iq) {
+void basic_client<Tag, version_major, version_minor, Handler>::send_iq(const iq_type &iq) {
     io_service_.post(
-        boost::bind(&this_type::write_stanza, this, boost::ref(iq)));
+        boost::bind(&this_type::handle_write_stanza, this, boost::ref(iq)));
 }
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-typename basic_client<Tag, Handler>::string_type
-basic_client<Tag, Handler>::get_jid() const {
+typename basic_client<Tag, version_major, version_minor, Handler>::string_type
+basic_client<Tag, version_major, version_minor, Handler>::get_jid() const {
     return jid_;
 }
 
+template <
+    class Tag,
+    unsigned version_major,
+    unsigned version_minor,
+    class Handler
+    >
+void basic_client<Tag, version_major, version_minor, Handler>::handle_connect(
+    const boost::system::error_code& ec,
+    boost::asio::ip::tcp::resolver::iterator iterator) {
+    if (!ec) {
+        
+        // open stream
+        // TODO: where does "lang" come from?
+        string_type s =
+            "<?xml version=\"%d.%d\"?>"
+            "<stream:stream to=\"domain\" "
+            "xml:lang=\"lang\" "
+            "version=\"%d.%d\" "
+            "xmlns=\"%s\" " // xmpp_ns_client or xmpp_ns_component
+            "xmlns:stream=\"%s\">"; // xmpp_ns_Streams
+        
+        // boost::asio::async_read(
+        //     socket_,
+        //     boost::asio::buffer(read_msg_.data(), chat_message::header_length),
+        //     boost::bind(&chat_client::handle_read_header, this,
+        //                 boost::asio::placeholders::error));
+    }
+    else if (iterator != boost::asio::ip::tcp::resolver::iterator()) {
+        socket_.close();
+        boost::asio::ip::tcp::endpoint endpoint = *iterator;
+        socket_.async_connect(
+            endpoint,
+            boost::bind(&this_type::handle_connect,
+                        this,
+                        boost::asio::placeholders::error,
+                        ++iterator));
+    }
+    else {
+        // unable to connect
+    }
+}
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::write_stanza(const basic_stanza<Tag> &stanza) {
-    
+void basic_client<Tag, version_major, version_minor, Handler>::handle_write_stanza(const basic_stanza<Tag> &stanza) {
+    // stanza ==> string
+    // socket_.async_write(socket_,
+    //                     boost::asio::buffer(stanza.string()),
+    //                     boost::bind(&this_type::handle_write...))
 }
 
 
 template <
     class Tag,
+    unsigned version_major,
+    unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, Handler>::close_socket() {
+void basic_client<Tag, version_major, version_minor, Handler>::handle_disconnect() {
+    // close stream
+    string_type s = "</stream:stream>";
     socket_.close();
+    // handler_.disconnected();
 }
 
 
 template <
     class Handler
     >
-struct client : basic_client<tags::default_, Handler> {
+struct client : basic_client<tags::default_, 1, 0, Handler> {
 
     explicit client(Handler &handler)
-        : basic_client<tags::default_, Handler>(handler) {
+        : basic_client<tags::default_, 1, 0, Handler>(handler) {
         
     }
 
