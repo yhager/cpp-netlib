@@ -13,7 +13,7 @@
 #include <boost/network/detail/xml_wrappers/traits/parser_backend.hpp>
 #include <boost/network/detail/xml_wrappers/parser_backends/expat/element_parser.hpp>
 #include <boost/network/protocol/xmpp/detail/stanza_parser.hpp>
-// #include <boost/network/detail/xml_wrappers/parser_backends/libxml2/element_parser.hpp>
+#include <boost/network/detail/xml_wrappers/parser_backends/libxml2/element_parser.hpp>
 
 
 namespace xmpp = boost::network::xmpp;

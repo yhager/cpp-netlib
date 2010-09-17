@@ -7,6 +7,7 @@
 #define BOOST_TEST_MODULE XMPP iq tests
 #include <boost/test/unit_test.hpp>
 #include <boost/network/protocol/xmpp/iq.hpp>
+#include <boost/mpl/list.hpp>
 
 
 namespace xmpp = boost::network::xmpp;
