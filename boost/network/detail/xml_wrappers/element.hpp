@@ -131,7 +131,12 @@ public:
     }
 
     boost::optional<string_type> get_lang() const {
-        return get_attribute("xml:lang");
+        boost::optional<string_type> lang
+            = get_attribute("xml:lang");
+        if (!lang) {
+            lang = get_attribute("lang");
+        }
+        return lang;
     }
 
     boost::optional<string_type> get_id() const {
@@ -142,6 +147,17 @@ public:
         assert(is_tag());
         boost::shared_ptr<basic_element<Tag> > shared_element(element);
 		children_.push_back(shared_element);
+    }
+
+    boost::optional<const basic_element<Tag> &> get_child(const string_type &name) const {
+        for (typename element_children_type::const_iterator it = children_.begin();
+             it != children_.end();
+             ++it) {
+            if ((*it)->get_name() == name) {
+                return **it;
+            }
+        }
+        return boost::none;
     }
 
     boost::iterator_range<typename element_children_type::const_iterator>

@@ -9,6 +9,8 @@
 
 
 # include <boost/network/detail/xml_wrappers/element.hpp>
+# include <boost/range/algorithm_ext/for_each.hpp>
+# include <boost/spirit/home/phoenix/core.hpp>
 # include <ostream>
 
 
@@ -20,25 +22,24 @@ template <
     >
 std::ostream &operator << (std::ostream &os,
                            const basic_element<Tag> &element) {
+    typedef typename basic_element<Tag>::headers_container_type::const_iterator header_iterator;
+    typedef typename basic_element<Tag>::element_children_type::const_iterator children_iterator;
+    typedef boost::iterator_range<header_iterator> header_range;
+    typedef boost::iterator_range<children_iterator> children_range;
+    
     if (element.is_tag()) {
         os << "<" << element.get_name();
-        boost::iterator_range<typename basic_element<Tag>::headers_container_type::const_iterator>
-            attributes(element.get_attributes());
-
-        typename basic_element<Tag>::headers_container_type::const_iterator
-            attr_it(boost::begin(attributes)),
-            attr_end(boost::end(attributes));
+        header_range attributes(element.get_attributes());
+        
+        header_iterator attr_it(boost::begin(attributes)), attr_end(boost::end(attributes));
         for (; attr_it != attr_end; ++attr_it) {
-            os << " " << attr_it->first << "=\"" << attr_it->second << "\"";
+            os << " " << attr_it->first << "='" << attr_it->second << "'";
         }
         os << ">";
 
-        boost::iterator_range<typename basic_element<Tag>::element_children_type::const_iterator>
-            children(element.get_children());
+        children_range children(element.get_children());
         
-        typename basic_element<Tag>::element_children_type::const_iterator
-            child_it(boost::begin(children)),
-            child_end(boost::end(children));
+        children_iterator child_it(boost::begin(children)), child_end(boost::end(children));
         for (; child_it != child_end; ++child_it) {
             os << **child_it;
         }
