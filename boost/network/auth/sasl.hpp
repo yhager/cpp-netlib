@@ -19,11 +19,17 @@ template <
     >
 class basic_sasl {
 
+    struct anonymous {};
+    struct plain {};
+    struct digest_md5 {};
+
 public:
 
-    // basic_sasl(PLAIN);
+    explicit basic_sasl(anonymous);
 
-    // basic_sasl(DIGEST);
+    explicit basic_sasl(plain);
+
+    explicit basic_sasl(digest_md5);
     
 };
 } // namespace auth

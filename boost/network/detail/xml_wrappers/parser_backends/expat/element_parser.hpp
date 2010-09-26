@@ -10,8 +10,10 @@
 
 # include <boost/network/traits/string.hpp>
 # include <boost/network/detail/xml_wrappers/element.hpp>
+# include <boost/noncopyable.hpp>
 # include <expat.h>
 # include <cstring>
+# include <stack>
 
 
 namespace boost {
@@ -20,19 +22,16 @@ namespace detail {
 template <
     class Tag
     >
-class basic_expat_element_parser {
+class basic_expat_element_parser : boost::noncopyable {
 public:
 
     typedef typename string<Tag>::type string_type;
 
     typedef basic_element<Tag> element_type;
 
-    basic_expat_element_parser() {
-        parser_ = XML_ParserCreate(NULL);
-        // handle the case where the parser is NULL
-        element_ = 0;
-        depth_ = 0;
-
+    basic_expat_element_parser()
+        : parser_(XML_ParserCreate(NULL)), depth_(0) {
+        assert(parser_);
         XML_SetUserData(parser_, this);
         XML_SetElementHandler(parser_, start_element, end_element);
         XML_SetCharacterDataHandler(parser_, cdata);
@@ -41,13 +40,22 @@ public:
     ~basic_expat_element_parser() {
         XML_ParserFree(parser_);
     }
-
+    
     bool feed(const string_type &chunk) {
-        return feed(chunk, 0);
+        while (!elements_.empty()) {
+            elements_.pop();
+        }
+        elements_.push(0);
+        depth_ = 0;
+        return XML_Parse(parser_, chunk.c_str(), chunk.size(), 0) != 0;
     }
     
-    bool feed(const string_type &chunk, element_type *element) {
-        element_ = element;
+    bool feed(const string_type &chunk, element_type &element) {
+        while (!elements_.empty()) {
+            elements_.pop();
+        }
+        elements_.push(&element);
+        depth_ = 0;
         return XML_Parse(parser_, chunk.c_str(), chunk.size(), 0) != 0;
     }
 
@@ -80,18 +88,19 @@ private:
                               const XML_Char **attrs) {
         basic_expat_element_parser<Tag> *parser
             = static_cast<basic_expat_element_parser<Tag> *>(userdata);
-
-        if (parser->depth_ == 1) {
-            set_name(parser->element_, name);
-            set_attributes(parser->element_, attrs);
-        }
-        else if (parser->depth_ > 1) {
-            element_type *child = new element_type;
-            set_name(child, name);
-            set_attributes(child, attrs);
-            parser->element_->add_child(child);
-        }
         
+        if (!parser->elements_.top()) {
+            return;
+        }
+
+        if (parser->depth_ > 0) {
+            element_type *child = new element_type;
+            parser->elements_.top()->add_child(child);
+            parser->elements_.push(child);
+        }
+        set_name(parser->elements_.top(), name);
+        set_attributes(parser->elements_.top(), attrs);
+
         ++parser->depth_;
     }
 
@@ -99,6 +108,14 @@ private:
                             const XML_Char *name) {
         basic_expat_element_parser<Tag> *parser
             = static_cast<basic_expat_element_parser<Tag> *>(userdata);
+        
+        if (!parser->elements_.top()) {
+            return;
+        }
+
+        if (parser->depth_ > 0) {
+            parser->elements_.pop();
+        }
 
         --parser->depth_;
     }
@@ -108,13 +125,17 @@ private:
                       int len) {
         basic_expat_element_parser<Tag> *parser
             = static_cast<basic_expat_element_parser<Tag> *>(userdata);
+        
+        if (!parser->elements_.top()) {
+            return;
+        }
 
-        parser->element_->add_child(
+        parser->elements_.top()->add_child(
             new element_type(typename element_type::text(), string_type(s, s + len)));
     }
 
     XML_Parser parser_;
-    element_type *element_;
+    std::stack<element_type *> elements_;
     int depth_;
 
 };

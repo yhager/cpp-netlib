@@ -74,6 +74,30 @@ typename string<Tag>::type streams_ietf() {
     return typename string<Tag>::type(
         streams_ietf, streams_ietf + sizeof(streams_ietf));
 }
+
+template <
+    class Tag
+    >
+inline
+typename string<Tag>::type tls() {
+    static const char tls[] = {
+        'u', 'r', 'n', ':', 'i', 'e', 't', 'f', ':', 'p', 'a', 'r',
+        'a', 'm', 's', ':', 'x', 'm', 'l', ':', 'n', 's', ':', 'x',
+        'm', 'p', 'p', '-', 't', 'l', 's'};
+    return typename string<Tag>::type(tls, tls + sizeof(tls));
+}
+
+template <
+    class Tag
+    >
+inline
+typename string<Tag>::type sasl() {
+    static const char sasl[] = {
+        'u', 'r', 'n', ':', 'i', 'e', 't', 'f', ':', 'p', 'a', 'r',
+        'a', 'm', 's', ':', 'x', 'm', 'l', ':', 'n', 's', ':', 'x',
+        'm', 'p', 'p', '-', 's', 'a', 's', 'l'};
+    return typename string<Tag>::type(sasl, sasl + sizeof(sasl));
+}
 } // namespace ns
 } // namespace xmpp
 } // namespace network

@@ -16,15 +16,19 @@ typedef xmpp::client<test_handler> client;
 
 struct test_handler {
     
-    void handle(const client::message_type &message) {
+    void operator () (const client::message_type &message) {
         
     }
 
-    void handle(const client::presence_type &presence) {
+    void operator () (const client::presence_type &presence) {
         
     }
 
-    void handle(const client::iq_type &iq) {
+    void operator () (const client::iq_type &iq) {
+        
+    }
+
+    void operator () (const client::error_type &error) {
         
     }
 
@@ -34,4 +38,6 @@ struct test_handler {
 BOOST_AUTO_TEST_CASE(test_client_connection) {
     test_handler handler;
     client instance(handler);
+    instance.connect("glyn@lola", "xxx");
+    instance.run();
 }

@@ -32,4 +32,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(test_namespaces, T, tag_types) {
                              xmpp::ns::streams<T>()));
     BOOST_CHECK(boost::equal(std::string("urn:ietf:params:xml:ns:xmpp-streams"),
                              xmpp::ns::streams_ietf<T>()));
+    BOOST_CHECK(boost::equal(std::string("urn:ietf:params:xml:ns:xmpp-tls"),
+                             xmpp::ns::tls<T>()));
+    BOOST_CHECK(boost::equal(std::string("urn:ietf:params:xml:ns:xmpp-sasl"),
+                             xmpp::ns::sasl<T>()));
 }

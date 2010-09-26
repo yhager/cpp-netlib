@@ -16,7 +16,7 @@ namespace xmpp = boost::network::xmpp;
 BOOST_AUTO_TEST_CASE(xmpp_iq_source_directive_test) {
     xmpp::iq instance;
     instance << boost::network::source("source@example.com");
-    BOOST_CHECK_EQUAL("source@example.com", boost::network::source(instance));
+    BOOST_CHECK_EQUAL("source@example.com", boost::network::source((instance)));
 }
 
 
