@@ -13,6 +13,7 @@
 
 #include <iostream>
 
+
 using namespace boost::network::detail;
 using boost::network::detail::element;
 
@@ -35,7 +36,6 @@ struct xml_document_fixture {
 
 };
 } // namespace
-
 
 // BOOST_GLOBAL_FIXTURE(xml_document_fixture);
 

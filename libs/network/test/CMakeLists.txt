@@ -116,7 +116,6 @@ if (Boost_FOUND)
       add_executable(cpp-netlib-libxml2_element_parser_tests xml_wrappers/libxml2_element_parser_tests.cpp)
       target_link_libraries(cpp-netlib-libxml2_element_parser_tests ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES})
       add_test(cpp-netlib-libxml2_element_parser_tests ../../../build/tests/cpp-netlib-libxml2_element_parser_tests)
-
       set_target_properties(cpp-netlib-libxml2_element_parser_tests
                             PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../../build/tests)
     endif()
