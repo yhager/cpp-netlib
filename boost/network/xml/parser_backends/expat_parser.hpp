@@ -4,12 +4,12 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_EXPAT_PARSER_INC__
-# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_EXPAT_PARSER_INC__
+#ifndef __BOOST_NETWORK_XML_PARSER_BACKENDS_EXPAT_PARSER_INC__
+# define __BOOST_NETWORK_XML_PARSER_BACKENDS_EXPAT_PARSER_INC__
 
 
 # include <boost/network/traits/string.hpp>
-# include <boost/network/detail/xml_wrappers/element.hpp>
+# include <boost/network/xml/element.hpp>
 # include <boost/noncopyable.hpp>
 # include <expat.h>
 # include <cstring>
@@ -144,4 +144,4 @@ private:
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_PARSER_BACKENDS_EXPAT_PARSER_INC__
+#endif // __BOOST_NETWORK_XML_PARSER_BACKENDS_EXPAT_PARSER_INC__

@@ -6,9 +6,9 @@
 
 #define BOOST_TEST_MODULE expat wrapper tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/detail/xml_wrappers/parser_backends/expat_parser.hpp>
-#include <boost/network/detail/xml_wrappers/element.hpp>
-#include <boost/network/detail/xml_wrappers/element_io.hpp>
+#include <boost/network/xml/parser_backends/expat_parser.hpp>
+#include <boost/network/xml/element.hpp>
+#include <boost/network/xml/element_io.hpp>
 #include <boost/foreach.hpp>
 
 #include <iostream>

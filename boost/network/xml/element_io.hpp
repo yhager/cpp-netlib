@@ -4,13 +4,11 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_IO_INC__
-# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_IO_INC__
+#ifndef __BOOST_NETWORK_XML_ELEMENT_IO_INC__
+# define __BOOST_NETWORK_XML_ELEMENT_IO_INC__
 
 
-# include <boost/network/detail/xml_wrappers/element.hpp>
-# include <boost/range/algorithm_ext/for_each.hpp>
-# include <boost/spirit/home/phoenix/core.hpp>
+# include <boost/network/xml/element.hpp>
 # include <ostream>
 
 
@@ -55,4 +53,4 @@ std::ostream &operator << (std::ostream &os,
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_IO_INC__
+#endif // __BOOST_NETWORK_XML_ELEMENT_IO_INC__

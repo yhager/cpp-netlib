@@ -4,23 +4,17 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_TLS_TLS_INC__
-# define __BOOST_NETWORK_TLS_TLS_INC__
+#ifndef __BOOST_NETWORK_TLS_OPENSSL_INC__
+# define __BOOST_NETWORK_TLS_OPENSSL_INC__
 
 
 namespace boost {
 namespace network {
-class tls {
-public:
+namespace tls {
 
-    // credentials
-    // start
-    // read
-    // write
-    
-};
+} // namespace tls
 } // namespace network
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_TLS_TLS_INC__
+#endif // __BOOST_NETWORK_TLS_OPENSSL_INC__

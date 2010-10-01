@@ -9,7 +9,7 @@
 
 
 # include <boost/network/message.hpp>
-# include <boost/network/detail/xml_wrappers/element.hpp>
+# include <boost/network/xml/element.hpp>
 
 
 namespace boost {

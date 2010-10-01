@@ -4,14 +4,14 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_INC__
-# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_INC__
+#ifndef __BOOST_NETWORK_XML_ELEMENT_INC__
+# define __BOOST_NETWORK_XML_ELEMENT_INC__
 
 
 # include <boost/network/traits/string.hpp>
 # include <boost/network/traits/headers_container.hpp>
-# include <boost/network/detail/xml_wrappers/traits/element_children.hpp>
-# include <boost/network/detail/xml_wrappers/traits/parser_backend.hpp>
+# include <boost/network/xml/traits/element_children.hpp>
+# include <boost/network/xml/traits/parser_backend.hpp>
 # include <boost/network/tags.hpp>
 # include <boost/optional.hpp>
 # include <boost/range/iterator_range.hpp>
@@ -185,4 +185,4 @@ typedef basic_element<boost::network::tags::default_> element;
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_ELEMENT_INC__
+#endif // __BOOST_NETWORK_XML_ELEMENT_INC__

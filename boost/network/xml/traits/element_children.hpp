@@ -4,8 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__
-# define __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__
+#ifndef __BOOST_NETWORK_XML_TRAITS_ELEMENT_CHILDREN_INC__
+# define __BOOST_NETWORK_XML_TRAITS_ELEMENT_CHILDREN_INC__
 
 
 # include <boost/network/tags.hpp>
@@ -39,4 +39,4 @@ struct element_children<tags::default_> {
 } // namespace boost
 
 
-#endif // __BOOST_NETWORK_DETAIL_XML_WRAPPERS_TRAITS_ELEMENT_CHILDREN_INC__
+#endif // __BOOST_NETWORK_XML_TRAITS_ELEMENT_CHILDREN_INC__

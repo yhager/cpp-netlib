@@ -19,17 +19,25 @@ template <
     >
 class basic_sasl {
 
-    struct anonymous {};
-    struct plain {};
-    struct digest_md5 {};
+    // struct anonymous {};
+    // struct plain {};
+    // struct digest_md5 {};
 
 public:
 
-    explicit basic_sasl(anonymous);
+    typedef typename string<Tag>::type string_type;
 
-    explicit basic_sasl(plain);
+    // explicit basic_sasl(anonymous);
+    // 
+    // explicit basic_sasl(plain,
+    //                     const string_type &id, const string_type &password);
+    // 
+    // explicit basic_sasl(digest_md5,
+    //                     const string_type &challenge,const string_type &jid, const string_type &password);
 
-    explicit basic_sasl(digest_md5);
+private:
+
+    string_type auth_string_;
     
 };
 } // namespace auth

@@ -6,8 +6,8 @@
 
 #define BOOST_TEST_MODULE XML element tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/detail/xml_wrappers/element.hpp>
-#include <boost/network/detail/xml_wrappers/element_io.hpp>
+#include <boost/network/xml/element.hpp>
+#include <boost/network/xml/element_io.hpp>
 
 
 using namespace boost::network::detail;

@@ -7,8 +7,8 @@
 
 #define BOOST_TEST_MODULE libxml2 wrapper tests
 #include <boost/test/unit_test.hpp>
-#include <boost/network/detail/xml_wrappers/parser_backends/libxml2_parser.hpp>
-#include <boost/network/detail/xml_wrappers/element.hpp>
+#include <boost/network/xml/parser_backends/libxml2_parser.hpp>
+#include <boost/network/xml/element.hpp>
 
 
 using namespace boost::network::detail;

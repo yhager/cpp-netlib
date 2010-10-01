@@ -18,10 +18,10 @@
 # include <boost/network/protocol/xmpp/iq.hpp>
 # include <boost/network/protocol/xmpp/error.hpp>
 # include <boost/network/protocol/xmpp/namespaces.hpp>
-# include <boost/network/detail/xml_wrappers/element.hpp>
-# include <boost/network/detail/xml_wrappers/element_io.hpp>
-# include <boost/network/detail/xml_wrappers/traits/parser_backend.hpp>
-# include <boost/network/detail/xml_wrappers/parser_backends/expat_parser.hpp>
+# include <boost/network/xml/element.hpp>
+# include <boost/network/xml/element_io.hpp>
+# include <boost/network/xml/traits/parser_backend.hpp>
+# include <boost/network/xml/parser_backends/expat_parser.hpp>
 # include <boost/asio/io_service.hpp>
 # include <boost/asio/placeholders.hpp>
 # include <boost/asio/ip/tcp.hpp>
