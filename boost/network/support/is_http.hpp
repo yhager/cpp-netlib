@@ -8,8 +8,6 @@
 
 #include <boost/network/tags.hpp>
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/network/support/is_udp.hpp>
-#include <boost/static_assert.hpp>
 
 namespace boost { namespace network {
 

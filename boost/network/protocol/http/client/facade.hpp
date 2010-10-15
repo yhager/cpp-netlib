@@ -8,11 +8,12 @@
 
 #include <boost/network/protocol/http/request.hpp>
 #include <boost/network/protocol/http/response.hpp>
+#include <boost/network/support/sync_only.hpp>
 
 namespace boost { namespace network { namespace http {
 
     template <class Tag>
-    class basic_request;
+    struct basic_request;
 
     template <class Tag>
     struct basic_response;
@@ -21,7 +22,7 @@ namespace boost { namespace network { namespace http {
     struct basic_client_facade {
 
         typedef typename string<Tag>::type string_type;
-        typedef basic_request<Tag> request;
+        typedef basic_request<typename sync_only<Tag>::type> request;
         typedef basic_response<Tag> response;
 
         basic_client_facade()

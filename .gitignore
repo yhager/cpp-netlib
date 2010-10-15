@@ -8,4 +8,5 @@ Testing
 build
 _build
 bin
+*.gch
 
