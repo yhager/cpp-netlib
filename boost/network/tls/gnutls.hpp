@@ -30,7 +30,7 @@ private:
 
     gnutls_session_t session_;
     gnutls_certificate_credentials_t credentials_;
-    
+
 };
 
 
@@ -38,14 +38,14 @@ template <
     class Tag
     >
 basic_gnutls<Tag>::basic_gnutls() {
-    
+
 }
 
 template <
     class Tag
     >
 basic_gnutls<Tag>::~basic_gnutls() {
-    
+
 }
 } // namespace network
 } // namespace boost

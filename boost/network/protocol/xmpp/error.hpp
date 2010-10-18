@@ -22,9 +22,9 @@ class basic_error
 public:
 
     basic_error() {
-        
+
     }
-    
+
 };
 
 

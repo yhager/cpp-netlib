@@ -45,7 +45,7 @@ namespace boost { namespace network { namespace tags {
                 name##_tags,                                                \
                 mpl::inherit<mpl::placeholders::_1, mpl::placeholders::_2>  \
             >::type name;                                                   \
-    template <> struct components<name> { typedef name##_tags type; };     
+    template <> struct components<name> { typedef name##_tags type; };
 
     BOOST_NETWORK_DEFINE_TAG(http_default_8bit_tcp_resolve);
     BOOST_NETWORK_DEFINE_TAG(http_default_8bit_udp_resolve);

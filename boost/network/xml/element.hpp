@@ -37,17 +37,17 @@ public:
     typedef typename element_children<Tag>::type element_children_type;
 
     basic_element() {
-        
+
     }
 
     basic_element(tag, const string_type &name)
         : name_(name) {
-        
+
     }
 
     basic_element(text, const string_type &text)
         : text_(text) {
-        
+
     }
 
     basic_element(const basic_element &other)
@@ -55,7 +55,7 @@ public:
           attributes_(other.attributes_),
           children_(other.children_),
           text_(other.text_) {
-        
+
     }
 
     basic_element &operator = (const basic_element &other) {
@@ -65,7 +65,7 @@ public:
     }
 
     ~basic_element() {
-        
+
     }
 
     void swap(basic_element &other) {
@@ -89,7 +89,7 @@ public:
         assert(!is_tag());
         text_ = text;
     }
-    
+
     boost::optional<string_type> get_text() const {
         assert(is_text());
         return text_.get();
@@ -146,7 +146,7 @@ public:
     void add_child(basic_element<Tag> *element) {
         assert(is_tag());
         boost::shared_ptr<basic_element<Tag> > shared_element(element);
-		children_.push_back(shared_element);
+        children_.push_back(shared_element);
     }
 
     boost::optional<const basic_element<Tag> &> get_child(const string_type &name) const {

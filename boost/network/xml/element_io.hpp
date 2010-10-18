@@ -24,11 +24,11 @@ std::ostream &operator << (std::ostream &os,
     typedef typename basic_element<Tag>::element_children_type::const_iterator children_iterator;
     typedef boost::iterator_range<header_iterator> header_range;
     typedef boost::iterator_range<children_iterator> children_range;
-    
+
     if (element.is_tag()) {
         os << "<" << element.get_name();
         header_range attributes(element.get_attributes());
-        
+
         header_iterator attr_it(boost::begin(attributes)), attr_end(boost::end(attributes));
         for (; attr_it != attr_end; ++attr_it) {
             os << " " << attr_it->first << "='" << attr_it->second << "'";
@@ -36,7 +36,7 @@ std::ostream &operator << (std::ostream &os,
         os << ">";
 
         children_range children(element.get_children());
-        
+
         children_iterator child_it(boost::begin(children)), child_end(boost::end(children));
         for (; child_it != child_end; ++child_it) {
             os << **child_it;

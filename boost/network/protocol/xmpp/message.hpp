@@ -29,13 +29,13 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_message() {
-        static const char name[] = {'m', 'e', 's', 's', 'a', 'g', 'e'};
+        static const char name[] = {'m', 'e', 's', 's', 'a', 'g', 'e', 0};
         base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_message(const basic_message &other)
         : basic_stanza<Tag>(other) {
-        
+
     }
 
     basic_message &operator = (const basic_message &other) {
@@ -45,7 +45,7 @@ public:
     }
 
     ~basic_message() {
-        
+
     }
 
     void swap(basic_message &other) {
@@ -53,25 +53,25 @@ public:
     }
 
     void set_type(const string_type &type) {
-        static const char *type_ = "type";
+        static const char type_[] = {'t', 'y', 'p', 'e', 0};
         set_attribute(string_type(type_, type_ + std::strlen(type_)), type);
     }
 
     string_type type() const {
-        static const char *type_ = "type";
+        static const char type_[] = {'t', 'y', 'p', 'e', 0};
         return get_attribute(string_type(type_, type_ + std::strlen(type_)));
     }
 
     void set_id(const string_type &id) {
-        static const char *id_ = "id";
+        static const char id_[] = {'i', 'd', 0};
         set_attribute(string_type(id_, id_ + std::strlen(id_)), id);
     }
 
     string_type id() const {
-        static const char *id_ = "id";
+        static const char id_[] = {'i', 'd', 0};
         return get_attribute(string_type(id_, id_ + std::strlen(id_)));
     }
-    
+
 };
 
 

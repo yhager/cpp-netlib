@@ -22,13 +22,13 @@ class basic_stanza
     : public boost::network::basic_message<Tag> {
 
     typedef boost::network::basic_message<Tag> base_type;
-    
+
 public:
 
     typedef typename base_type::string_type string_type;
 
     explicit basic_stanza() {
-        
+
     }
 
     explicit basic_stanza(const string_type &name) {
@@ -59,7 +59,7 @@ public:
 private:
 
     detail::basic_element<Tag> element_;
-    
+
 };
 
 

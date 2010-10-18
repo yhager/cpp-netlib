@@ -35,8 +35,8 @@ public:
         handlers_.endElement = end_element;
         handlers_.characters = characters;
         depth_ = 0;
-        
-        context_ = xmlCreatePushParserCtxt(&handlers_, 
+
+        context_ = xmlCreatePushParserCtxt(&handlers_,
                                            this, 0, 0, 0);
         // assert(!context_);
     }
@@ -103,7 +103,7 @@ private:
         }
         set_name(parser->elements_.top(), name);
         set_attributes(parser->elements_.top(), attrs);
-        
+
         ++parser->depth_;
     }
 
@@ -111,7 +111,7 @@ private:
                             const xmlChar *name) {
         basic_libxml2_parser<Tag> *parser
             = static_cast<basic_libxml2_parser<Tag> *>(userdata);
-        
+
         if (!parser->elements_.top()) {
             return;
         }
@@ -128,7 +128,7 @@ private:
                            int len) {
         basic_libxml2_parser<Tag> *parser
             = static_cast<basic_libxml2_parser<Tag> *>(userdata);
-        
+
         if (!parser->elements_.top()) {
             return;
         }
@@ -136,12 +136,12 @@ private:
         parser->elements_.top()->add_child(
             new element_type(typename element_type::text(), string_type(s, s + len)));
     }
-    
+
     xmlParserCtxtPtr context_;
     xmlSAXHandler handlers_;
     std::stack<element_type *> elements_;
     int depth_;
-    
+
 };
 } // namespace detail
 } // namespace network

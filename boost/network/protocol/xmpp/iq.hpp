@@ -29,13 +29,13 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_iq() {
-        static const char name[] = {'i', 'q'};
+        static const char name[] = {'i', 'q', 0};
         base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_iq(const basic_iq &other)
         : basic_stanza<Tag>(other) {
-        
+
     }
 
     basic_iq &operator = (const basic_iq &other) {
@@ -45,14 +45,14 @@ public:
     }
 
     ~basic_iq() {
-        
+
     }
 
     void swap(basic_iq &other) {
         base_type::swap(other);
     }
-    
-}; 
+
+};
 
 
 typedef basic_iq<tags::default_> iq;

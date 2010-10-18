@@ -29,13 +29,13 @@ public:
     typedef typename base_type::headers_container_type headers_container_type;
 
     basic_presence() {
-        static const char name[] = {'p', 'r', 'e', 's', 'e', 'n', 'c', 'e'};
+        static const char name[] = {'p', 'r', 'e', 's', 'e', 'n', 'c', 'e', 0};
         base_type::set_name(string_type(name, name + sizeof(name)));
     }
 
     basic_presence(const basic_presence &other)
         : basic_stanza<Tag>(other) {
-        
+
     }
 
     basic_presence &operator = (const basic_presence &other) {
@@ -45,7 +45,7 @@ public:
     }
 
     ~basic_presence() {
-        
+
     }
 
     void swap(basic_presence &other) {

@@ -49,18 +49,24 @@ class basic_client : boost::noncopyable {
 
 private:
 
+    enum connection_state {
+        disconnected,
+        processing_stream_features,
+        processing_starttls
+    };
+
     typedef basic_client<Tag, version_major, version_minor, Handler> this_type;
     typedef typename detail::parser_backend<Tag>::type parser_type;
 
 public:
 
     typedef typename string<Tag>::type string_type;
-    
+
     typedef basic_message<Tag> message_type;
     typedef basic_presence<Tag> presence_type;
     typedef basic_iq<Tag> iq_type;
     typedef basic_error<Tag> error_type;
-    
+
     explicit basic_client(Handler &handler);
 
     ~basic_client();
@@ -100,7 +106,7 @@ private:
 
     // tcp socket
     boost::asio::ip::tcp::socket socket_;
-    
+
     // tls
     // sasl
 
@@ -112,7 +118,7 @@ private:
 
     // std::deque<std::string> stanza_queue_;
     std::string write_buffer_, read_buffer_;
-    
+
 };
 
 
@@ -124,7 +130,7 @@ template <
     >
 basic_client<Tag, version_major, version_minor, Handler>::basic_client(Handler &handler)
     : handler_(handler), socket_(io_service_), work_(io_service_) {
-    
+
 }
 
 
@@ -135,7 +141,7 @@ template <
     class Handler
     >
 basic_client<Tag, version_major, version_minor, Handler>::~basic_client() {
-    
+
 }
 
 template <
@@ -145,7 +151,7 @@ template <
     class Handler
     >
 void basic_client<Tag, version_major, version_minor, Handler>::set_lang(const string_type &lang) {
-    
+
 }
 
 
@@ -158,7 +164,7 @@ template <
 void basic_client<Tag, version_major, version_minor, Handler>::connect(const string_type &jid,
                                                                        const string_type &password) {
     using boost::asio::ip::tcp;
-    
+
     // get the JID domain
     // default port is 5222
     // open socket
@@ -254,7 +260,7 @@ void basic_client<Tag, version_major, version_minor, Handler>::handle_connect(
     boost::asio::ip::tcp::resolver::iterator iterator) {
     if (!ec) {
         std::ostringstream os;
-        os << 
+        os <<
             "<?xml version=\"1.0\"?>" <<
             "<stream:stream to=\"" << "127.0.0.1" << "\" " <<
             "version=\"" << version_major << "." << version_minor << "\" " <<
@@ -403,7 +409,7 @@ struct client : basic_client<tags::default_, 1, 0, Handler> {
 
     explicit client(Handler &handler)
         : basic_client<tags::default_, 1, 0, Handler>(handler) {
-        
+
     }
 
 };

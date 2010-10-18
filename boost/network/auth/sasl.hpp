@@ -28,17 +28,17 @@ public:
     typedef typename string<Tag>::type string_type;
 
     // explicit basic_sasl(anonymous);
-    // 
+    //
     // explicit basic_sasl(plain,
     //                     const string_type &id, const string_type &password);
-    // 
+    //
     // explicit basic_sasl(digest_md5,
     //                     const string_type &challenge,const string_type &jid, const string_type &password);
 
 private:
 
     string_type auth_string_;
-    
+
 };
 } // namespace auth
 } // namespace network

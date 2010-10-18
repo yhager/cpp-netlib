@@ -40,7 +40,7 @@ public:
     ~basic_expat_parser() {
         XML_ParserFree(parser_);
     }
-    
+
     bool feed(const string_type &chunk) {
         while (!elements_.empty()) {
             elements_.pop();
@@ -49,7 +49,7 @@ public:
         depth_ = 0;
         return XML_Parse(parser_, chunk.c_str(), chunk.size(), 0) != 0;
     }
-    
+
     bool feed(const string_type &chunk, element_type &element) {
         while (!elements_.empty()) {
             elements_.pop();
@@ -88,7 +88,7 @@ private:
                               const XML_Char **attrs) {
         basic_expat_parser<Tag> *parser
             = static_cast<basic_expat_parser<Tag> *>(userdata);
-        
+
         if (!parser->elements_.top()) {
             return;
         }
@@ -108,7 +108,7 @@ private:
                             const XML_Char *name) {
         basic_expat_parser<Tag> *parser
             = static_cast<basic_expat_parser<Tag> *>(userdata);
-        
+
         if (!parser->elements_.top()) {
             return;
         }
@@ -125,7 +125,7 @@ private:
                       int len) {
         basic_expat_parser<Tag> *parser
             = static_cast<basic_expat_parser<Tag> *>(userdata);
-        
+
         if (!parser->elements_.top()) {
             return;
         }
