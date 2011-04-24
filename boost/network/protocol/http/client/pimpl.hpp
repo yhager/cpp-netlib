@@ -15,7 +15,7 @@
 
 #include <boost/network/protocol/http/traits/connection_policy.hpp>
 #include <boost/network/protocol/http/client/async_impl.hpp>
-#include <boost/network/support/sync_only.hpp>
+#include <boost/network/protocol/http/client/sync_impl.hpp>
 
 namespace boost { namespace network { namespace http {
 
@@ -28,41 +28,23 @@ namespace boost { namespace network { namespace http {
         struct async_client;
         
         template <class Tag, unsigned version_major, unsigned version_minor>
-        struct sync_client :
-            connection_policy<Tag, version_major, version_minor>::type
-        {
-            typedef typename string<Tag>::type string_type;
-            typedef typename connection_policy<Tag,version_major,version_minor>::type connection_base;
-            typedef typename resolver<Tag>::type resolver_type;
-            friend struct basic_client_impl<Tag,version_major,version_minor>;
-
-            boost::asio::io_service service_;
-            resolver_type resolver_;
-
-            sync_client(bool cache_resolved, bool follow_redirect)
-                : connection_base(cache_resolved, follow_redirect),
-                service_(),
-                resolver_(service_)
-            {}
-
-            ~sync_client() {}
-
-            basic_response<Tag> const request_skeleton(basic_request<typename sync_only<Tag>::type> const & request_, string_type method, bool get_body) {
-                typename connection_base::connection_ptr connection_;
-                connection_ = connection_base::get_connection(resolver_, request_);
-                return connection_->send_request(method, request_, get_body);
-            }
-
+        struct sync_client;
+        
+        
+        template <class Tag, unsigned version_major, unsigned version_minor, class Enable = void>
+        struct client_base {
+            typedef unsupported_tag<Tag> type;
         };
-
+        
         template <class Tag, unsigned version_major, unsigned version_minor>
-        struct client_base
-            : mpl::if_<
-                typename is_async<Tag>::type,
-                async_client<Tag,version_major,version_minor>,
-                sync_client<Tag,version_major,version_minor>
-            >
-        {};
+        struct client_base<Tag, version_major, version_minor, typename enable_if<is_async<Tag> >::type> {
+            typedef async_client<Tag,version_major,version_minor> type;
+        };
+        
+        template <class Tag, unsigned version_major, unsigned version_minor>
+        struct client_base<Tag, version_major, version_minor, typename enable_if<is_sync<Tag> >::type> {
+            typedef sync_client<Tag,version_major,version_minor> type;
+        };
 
     } // namespace impl
 
@@ -81,10 +63,16 @@ namespace boost { namespace network { namespace http {
                 >
             >::value
             ));
-        
+
         typedef typename impl::client_base<Tag,version_major,version_minor>::type base_type;
-        basic_client_impl(bool cache_resolved, bool follow_redirect)
-            : base_type(cache_resolved, follow_redirect)
+        typedef typename base_type::string_type string_type;
+
+        basic_client_impl(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
+            : base_type(cache_resolved, follow_redirect, certificate_filename, verify_path)
+        {}
+
+        basic_client_impl(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
+            : base_type(cache_resolved, follow_redirect, service, certificate_filename, verify_path)
         {}
 
         ~basic_client_impl()

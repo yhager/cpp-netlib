@@ -8,6 +8,7 @@
 
 #include <boost/network/protocol/http/tags.hpp>
 #include <boost/network/support/is_async.hpp>
+#include <boost/network/protocol/http/support/client_or_server.hpp>
 #include <boost/thread/future.hpp>
 #include <boost/concept/requires.hpp>
 #include <boost/network/message/directives.hpp>
@@ -16,6 +17,9 @@ namespace boost { namespace network { namespace http {
 
     template <class Tag>
     struct basic_response;
+
+    template <class Tag>
+    struct basic_request;
 
     namespace impl {
 
@@ -32,11 +36,27 @@ namespace boost { namespace network { namespace http {
     }
 
     template <class Tag, class T>
-    inline
-    BOOST_CONCEPT_REQUIRES(((Response<basic_response<Tag> >)),
-        (void))
+    inline void
     body(basic_response<Tag> & response, T const & value) {
         impl::body(response, value, is_async<Tag>());
+    }
+
+    template <class Tag, class T>
+    inline void
+    body_impl(basic_request<Tag> & request, T const & value, tags::server) {
+        request.body = value;
+    }
+
+    template <class Tag, class T>
+    inline void
+    body_impl(basic_request<Tag> & request, T const & value, tags::client) {
+        request << ::boost::network::body(value);
+    }
+
+    template <class Tag, class T>
+    inline void
+    body(basic_request<Tag> & request, T const & value) {
+        body_impl(request, value, typename client_or_server<Tag>::type());
     }
 
 } // namespace http

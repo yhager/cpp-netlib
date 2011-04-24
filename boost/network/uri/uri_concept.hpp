@@ -20,7 +20,7 @@ namespace boost { namespace network { namespace uri {
 
                 U temp;
                 swap(temp, uri_); // swappable
-                
+
                 string_type scheme_ = scheme(uri); // support functions
                 string_type user_info_ = user_info(uri);
                 string_type host_ = host(uri);
@@ -30,7 +30,7 @@ namespace boost { namespace network { namespace uri {
                 string_type query_ = query(uri);
                 string_type fragment_ = fragment(uri);
 
-                bool valid_ = valid(uri);
+                bool valid_ = is_valid(uri);
                 valid_ = false;
             }
 

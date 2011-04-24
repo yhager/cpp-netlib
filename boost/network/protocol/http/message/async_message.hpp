@@ -13,14 +13,23 @@
 //FIXME move this out to a trait
 #include <set>
 #include <boost/foreach.hpp>
+#include <boost/network/detail/wrapper_base.hpp>
 
 namespace boost { namespace network { namespace http {
+
+    namespace impl {
+
+        template <class Tag>
+        struct ready_wrapper;
+
+    } /* impl */
 
     template <class Tag>
     struct async_message {
 
         typedef typename string<Tag>::type string_type;
         typedef typename headers_container<Tag>::type headers_container_type;
+        typedef typename headers_container_type::value_type header_type;
 
         async_message()
             : status_message_(),
@@ -96,7 +105,7 @@ namespace boost { namespace network { namespace http {
         }
 
         void add_header(typename headers_container_type::value_type const & pair_) const {
-            added_headers.insert(pair_);
+            added_headers.insert(added_headers.end(), pair_);
         }
 
         void remove_header(typename headers_container_type::key_type const & key_) const {
@@ -135,6 +144,8 @@ namespace boost { namespace network { namespace http {
         mutable headers_container_type added_headers;
         mutable std::set<string_type> removed_headers;
         mutable boost::shared_future<string_type> body_;
+
+        friend struct boost::network::http::impl::ready_wrapper<Tag>;
     };
 
     template <class Tag>

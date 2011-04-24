@@ -12,8 +12,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/network/protocol/http/traits/resolver_policy.hpp>
-#include <boost/network/protocol/http/detail/connection_helper.hpp>
-#include <boost/network/protocol/http/impl/async_connection_base.hpp>
+#include <boost/network/protocol/http/client/connection/async_base.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
@@ -34,14 +33,16 @@ namespace boost { namespace network { namespace http {
             connection_impl(
                 bool follow_redirect, 
                 resolve_function resolve, 
-                boost::shared_ptr<resolver_type> resolver,
-                bool https
+                resolver_type & resolver,
+                bool https,
+                optional<string_type> const & certificate_filename,
+                optional<string_type> const & verify_path
                 )
             {
-                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https);
+                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https, certificate_filename, verify_path);
             }
 
-            basic_response<Tag> send_request(string_type const & method, basic_request<typename sync_only<Tag>::type> const & request_, bool get_body) {
+            basic_response<Tag> send_request(string_type const & method, basic_request<Tag> const & request_, bool get_body) {
                 return pimpl->start(request_, method, get_body);
             }
 
@@ -52,7 +53,7 @@ namespace boost { namespace network { namespace http {
         };
 
         typedef boost::shared_ptr<connection_impl> connection_ptr;
-        connection_ptr get_connection(boost::shared_ptr<resolver_type> resolver, basic_request<typename sync_only<Tag>::type> const & request_) {
+        connection_ptr get_connection(resolver_type & resolver, basic_request<Tag> const & request_, optional<string_type> const & certificate_filename = optional<string_type>(), optional<string_type> const & verify_path = optional<string_type>()) {
             string_type protocol_ = protocol(request_);
             connection_ptr connection_(
                 new connection_impl(
@@ -62,10 +63,10 @@ namespace boost { namespace network { namespace http {
                         this,
                         _1, _2, _3, _4
                         )
-                    , resolver                    
+                    , resolver
                     , boost::iequals(protocol_, string_type("https"))
-                    )
-                    );
+                    , certificate_filename
+                    , verify_path));
             return connection_;
         }
 

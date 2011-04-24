@@ -10,7 +10,6 @@
 #include <boost/asio/strand.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-#include <boost/network/support/sync_only.hpp>
 
 namespace boost { namespace network { namespace http {
 
@@ -32,44 +31,62 @@ namespace boost { namespace network { namespace http {
                 typename string<Tag>::type
                 string_type;
 
-            async_client(bool cache_resolved, bool follow_redirect)
+            async_client(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
                 : connection_base(cache_resolved, follow_redirect),
-                service_(new boost::asio::io_service),
-                resolver_(new resolver_type(*service_)),
-                sentinel_(new boost::asio::io_service::work(*service_))
+                service_ptr(new boost::asio::io_service),
+                service_(*service_ptr),
+                resolver_(service_),
+                sentinel_(new boost::asio::io_service::work(service_)),
+                certificate_filename_(certificate_filename),
+                verify_path_(verify_path)
             {
-                connection_base::service_ = service_;
                 connection_base::resolver_strand_.reset(new
-                    boost::asio::io_service::strand(*service_));
+                    boost::asio::io_service::strand(service_));
                 lifetime_thread_.reset(new boost::thread(
                     boost::bind(
                         &boost::asio::io_service::run,
-                        service_
+                        &service_
                         )));
+            }
+
+            async_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
+                : connection_base(cache_resolved, follow_redirect),
+                service_ptr(0),
+                service_(service),
+                resolver_(service_),
+                sentinel_(new boost::asio::io_service::work(service_)),
+                certificate_filename_(certificate_filename),
+                verify_path_(verify_path)
+            {
             }
 
             ~async_client() throw ()
             {
                 sentinel_.reset();
-                lifetime_thread_->join();
-                lifetime_thread_.reset();
+                if (lifetime_thread_.get()) {
+                    lifetime_thread_->join();
+                    lifetime_thread_.reset();
+                }
+                delete service_ptr;
             }
 
             basic_response<Tag> const request_skeleton(
-                basic_request<typename sync_only<Tag>::type> const & request_, 
+                basic_request<Tag> const & request_, 
                 string_type const & method, 
                 bool get_body
                 ) 
             {
                 typename connection_base::connection_ptr connection_;
-                connection_ = connection_base::get_connection(resolver_, request_);
+                connection_ = connection_base::get_connection(resolver_, request_, certificate_filename_, verify_path_);
                 return connection_->send_request(method, request_, get_body);
             }
 
-            boost::shared_ptr<boost::asio::io_service> service_;
-            boost::shared_ptr<resolver_type> resolver_;
+            boost::asio::io_service * service_ptr;
+            boost::asio::io_service & service_;
+            resolver_type resolver_;
             boost::shared_ptr<boost::asio::io_service::work> sentinel_;
             boost::shared_ptr<boost::thread> lifetime_thread_;
+            optional<string_type> certificate_filename_, verify_path_;
         };
     } // namespace impl
 

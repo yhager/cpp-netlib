@@ -44,6 +44,7 @@ namespace boost { namespace network {
         typedef Tag tag;
 
         typedef typename headers_container<Tag>::type headers_container_type;
+        typedef typename headers_container_type::value_type header_type;
         typedef typename string<Tag>::type string_type;
 
         basic_message()
@@ -125,7 +126,7 @@ namespace boost { namespace network {
         private:
         
         friend struct detail::directive_base<Tag> ;
-        friend struct detail::wrapper_base<Tag> ;
+        friend struct detail::wrapper_base<Tag, basic_message<Tag> > ;
 
         mutable headers_container_type _headers;
         mutable string_type _body;

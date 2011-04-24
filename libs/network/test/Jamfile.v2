@@ -4,6 +4,7 @@
 #    (See accompanying file LICENSE_1_0.txt or copy at
 #          http://www.boost.org/LICENSE_1_0.txt)
 
+import testing ;
 import os ;
 
 if [ os.name ] = CYGWIN
@@ -22,6 +23,8 @@ project network_test :
         <source>/boost//regex
         <source>/boost//thread
         <source>/boost//filesystem
+        <define>BOOST_NETWORK_ENABLE_HTTPS
+        <variant>debug:<define>BOOST_NETWORK_DEBUG
         <toolset>gcc:<linkflags>-lpthread
         <toolset>gcc:<linkflags>-lssl
         <toolset>gcc:<linkflags>-lcrypto
@@ -39,19 +42,10 @@ project network_test :
         <link>static
     ;
 
-unit-test http_localhost_tests : http_localhost_tests.cpp ;
-unit-test https_localhost_tests : https_localhost_tests.cpp ;
-unit-test message_test : message_test.cpp ;
-unit-test message_transform_test : message_transform_test.cpp ;
-unit-test http_1_0_test : http_1_0_test.cpp ;
-unit-test http_1_1_test : http_1_1_test.cpp ;
-unit-test http_message_test : http_message_test.cpp ;
-unit-test url_test : url_test.cpp ;
-unit-test client_server_include_failure : client_server_include_failure.cpp ;
-exe hello_world : hello_world.cpp ;
+build-project http ;
 
-make httplib_acceptance.passed : httplib_acceptance.py hello_world : @python_runner ;
-actions python_runner {
-    python $(>) $(<)
-}
+run message_test.cpp ;
+run message_transform_test.cpp ;
+run url_test.cpp /cpp-netlib//cppnetlib-uri-parsers ;
+run client_server_include_failure.cpp ;
 

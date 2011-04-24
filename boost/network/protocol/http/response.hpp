@@ -30,6 +30,7 @@
 #include <boost/network/protocol/http/message/wrappers/status_message.hpp>
 #include <boost/network/protocol/http/message/wrappers/destination.hpp>
 #include <boost/network/protocol/http/message/wrappers/source.hpp>
+#include <boost/network/protocol/http/message/wrappers/ready.hpp>
 
 #include <boost/network/protocol/http/message.hpp>
 #include <boost/network/protocol/http/message/async_message.hpp>
@@ -74,8 +75,6 @@ namespace boost { namespace network { namespace http {
     inline void swap(basic_response<Tag> & lhs, basic_response<Tag> & rhs) {
         lhs.swap(rhs);
     }
-
-    BOOST_CONCEPT_ASSERT((Response<basic_response<tags::http_default_8bit_udp_resolve> >));
 
 } // namespace http
 

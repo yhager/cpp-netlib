@@ -161,8 +161,9 @@ template <
     unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, version_major, version_minor, Handler>::connect(const string_type &jid,
-                                                                       const string_type &password) {
+void basic_client<Tag, version_major, version_minor, Handler>::connect(
+    const string_type &jid,
+    const string_type &password) {
     using boost::asio::ip::tcp;
 
     // get the JID domain
@@ -293,7 +294,8 @@ template <
     unsigned version_minor,
     class Handler
     >
-void basic_client<Tag, version_major, version_minor, Handler>::handle_write_open_stream(const boost::system::error_code &ec) {
+void basic_client<Tag, version_major, version_minor, Handler>::handle_write_open_stream(
+    const boost::system::error_code &ec) {
     if (!ec) {
         read_buffer_.resize(512);
         boost::fill(read_buffer_, 0);
@@ -302,20 +304,17 @@ void basic_client<Tag, version_major, version_minor, Handler>::handle_write_open
         {
             detail::basic_element<Tag> element;
             parser_.feed(read_buffer_, element);
-            std::cout << element << std::endl;
             if (boost::optional<const detail::basic_element<Tag> &> features =
                 element.get_child("stream:features")) {
-                std::cout << "stream:features" << std::endl;
                 // might get starttls in here
                 if (boost::optional<const detail::basic_element<Tag> &> starttls =
                     features.get().get_child("starttls")) {
-                    std::cout << "starttls" << std::endl;
                     write_buffer_ =
                         "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>";
-                    std::cout << "(C) " << write_buffer_ << std::endl;
-                    boost::asio::async_write(socket_, boost::asio::buffer(write_buffer_),
-                                             boost::bind(&this_type::handle_write_starttls, this, boost::asio::placeholders::error));
-                    return;
+                    boost::asio::async_write(
+                        socket_, boost::asio::buffer(write_buffer_),
+                        boost::bind(&this_type::handle_write_starttls, this,
+                                    boost::asio::placeholders::error));
                 }
             }
         }
@@ -327,24 +326,14 @@ void basic_client<Tag, version_major, version_minor, Handler>::handle_write_open
         {
             detail::basic_element<Tag> element;
             parser_.feed(read_buffer_, element);
-            std::cout << "(S) " << read_buffer_ << std::endl;
             if (element.get_name() == "stream:features") {
-                std::cout << "stream:features" << std::endl;
                 if (boost::optional<const detail::basic_element<Tag> &> starttls =
                     element.get_child("starttls")) {
-                    std::cout << "starttls" << std::endl;
                     write_buffer_ =
                         "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>";
                     boost::asio::async_write(socket_, boost::asio::buffer(write_buffer_),
                                              boost::bind(&this_type::handle_write_starttls, this, boost::asio::placeholders::error));
-                    std::cout << "(C) " << write_buffer_ << std::endl;
                 }
-                else {
-                    std::cout << "no starttls" << std::endl;
-                }
-            }
-            else {
-                std::cout << "no stream:features" << std::endl;
             }
         }
 
@@ -381,7 +370,6 @@ template <
     >
 void basic_client<Tag, version_major, version_minor, Handler>::handle_write_starttls(const boost::system::error_code &ec) {
     if (!ec) {
-        std::cout << "Bananas" << std::endl;
         read_buffer_.resize(512);
         boost::fill(read_buffer_, 0);
         socket_.read_some(boost::asio::buffer(read_buffer_));

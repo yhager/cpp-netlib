@@ -15,14 +15,16 @@
 
 namespace boost { namespace network { namespace tags {
 
-    struct pod {};
-    struct async {};
-    struct tcp {};
-    struct udp {};
-    struct sync {};
-    struct default_string {};
-    struct default_wstring {};
-
+    struct pod      { typedef mpl::true_::type is_pod; };
+    struct normal   { typedef mpl::true_::type is_normal; };
+    struct async    { typedef mpl::true_::type is_async; };
+    struct tcp      { typedef mpl::true_::type is_tcp; };
+    struct udp      { typedef mpl::true_::type is_udp; };
+    struct sync     { typedef mpl::true_::type is_sync; };
+    struct default_string 
+        { typedef mpl::true_::type is_default_string; };
+    struct default_wstring 
+        { typedef mpl::true_::type is_default_wstring; };
 
     template <class Tag>
     struct components;
@@ -30,11 +32,11 @@ namespace boost { namespace network { namespace tags {
     // Tag Definition Macro Helper
 #ifndef BOOST_NETWORK_DEFINE_TAG
 #define BOOST_NETWORK_DEFINE_TAG(name)                                      \
-    typedef mpl::inherit_linearly<                                          \
+    struct name : mpl::inherit_linearly<                                    \
                 name##_tags,                                                \
                 mpl::inherit<mpl::placeholders::_1, mpl::placeholders::_2>  \
-            >::type name;                                                   \
-    template <> struct components<name> {             \
+            >::type {};                                                     \
+    template <> struct components<name> {                                   \
         typedef name##_tags type;                                           \
     };
 #endif // BOOST_NETWORK_DEFINE_TAG
