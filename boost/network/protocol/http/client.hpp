@@ -25,6 +25,7 @@
 
 #include <boost/network/protocol/http/client/facade.hpp>
 #include <boost/network/protocol/http/client/parameters.hpp>
+#include <boost/network/protocol/http/client/macros.hpp>
 
 namespace boost { namespace network { namespace http {
 
@@ -33,7 +34,7 @@ namespace boost { namespace network { namespace http {
         : basic_client_facade<Tag, version_major, version_minor>
     {
     private:
-        typedef basic_client_facade<Tag, version_major, version_minor> 
+        typedef basic_client_facade<Tag, version_major, version_minor>
             base_facade_type;
     public:
         typedef basic_request<Tag> request;
@@ -64,8 +65,8 @@ namespace boost { namespace network { namespace http {
 
         BOOST_PARAMETER_CONSTRUCTOR(
             basic_client, (base_facade_type), tag,
-            (optional   
-                (in_out(io_service), (boost::asio::io_service))
+            (optional
+                (in_out(io_service), (boost::asio::io_service&))
                 (follow_redirects, (bool))
                 (cache_resolved, (bool))
                 (openssl_certificate, (string_type))
@@ -77,7 +78,11 @@ namespace boost { namespace network { namespace http {
 
     };
 
-    typedef basic_client<tags::http_default_8bit_udp_resolve, 1, 0> client;
+#ifndef BOOST_NETWORK_HTTP_CLIENT_DEFAULT_TAG
+#define BOOST_NETWORK_HTTP_CLIENT_DEFAULT_TAG tags::http_async_8bit_udp_resolve
+#endif
+
+    typedef basic_client<BOOST_NETWORK_HTTP_CLIENT_DEFAULT_TAG, 1, 1> client;
 
 } // namespace http
 

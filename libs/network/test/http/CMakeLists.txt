@@ -1,5 +1,5 @@
 
-# Copyright 2010 Dean Michael Berris. 
+# Copyright 2010 Dean Michael Berris.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
@@ -13,10 +13,6 @@ if (OPENSSL_FOUND)
     add_definitions(-DBOOST_NETWORK_ENABLE_HTTPS)
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(-DBOOST_NETWORK_DEBUG)
-endif()
-
 find_package( Threads )
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
@@ -27,11 +23,14 @@ if (Boost_FOUND)
         client_get_test
         client_get_different_port_test
         client_get_timeout_test
-        client_localhost_normal_test
+        # TODO: refactor these so that local servers are no longer necessary
+        # client_localhost_normal_test
+        client_get_streaming_test
         )
-    if (OPENSSL_FOUND)
-        set ( TESTS ${TESTS} client_localhost_ssl_test )
-    endif (OPENSSL_FOUND)
+    # TODO: refactor these so that local servers are no longer necessary
+    #if (OPENSSL_FOUND)
+    #    set ( TESTS ${TESTS} client_localhost_ssl_test )
+    #endif (OPENSSL_FOUND)
     foreach ( test ${TESTS} )
         if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
             set_source_files_properties(${test}.cpp
@@ -45,12 +44,13 @@ if (Boost_FOUND)
         endif()
         set_target_properties(cpp-netlib-http-${test}
             PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
-        add_test(cpp-netlib-http-${test} 
+        add_test(cpp-netlib-http-${test}
             ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
     endforeach (test)
 
     set ( SERVER_API_TESTS
         server_constructor_test
+        server_async_run_stop_concurrency
         )
     foreach ( test ${SERVER_API_TESTS} )
         if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
@@ -81,11 +81,11 @@ if (Boost_FOUND)
         add_dependencies(cpp-netlib-http-${test} cppnetlib-server-parsers)
         target_link_libraries(cpp-netlib-http-${test} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} cppnetlib-server-parsers)
         set_target_properties(cpp-netlib-http-${test}
-            PROPERTIES RUNTIME_OUTPUT_DIRECTORY 
+            PROPERTIES RUNTIME_OUTPUT_DIRECTORY
             ${CPP-NETLIB_BINARY_DIR}/tests)
-        add_test(cpp-netlib-${test} 
-            python 
-            ${CPP-NETLIB_SOURCE_DIR}/libs/network/test/httplib_acceptance.py 
+        add_test(cpp-netlib-${test}
+            python
+            ${CPP-NETLIB_SOURCE_DIR}/libs/network/test/httplib_acceptance.py
             ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test}
             ${PORT}
             ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test}.passed)
