@@ -8,6 +8,7 @@
 #define NETWORK_RPTOCOL_HTTP_REQUEST_BASE_IPP_20111102
 
 #include <network/protocol/http/request/request_base.hpp>
+#include <vector>
 #include <thread>
 #include <cstring>
 
