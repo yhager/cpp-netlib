@@ -4,31 +4,28 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifdef BUILD_SHARED_LIBS
-# define BOOST_TEST_DYN_LINK
-#endif
-#define BOOST_TEST_MODULE HTTP Request Test
+#include <gtest/gtest.h>
 #include <network/protocol/http/request.hpp>
 #include <network/protocol/http/message/wrappers.hpp>
 #include <network/message/wrappers.hpp>
-#include <boost/test/unit_test.hpp>
+#include <network/protocol/http/algorithms/linearize.hpp>
 #include <network/uri/uri_io.hpp>
 
 namespace http = network::http;
 namespace net = network;
 
-BOOST_AUTO_TEST_CASE(request_construction) {
+TEST(message_test, request_construction) {
   http::request request;
   http::request other(request);
 }
 
-BOOST_AUTO_TEST_CASE(request_value_semantics) {
+TEST(message_test, request_value_semantics) {
   // First let's default construct a request.
   http::request original;
   // Next let's copy the request.
   http::request copy(original);
   // Next let's compare the requests.
-  BOOST_CHECK(original == copy);
+  ASSERT_TRUE(original == copy);
   // Next let's assign the original to another request.
   http::request assigned;
   assigned = original;
@@ -39,50 +36,50 @@ BOOST_AUTO_TEST_CASE(request_value_semantics) {
   assigned.set_destination("http://www.google.com/");
   assigned.append_header("Connection", "close");
   assigned.set_body("Hello, world!");
-  BOOST_CHECK(original != assigned);
+  ASSERT_TRUE(original != assigned);
   // Next we swap the assigned and copy.
   std::swap(assigned, copy);
-  BOOST_CHECK(copy != assigned);
-  BOOST_CHECK(copy != original);
-  BOOST_CHECK(original == assigned);
+  ASSERT_TRUE(copy != assigned);
+  ASSERT_TRUE(copy != original);
+  ASSERT_TRUE(original == assigned);
 }
 
-//BOOST_AUTO_TEST_CASE(request_uri_test) {
-//  http::request request;
-//  request.set_uri("http://www.google.com/");
-//  http::request other(request);
-//  std::string original, copied;
-//  request.get_uri(original);
-//  other.get_uri(copied);
-//  BOOST_CHECK_EQUAL(std::string("http://www.google.com/"), original);
-//  BOOST_CHECK_EQUAL(original, copied);
-//
-//  // Now we test the bare uri instance with accessing using the request
-//  // convenience wrapper.
-//  network::uri uri_;
-//  request.get_uri(uri_);
-//  std::string host_ = http::host(request);
-//  BOOST_CHECK(network::valid(uri_));
-//  BOOST_CHECK_EQUAL(std::string("www.google.com"), host_);
-//  BOOST_CHECK_EQUAL(uri_.host(), host_);
-//  BOOST_CHECK_EQUAL(std::string("www.google.com"), uri_.host());
-//}
+TEST(message_test, request_uri) {
+  http::request request;
+  request.set_uri("http://www.google.com/");
+  http::request other(request);
+  std::string original, copied;
+  request.get_uri(original);
+  other.get_uri(copied);
+  ASSERT_EQ(std::string("http://www.google.com/"), original);
+  ASSERT_EQ(original, copied);
 
-BOOST_AUTO_TEST_CASE(request_url_constructor_test) {
+  // Now we test the bare uri instance with accessing using the request
+  // convenience wrapper.
+  network::uri uri_;
+  request.get_uri(uri_);
+  std::string host_ = http::host(request);
+  ASSERT_EQ(std::string("www.google.com"), host_);
+  std::string gotten_host(*uri_.host());
+  ASSERT_EQ(gotten_host, host_);
+  ASSERT_EQ(std::string("www.google.com"), gotten_host);
+}
+
+TEST(message_test, request_url_constructor) {
   http::request request("http://www.google.com/");
   http::request other;
   other.set_uri("http://www.google.com/");
   network::uri original, other_uri;
   request.get_uri(original);
   other.get_uri(other_uri);
-  BOOST_CHECK_EQUAL(original, other_uri);
+  ASSERT_EQ(original, other_uri);
 
   // Now test the directives..
   network::uri directive_original = http::uri(request);
-  BOOST_CHECK_EQUAL(original, directive_original);
+  ASSERT_EQ(original, directive_original);
 }
 
-BOOST_AUTO_TEST_CASE(request_basics_test) {
+TEST(message_test, request_basics) {
   http::request request;
   request.set_uri("http://www.google.com/");
   request.set_source("127.0.0.1");
@@ -99,9 +96,16 @@ BOOST_AUTO_TEST_CASE(request_basics_test) {
   request.get_destination(destination_);
   request.get_body(body_);
 
-  BOOST_CHECK_EQUAL(uri_.string(), std::string("http://www.google.com/"));
-  BOOST_CHECK_EQUAL(source_, std::string("127.0.0.1"));
-  BOOST_CHECK_EQUAL(destination_, std::string("destination!"));
-  BOOST_CHECK_EQUAL(body_, std::string("The quick brown fox jumps over the lazy dog!"));
-  BOOST_CHECK(!boost::empty(headers_));
+  ASSERT_EQ(uri_.string(), std::string("http://www.google.com/"));
+  ASSERT_EQ(source_, std::string("127.0.0.1"));
+  ASSERT_EQ(destination_, std::string("destination!"));
+  ASSERT_EQ(body_, std::string("The quick brown fox jumps over the lazy dog!"));
+  ASSERT_TRUE(!boost::empty(headers_));
+}
+
+TEST(message_test, linearize_request) {
+  http::request request("http://www.boost.org");
+  // TODO: Actually specify the expected output.
+  linearize(request, "GET", 1, 0, std::ostream_iterator<char>(std::cout));
+  linearize(request, "GET", 2, 1, std::ostream_iterator<char>(std::cout));
 }

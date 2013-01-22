@@ -1,13 +1,11 @@
 
-//          Copyright Dean Michael Berris 2010.
+// Copyright Dean Michael Berris 2010.
 // Copyright 2012 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
-#define BOOST_TEST_MODULE HTTP Incremental Parser Test
-#include <boost/config/warning_disable.hpp>
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 #include <network/protocol/http/parser/incremental.hpp>
 #include <boost/range.hpp>
 #include <boost/logic/tribool.hpp>
@@ -49,13 +47,12 @@
  * Author: Dean Michael Berris <dberris@google.com>
  */
 
-namespace tags = boost::network::tags;
 namespace logic = boost::logic;
 namespace fusion = boost::fusion;
-using namespace boost::network::http;
+using namespace network::http;
 
-BOOST_AUTO_TEST_CASE(incremental_parser_constructor) {
-    response_parser<tags::default_string> p; // default constructible
+TEST(response_test, incremental_parser_constructor) {
+    response_parser p; // default constructible
 }
 
 /** In this test we want to be able to parse incrementally a
@@ -64,10 +61,10 @@ BOOST_AUTO_TEST_CASE(incremental_parser_constructor) {
  *  we want it to parse until it either finds the HTTP version
  *  or there is an error encountered.
  */
-BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
-    response_parser<tags::default_string> p; // default constructible
+TEST(response_test, incremental_parser_parse_http_version) {
+    response_parser p; // default constructible
     logic::tribool parsed_ok = false;
-    typedef response_parser<tags::default_string> response_parser_type;
+    typedef response_parser response_parser_type;
     typedef boost::iterator_range<std::string::const_iterator> range_type;
     range_type result_range;
 
@@ -75,8 +72,8 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_version_done,
         valid_http_version);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
-    BOOST_CHECK(!boost::empty(result_range));
+    ASSERT_EQ(parsed_ok, true);
+    ASSERT_TRUE(!boost::empty(result_range));
     std::string parsed(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
     p.reset();
@@ -84,8 +81,8 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_version_done,
         valid_http_version);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
-    BOOST_CHECK(!boost::empty(result_range));
+    ASSERT_EQ(parsed_ok, true);
+    ASSERT_TRUE(!boost::empty(result_range));
     parsed.assign(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
@@ -95,7 +92,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_version_done,
         invalid_http_version);
-    BOOST_CHECK_EQUAL(parsed_ok, false);
+    ASSERT_EQ(parsed_ok, false);
     parsed.assign(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
@@ -105,7 +102,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_version_done,
         valid_http_version);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     parsed.assign(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 }
@@ -115,8 +112,8 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_http_version) {
  *  the parser doesn't do any conversions from string to integer
  *  and outsource that part to the user of the parser.
  */
-BOOST_AUTO_TEST_CASE(incremental_parser_parse_status) {
-    typedef response_parser<tags::default_string> response_parser_type;
+TEST(response_test, incremental_parser_parse_status) {
+    typedef response_parser response_parser_type;
     typedef boost::iterator_range<std::string::const_iterator> range_type;
     // We want to create a parser that has been initialized to a specific
     // state. In this case we assume that the parser has already parsed
@@ -129,7 +126,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_status_done,
         valid_status);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     std::string parsed = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
@@ -138,7 +135,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_status_done,
         invalid_status);
-    BOOST_CHECK_EQUAL(parsed_ok, false);
+    ASSERT_EQ(parsed_ok, false);
     parsed = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 }
@@ -146,8 +143,8 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status) {
 /** In this test then we get the rest of the first line of the HTTP
  *  Response, and treat it as the status message.
  */
-BOOST_AUTO_TEST_CASE(incremental_parser_parse_status_message) {
-    typedef response_parser<tags::default_string> response_parser_type;
+TEST(response_test, incremental_parser_parse_status_message) {
+    typedef response_parser response_parser_type;
     typedef boost::iterator_range<std::string::const_iterator> range_type;
     response_parser_type p(response_parser_type::http_status_done);
     
@@ -157,7 +154,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status_message) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_status_message_done,
         valid_status_message);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     std::string parsed = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
@@ -166,7 +163,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status_message) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_status_message_done,
         valid_status_message);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     parsed = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
@@ -175,15 +172,15 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_status_message) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_status_message_done,
         valid_status_message);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     parsed = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 }
 
 /** This test specifices how one-line-per-header parsing happens incrementally.
  */
-BOOST_AUTO_TEST_CASE(incremental_parser_parse_header_lines) {
-    typedef response_parser<tags::default_string> response_parser_type;
+TEST(response_test, incremental_parser_parse_header_lines) {
+    typedef response_parser response_parser_type;
     typedef boost::iterator_range<std::string::const_iterator> range_type;
     response_parser_type p(response_parser_type::http_status_message_done);
 
@@ -193,7 +190,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_header_lines) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_header_line_done,
         valid_headers);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     std::string parsed1 = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed1 << " state=" << p.state() << std::endl;
     p.reset(response_parser_type::http_status_message_done);
@@ -202,7 +199,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_header_lines) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_header_line_done,
         valid_headers);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
+    ASSERT_EQ(parsed_ok, true);
     std::string parsed2 = std::string(boost::begin(result_range), boost::end(result_range));
     std::cout << "PARSED: " << parsed2 << " state=" << p.state() << std::endl;
     valid_headers.assign(boost::end(result_range), end);
@@ -210,7 +207,7 @@ BOOST_AUTO_TEST_CASE(incremental_parser_parse_header_lines) {
     fusion::tie(parsed_ok, result_range) = p.parse_until(
         response_parser_type::http_headers_done,
         valid_headers);
-    BOOST_CHECK_EQUAL(parsed_ok, true);
-    BOOST_CHECK(parsed1 != parsed2);
+    ASSERT_EQ(parsed_ok, true);
+    ASSERT_TRUE(parsed1 != parsed2);
 }
 

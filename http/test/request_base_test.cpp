@@ -4,12 +4,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifdef BUILD_SHARED_LIBS
-# define BOOST_TEST_DYN_LINK
-#endif
-#define BOOST_TEST_MODULE HTTP Request Storage Base Test
+#include <gtest/gtest.h>
 #include <network/protocol/http/request/request_base.hpp>
-#include <boost/test/unit_test.hpp>
 
 namespace http = network::http;
 
@@ -39,7 +35,7 @@ struct request_test : http::request_storage_base {
   }
 };
 
-BOOST_AUTO_TEST_CASE(request_storage_flow) {
+TEST(request_test, request_storage_flow) {
   // Use a few byte chunks just to make it manageable.
   request_test simple(64);
   static char data[] =
@@ -47,15 +43,15 @@ BOOST_AUTO_TEST_CASE(request_storage_flow) {
   simple.append(data, sizeof(data));
   std::string output;
   size_t bytes_read = simple.read(output, 0, sizeof(data));
-  BOOST_CHECK_EQUAL(bytes_read, sizeof(data));
+  ASSERT_EQ(bytes_read, sizeof(data));
   std::string flattened;
   simple.flatten(flattened);
-  BOOST_CHECK_EQUAL(flattened, std::string(output, sizeof(data)));
-  BOOST_CHECK_EQUAL(std::string(data, sizeof(data)), std::string(output, sizeof(data)));
+  ASSERT_EQ(flattened, std::string(output, sizeof(data)));
+  ASSERT_EQ(std::string(data, sizeof(data)), std::string(output, sizeof(data)));
   simple.clear();
 }
 
-BOOST_AUTO_TEST_CASE(request_storage_copy) {
+TEST(request_test, request_storage_copy) {
   // Use a few byt chunks just to make it manageable.
   request_test original(64);
   static char quick_brown[] = "The quick brown fox jumps over the lazy dog.";
@@ -63,13 +59,13 @@ BOOST_AUTO_TEST_CASE(request_storage_copy) {
   std::string output;
   request_test copy(original);
   size_t bytes_read = copy.read(output, 0, sizeof(quick_brown));
-  BOOST_CHECK_EQUAL(bytes_read, sizeof(quick_brown));
+  ASSERT_EQ(bytes_read, sizeof(quick_brown));
   std::string flattened;
   copy.flatten(flattened);
-  BOOST_CHECK_EQUAL(flattened, std::string(output, sizeof(quick_brown)));
-  BOOST_CHECK_EQUAL(std::string(quick_brown, sizeof(quick_brown)), std::string(output, sizeof(quick_brown)));
+  ASSERT_EQ(flattened, std::string(output, sizeof(quick_brown)));
+  ASSERT_EQ(std::string(quick_brown, sizeof(quick_brown)), std::string(output, sizeof(quick_brown)));
   copy.clear();
   flattened.clear();
   original.flatten(flattened);
-  BOOST_CHECK_EQUAL(flattened, std::string(quick_brown, sizeof(quick_brown)));
+  ASSERT_EQ(flattened, std::string(quick_brown, sizeof(quick_brown)));
 }

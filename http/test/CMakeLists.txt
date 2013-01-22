@@ -24,13 +24,13 @@ endif()
   # if not then it will be empty
   set( CPP-NETLIB_LOGGING_LIB cppnetlib-logging )
 
-if (Boost_FOUND)
+if (CPP-NETLIB_BUILD_TESTS)
     # These are the internal (simple) tests.
-    set ( MESSAGE_TESTS
+    set (MESSAGE_TESTS
         request_base_test
         request_test
-        request_linearize_test
         response_test
+        response_incremental_parser_test
         )
     foreach ( test ${MESSAGE_TESTS} )
         if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
