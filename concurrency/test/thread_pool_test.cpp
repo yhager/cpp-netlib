@@ -27,13 +27,9 @@ TEST(concurrency_test, default_constructor) {
 
 struct foo {
   foo() : val_(0) {}
-  void bar(int val) {
-    val_ += val;
-  }
-  int const val() const {
-    return val_;
-  }
-protected:
+  void bar(int val) { val_ += val; }
+  int const val() const { return val_; }
+ protected:
   int val_;
 };
 
