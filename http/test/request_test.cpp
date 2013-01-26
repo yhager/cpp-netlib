@@ -90,7 +90,7 @@ TEST(message_test, request_basics) {
 
   network::uri uri_;
   std::string source_, destination_, body_;
-  net::headers_wrapper::container_type const &headers_ = headers(request);
+  net::headers_wrapper::container_type const& headers_ = headers(request);
   request.get_uri(uri_);
   request.get_source(source_);
   request.get_destination(destination_);

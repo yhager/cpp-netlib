@@ -18,9 +18,10 @@ resolver_delegate_factory::resolver_delegate_factory() {
   NETWORK_MESSAGE("resolver_delegate_factory::resolver_delegate_factory()");
 }
 
-std::shared_ptr<resolver_delegate>
-resolver_delegate_factory::create_resolver_delegate(boost::asio::io_service & service,
-                                                    bool cache_resolved) {
+std::shared_ptr<
+    resolver_delegate> resolver_delegate_factory::create_resolver_delegate(
+    boost::asio::io_service& service,
+    bool cache_resolved) {
   NETWORK_MESSAGE("resolver_delegate_factory::create_resolver_delegate(...)");
   return std::make_shared<async_resolver>(service, cache_resolved);
 }

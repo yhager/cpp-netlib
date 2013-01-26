@@ -11,5 +11,5 @@
 
 #include <network/message.hpp>
 
-#endif // NETWORK_INCLUDE_MESSAGE_HPP_
+#endif  // NETWORK_INCLUDE_MESSAGE_HPP_
 

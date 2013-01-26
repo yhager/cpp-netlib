@@ -21,7 +21,8 @@
 #include <network/protocol/http/client/connection/resolver_delegate.hpp>
 #include <boost/unordered_map.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct simple_async_connection_manager : connection_manager {
   simple_async_connection_manager(bool cache_resolved,
@@ -30,12 +31,12 @@ struct simple_async_connection_manager : connection_manager {
                                   optional<std::string> openssl_verify_path);
   simple_async_connection_manager(bool cache_resolved,
                                   bool follow_redirects,
-                                  std::string const & openssl_certificate,
-                                  std::string const & openssl_verify_path);
+                                  std::string const& openssl_certificate,
+                                  std::string const& openssl_verify_path);
   virtual shared_ptr<client_connection> get_connection(
-      asio::io_service & service,
-      request_base const & request);  // override
-  virtual void reset();  // override
+      asio::io_service& service,
+      request_base const& request);            // override
+  virtual void reset();                        // override
   virtual ~simple_async_connection_manager();  // override
  protected:
   bool cache_resolved_, follow_redirects_;
@@ -45,32 +46,34 @@ struct simple_async_connection_manager : connection_manager {
 
 struct http_1_1_async_connection;
 
-struct http_1_1_async_connection_manager : connection_manager, enable_shared_from_this<http_1_1_async_connection_manager> {
+struct http_1_1_async_connection_manager : connection_manager,
+    enable_shared_from_this<http_1_1_async_connection_manager> {
   http_1_1_async_connection_manager(bool cache_resolved,
                                     bool follow_redirects,
                                     optional<std::string> openssl_certificate,
                                     optional<std::string> openssl_verify_path);
   http_1_1_async_connection_manager(bool cache_resolved,
                                     bool follow_redirects,
-                                    std::string const & openssl_certificate,
-                                    std::string const & openssl_verify_path);
+                                    std::string const& openssl_certificate,
+                                    std::string const& openssl_verify_path);
   virtual shared_ptr<client_connection> get_connection(
-      asio::io_service & service,
-      request_base const & request);  // override
-  virtual void reset();  // override
+      asio::io_service& service,
+      request_base const& request);              // override
+  virtual void reset();                          // override
   virtual ~http_1_1_async_connection_manager();  // override
 
  protected:
   friend struct http_1_1_async_connection;
   void add_ready_connection(shared_ptr<client_connection> connection_ptr);
-  shared_ptr<client_connection> get_ready_connection(std::string const & host);
+  shared_ptr<client_connection> get_ready_connection(std::string const& host);
   bool cache_resolved, follow_redirects_;
   mutex shared_resolver_mutex;
   shared_ptr<resolver_delegate> shared_resolver_delegate;
-  boost::unordered_map<std::string, shared_ptr<client_connection> > ready_connections;
+  boost::unordered_map<std::string,
+                       shared_ptr<client_connection>> ready_connections;
 };
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_POLICY_ASYNC_CONNECTION_HPP_
+#endif  // NETWORK_POLICY_ASYNC_CONNECTION_HPP_

@@ -9,9 +9,7 @@
 
 namespace http = network::http;
 
-TEST(response_test, response_constructor) {
-  http::response created;
-}
+TEST(response_test, response_constructor) { http::response created; }
 
 TEST(response_test, response_value_semantics) {
   http::response original;
@@ -30,13 +28,12 @@ TEST(response_test, response_value_semantics) {
 }
 
 struct multimap_inserter {
-  void operator()(std::string const &name, std::string const &value)  const {
+  void operator()(std::string const& name, std::string const& value) const {
     multimap_.insert(std::make_pair(name, value));
   }
-  explicit multimap_inserter(std::multimap<std::string, std::string> &multimap)
-  : multimap_(multimap)
-  {}
-  std::multimap<std::string,std::string> & multimap_;
+  explicit multimap_inserter(std::multimap<std::string, std::string>& multimap)
+      : multimap_(multimap) {}
+  std::multimap<std::string, std::string>& multimap_;
 };
 
 TEST(response_test, response_setters_and_getters) {

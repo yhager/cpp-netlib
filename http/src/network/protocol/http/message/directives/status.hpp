@@ -17,18 +17,18 @@ namespace network {
 namespace http {
 
 struct status_directive {
-  explicit status_directive(std::string const & s);
-  void operator()(response_base & response) const;
+  explicit status_directive(std::string const& s);
+  void operator()(response_base& response) const;
 
  protected:
   std::string status_;
 };
 
-inline status_directive status(std::string const & response) {
+inline status_directive status(std::string const& response) {
   return status_directive(response);
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_STATUS_HPP_20100603
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_STATUS_HPP_20100603

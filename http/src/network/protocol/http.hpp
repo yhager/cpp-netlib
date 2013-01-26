@@ -16,4 +16,4 @@
 #include <network/protocol/http/client.hpp>
 #include <network/protocol/http/errors.hpp>
 
-#endif // NETWORK_PROTOCOL_HTTP_20070908-1_HPP
+#endif  // NETWORK_PROTOCOL_HTTP_20070908-1_HPP

@@ -16,24 +16,23 @@ namespace network {
 namespace http {
 
 struct status_message_wrapper {
-  explicit status_message_wrapper(response_base & response);
-  operator std::string () const;
+  explicit status_message_wrapper(response_base& response);
+  operator std:: string() const;
  private:
-  response_base & response_;
+  response_base& response_;
   mutable boost::optional<std::string> cache_;
 };
 
-inline std::ostream & operator<<(std::ostream & os, status_message_wrapper const & status_message) {
+inline std::ostream& operator
+    <<(std::ostream& os, status_message_wrapper const& status_message) {
   return os << static_cast<std::string>(status_message);
 }
 
-inline 
-status_message_wrapper
-status_message(response_base & response) {
-    return status_message_wrapper(response);
+inline status_message_wrapper status_message(response_base& response) {
+  return status_message_wrapper(response);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPER_STATUS_MESSAGE_HPP_20100603
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPER_STATUS_MESSAGE_HPP_20100603

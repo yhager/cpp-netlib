@@ -22,30 +22,35 @@ class io_service;
 namespace network {
 namespace http {
 
-struct ssl_delegate : connection_delegate, boost::enable_shared_from_this<ssl_delegate> {
-  ssl_delegate(boost::asio::io_service & service,
-               client_options const &options);
+struct ssl_delegate : connection_delegate,
+    boost::enable_shared_from_this<ssl_delegate> {
+  ssl_delegate(boost::asio::io_service& service, client_options const& options);
 
-  virtual void connect(boost::asio::ip::tcp::endpoint & endpoint,
-                       std::string const &host,
-                       std::function<void(boost::system::error_code const &)> handler);
-  virtual void write(boost::asio::streambuf & command_streambuf,
-                     std::function<void(boost::system::error_code const &, size_t)> handler);
-  virtual void read_some(boost::asio::mutable_buffers_1 const & read_buffer,
-                         std::function<void(boost::system::error_code const &, size_t)> handler);
+  virtual void connect(
+      boost::asio::ip::tcp::endpoint& endpoint,
+      std::string const& host,
+      std::function<void(boost::system::error_code const&)> handler);
+  virtual void write(
+      boost::asio::streambuf& command_streambuf,
+      std::function<void(boost::system::error_code const&, size_t)> handler);
+  virtual void read_some(
+      boost::asio::mutable_buffers_1 const& read_buffer,
+      std::function<void(boost::system::error_code const&, size_t)> handler);
   ~ssl_delegate();
 
  private:
-  boost::asio::io_service & service_;
+  boost::asio::io_service& service_;
   client_options options_;
   std::unique_ptr<boost::asio::ssl::context> context_;
-  std::unique_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> socket_;
+  std::unique_ptr<
+      boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> socket_;
 
-  ssl_delegate(ssl_delegate const &);  // = delete
+  ssl_delegate(ssl_delegate const&);      // = delete
   ssl_delegate& operator=(ssl_delegate);  // = delete
 
-  void handle_connected(boost::system::error_code const & ec,
-                        std::function<void(boost::system::error_code const &)> handler);
+  void handle_connected(
+      boost::system::error_code const& ec,
+      std::function<void(boost::system::error_code const&)> handler);
 };
 
 }  // namespace http

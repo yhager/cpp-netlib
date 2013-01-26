@@ -13,10 +13,9 @@
 namespace network {
 namespace http {
 
-port_wrapper::port_wrapper(request_base const & request)
-: request_(request) {}
+port_wrapper::port_wrapper(request_base const& request) : request_(request) {}
 
-port_wrapper::operator boost::uint16_t () const {
+port_wrapper::operator boost:: uint16_t() const {
   ::network::uri uri_;
   request_.get_uri(uri_);
   auto optional_port = uri_.port();
@@ -32,7 +31,7 @@ port_wrapper::operator boost::uint16_t () const {
   return std::stoul(std::string(*optional_port));
 }
 
-port_wrapper::operator boost::optional<boost::uint16_t> () const {
+port_wrapper::operator boost:: optional< boost:: uint16_t>() const {
   ::network::uri uri_;
   request_.get_uri(uri_);
   auto optional_port = uri_.port();
@@ -42,7 +41,7 @@ port_wrapper::operator boost::optional<boost::uint16_t> () const {
   return std::stoul(std::string(*optional_port));
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_PORT_IPP_20111204

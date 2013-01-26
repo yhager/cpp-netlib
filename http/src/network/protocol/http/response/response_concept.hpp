@@ -12,45 +12,44 @@
 #include <network/message/message_concept.hpp>
 #include <boost/cstdint.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-    template <class R>
-    struct Response
-        : network::Message<R>
-    {
-        typedef typename R::string_type string_type;
-        
-        BOOST_CONCEPT_USAGE(Response) {
-            R response_;
-            swap(response, response_); // swappable via ADL
+template <class R> struct Response : network::Message<R> {
+  typedef typename R::string_type string_type;
 
-            typedef std::string version_type;
-            typedef std::string status_type;
-            typedef std::string status_message_type;
+  BOOST_CONCEPT_USAGE(Response) {
+    R response_;
+    swap(response, response_);  // swappable via ADL
 
-            response << version(version_type()) // version directive
-                << status(status_type()) // status directive
-                << status_message(status_message_type()) // status_message directive
-                ;
+    typedef std::string version_type;
+    typedef std::string status_type;
+    typedef std::string status_message_type;
 
-            version(response, version_type());
-            status(response, status_type());
-            status_message(response, status_message_type());
+    response
+        << version(version_type())                // version directive
+        << status(status_type())                  // status directive
+        << status_message(status_message_type())  // status_message directive
+        ;
 
-            string_type version_ = version(response);
-            boost::uint16_t status_ = status(response);
-            string_type status_message_ = status_message(response);
+    version(response, version_type());
+    status(response, status_type());
+    status_message(response, status_message_type());
 
-            (void)version_;
-            (void)status_;
-            (void)status_message_;
-        }
+    string_type version_ = version(response);
+    boost::uint16_t status_ = status(response);
+    string_type status_message_ = status_message(response);
 
-    private:
-        R response;
-    };
+    (void) version_;
+    (void) status_;
+    (void) status_message_;
+  }
 
-} // namespace http
-} // namespace network
+ private:
+  R response;
+};
 
-#endif // NETWORK_PROTOCOL_HTTP_RESPONSE_CONCEPT_HPP_20100603
+}       // namespace http
+}       // namespace network
+
+#endif  // NETWORK_PROTOCOL_HTTP_RESPONSE_CONCEPT_HPP_20100603

@@ -11,16 +11,17 @@
 #include <network/protocol/http/request/request_base.hpp>
 #include <network/protocol/http/client/connection/resolver_delegate.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct resolver_delegate_factory {
   resolver_delegate_factory();
   virtual std::shared_ptr<resolver_delegate> create_resolver_delegate(
-      boost::asio::io_service & service,
+      boost::asio::io_service& service,
       bool cache_resolved);
   virtual ~resolver_delegate_factory();
  private:
-  resolver_delegate_factory(resolver_delegate_factory const &);  // = delete
+  resolver_delegate_factory(resolver_delegate_factory const&);  // = delete
   resolver_delegate_factory& operator=(resolver_delegate_factory);  // = delete
 };
 

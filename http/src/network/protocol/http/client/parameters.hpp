@@ -9,19 +9,13 @@
 
 #include <network/protocol/http/parameters.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-    PARAMETER_NAME(follow_redirects)
-    PARAMETER_NAME(cache_resolved)
-    PARAMETER_NAME(openssl_certificate)
-    PARAMETER_NAME(openssl_verify_path)
-
-    PARAMETER_NAME(request)
-    PARAMETER_NAME(body)
-    PARAMETER_NAME(content_type)
-    PARAMETER_NAME(body_handler)
-
-    PARAMETER_NAME(connection_manager)
+PARAMETER_NAME(follow_redirects) PARAMETER_NAME(cache_resolved)
+    PARAMETER_NAME(openssl_certificate) PARAMETER_NAME(openssl_verify_path)
+    PARAMETER_NAME(request) PARAMETER_NAME(body) PARAMETER_NAME(content_type)
+    PARAMETER_NAME(body_handler) PARAMETER_NAME(connection_manager)
     PARAMETER_NAME(connection_factory)
 
 }  // namespace http

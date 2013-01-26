@@ -12,26 +12,26 @@
 #include <network/protocol/http/client/options.hpp>
 #include <network/detail/debug.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct simple_connection_manager_pimpl {
-  simple_connection_manager_pimpl(client_options const &options)
-  : options_(options)
-  , connection_factory_(options.connection_factory())
-  {
+  simple_connection_manager_pimpl(client_options const& options)
+      : options_(options),
+        connection_factory_(options.connection_factory()) {
     NETWORK_MESSAGE(
         "simple_connection_manager_pimpl::simple_connection_manager_pimpl("
         "client_options const &)");
     if (!connection_factory_.get()) {
       NETWORK_MESSAGE("creating simple connection factory");
-      connection_factory_.reset(
-          new (std::nothrow) simple_connection_factory());
+      connection_factory_.reset(new (std::nothrow) simple_connection_factory());
     }
   }
 
-  std::shared_ptr<client_connection> get_connection(boost::asio::io_service & service,
-                                                      request_base const & request,
-                                               client_options const &options) {
+  std::shared_ptr<client_connection> get_connection(
+      boost::asio::io_service& service,
+      request_base const& request,
+      client_options const& options) {
     NETWORK_MESSAGE("simple_connection_manager_pimpl::get_connection(...)");
     return connection_factory_->create_connection(service, request, options_);
   }
@@ -45,26 +45,27 @@ struct simple_connection_manager_pimpl {
   }
 
   ~simple_connection_manager_pimpl() {
-    NETWORK_MESSAGE("simple_connection_manager_pimpl::~simple_connection_manager_pimpl()");
+    NETWORK_MESSAGE(
+        "simple_connection_manager_pimpl::~simple_connection_manager_pimpl()");
     // do nothing here.
   }
 
-private:
+ private:
   client_options options_;
   std::shared_ptr<connection_factory> connection_factory_;
 };
 
-simple_connection_manager::simple_connection_manager(client_options const &options)
-: pimpl(new (std::nothrow) simple_connection_manager_pimpl(options))
-{
+simple_connection_manager::simple_connection_manager(
+    client_options const& options)
+    : pimpl(new (std::nothrow) simple_connection_manager_pimpl(options)) {
   NETWORK_MESSAGE("simple_connection_manager::simple_connection_manager("
-                        "client_options const &)");
+                  "client_options const &)");
 }
 
 std::shared_ptr<client_connection> simple_connection_manager::get_connection(
-    boost::asio::io_service & service,
-    request_base const & request,
-    client_options const &options) {
+    boost::asio::io_service& service,
+    request_base const& request,
+    client_options const& options) {
   NETWORK_MESSAGE("simple_connection_manager::get_connection(...)");
   return pimpl->get_connection(service, request, options);
 }

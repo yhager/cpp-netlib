@@ -31,7 +31,7 @@ struct simple_connection_manager : connection_manager {
    *  Args:
    *    options: A properly construction client_options instance.
    */
-  explicit simple_connection_manager(client_options const &options);
+  explicit simple_connection_manager(client_options const& options);
 
   /** get_connection
    *
@@ -50,9 +50,10 @@ struct simple_connection_manager : connection_manager {
    *   or a newly constructed connection configured to perform the request.
    */
   virtual std::shared_ptr<client_connection> get_connection(
-      boost::asio::io_service & service,
-      request_base const & request,
-      client_options const & options) override;
+      boost::asio::io_service& service,
+      request_base const& request,
+      client_options const& options)
+      override;
 
   /** reset
    *
@@ -77,9 +78,9 @@ struct simple_connection_manager : connection_manager {
 
  private:
   /// Disabled copy constructor.
-  simple_connection_manager(simple_connection_manager const &); // = delete
+  simple_connection_manager(simple_connection_manager const&);  // = delete
   /// Disabled assignment operator.
-  simple_connection_manager & operator=(simple_connection_manager); // = delete
+  simple_connection_manager& operator=(simple_connection_manager);  // = delete
 };
 
 }  // namespace http

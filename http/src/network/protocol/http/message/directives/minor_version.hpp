@@ -14,26 +14,23 @@
 namespace network {
 namespace http {
 
-template <class Tag>
-struct basic_request;
+template <class Tag> struct basic_request;
 
 struct minor_version_directive {
   boost::uint8_t minor_version;
   explicit minor_version_directive(boost::uint8_t minor_version)
-  : minor_version(minor_version) {}
-  template <class Tag>
-  void operator()(basic_request<Tag> & request) const {
+      : minor_version(minor_version) {}
+  template <class Tag> void operator()(basic_request<Tag>& request) const {
     request.http_version_minor = minor_version;
   }
 };
 
-inline minor_version_directive
-minor_version(boost::uint8_t minor_version_) {
+inline minor_version_directive minor_version(boost::uint8_t minor_version_) {
   return minor_version_directive(minor_version_);
 }
 
 }  // namespace http
 }  // namespace network
-  
+
 #endif /* NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_MINOR_VERSION_HPP_20101120 */
 

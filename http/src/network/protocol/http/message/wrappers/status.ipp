@@ -9,19 +9,18 @@
 
 #include <network/protocol/http/message/wrappers/status.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-status_wrapper::status_wrapper(response_base &response)
-: response_(response)
-{}
+status_wrapper::status_wrapper(response_base& response) : response_(response) {}
 
-status_wrapper::operator uint16_t () const {
+status_wrapper::operator uint16_t() const {
   uint16_t status;
   response_.get_status(status);
   return status;
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_STATUS_IPP_20120311

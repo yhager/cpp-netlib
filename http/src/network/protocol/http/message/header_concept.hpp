@@ -7,30 +7,29 @@
 #ifndef NETWORK_PROTOCOL_HTTP_MESSAGE_HEADER_CONCEPT_HPP_20101028
 #define NETWORK_PROTOCOL_HTTP_MESSAGE_HEADER_CONCEPT_HPP_20101028
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 template <class H>
-struct Header
-  : boost::DefaultConstructible<H>
-  , boost::Assignable<H>
-  , boost::CopyConstructible<H>
-{
+struct Header : boost::DefaultConstructible<H>,
+    boost::Assignable<H>,
+    boost::CopyConstructible<H> {
 
   BOOST_CONCEPT_USAGE(Header) {
     typedef typename H::string_type string_type;
     string_type name_ = name(header);
     string_type value_ = value(header);
     H h1, h2;
-    swap(h1,h2); // ADL Swap!
-    (void)name_;
-    (void)value_;
+    swap(h1, h2);  // ADL Swap!
+    (void) name_;
+    (void) value_;
   }
 
-private:
+ private:
   H header;
 };
 
 }  // namespace http
 }  // namespace network
-  
+
 #endif /* NETWORK_PROTOCOL_HTTP_MESSAGE_HEADER_CONCEPT_HPP_20101028 */

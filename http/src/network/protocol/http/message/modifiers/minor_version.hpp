@@ -11,15 +11,16 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/cstdint.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
+
+template <class Tag> struct basic_request;
 
 template <class Tag>
-struct basic_request;
-
-template <class Tag>
-inline typename enable_if<is_server<Tag>, void>::type
-minor_version(basic_request<Tag> & request, boost::uint8_t minor_version_) {
-    request.http_version_minor = minor_version_;
+inline typename enable_if<is_server<Tag>, void>::type minor_version(
+    basic_request<Tag>& request,
+    boost::uint8_t minor_version_) {
+  request.http_version_minor = minor_version_;
 }
 
 }  // namespace http

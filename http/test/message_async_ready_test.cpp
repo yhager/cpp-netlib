@@ -12,8 +12,9 @@
 namespace http = boost::network::http;
 
 BOOST_AUTO_TEST_CASE(unready_state_response) {
-    typedef http::basic_response<http::tags::http_async_8bit_udp_resolve> response;
-    response r;
-    BOOST_CHECK(!ready(r));
+  typedef http::basic_response<
+      http::tags::http_async_8bit_udp_resolve> response;
+  response r;
+  BOOST_CHECK(!ready(r));
 }
 

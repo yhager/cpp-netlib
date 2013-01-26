@@ -15,7 +15,7 @@ namespace http {
 
 NETWORK_STRING_DIRECTIVE(status_message);
 
-}  // namespace http
-}  // namespace network 
+}       // namespace http
+}       // namespace network 
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_STATUS_MESSAGE_HPP_20100603
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_STATUS_MESSAGE_HPP_20100603

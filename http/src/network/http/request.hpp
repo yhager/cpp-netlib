@@ -8,4 +8,4 @@
 
 #include <network/protocol/http/request.hpp>
 
-#endif // NETWORK_HTTP_REQUEST_INC__
+#endif  // NETWORK_HTTP_REQUEST_INC__

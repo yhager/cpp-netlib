@@ -12,22 +12,22 @@
 #include <boost/cstdint.hpp>
 #include <boost/optional.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct port_wrapper {
-  port_wrapper(request_base const & request);
-  operator boost::uint16_t () const;
-  operator boost::optional<boost::uint16_t> () const;
+  port_wrapper(request_base const& request);
+  operator boost:: uint16_t() const;
+  operator boost:: optional< boost:: uint16_t>() const;
  private:
-  request_base const & request_;
+  request_base const& request_;
 };
 
-inline port_wrapper const
-port(request_base const & request) {
+inline port_wrapper const port(request_base const& request) {
   return port_wrapper(request);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_PORT_HPP_20100618
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_PORT_HPP_20100618

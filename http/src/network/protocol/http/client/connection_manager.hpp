@@ -9,7 +9,8 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace boost { namespace asio {
+namespace boost {
+namespace asio {
 class io_service;
 }  // namespace asio
 }  // namespace boost
@@ -23,9 +24,9 @@ class client_options;
 
 struct connection_manager {
   virtual std::shared_ptr<client_connection> get_connection(
-      boost::asio::io_service & service,
-      request_base const & request,
-      client_options const & options) = 0;
+      boost::asio::io_service& service,
+      request_base const& request,
+      client_options const& options) = 0;
   virtual void clear_resolved_cache() = 0;
   virtual void reset() = 0;
   virtual ~connection_manager() = 0;

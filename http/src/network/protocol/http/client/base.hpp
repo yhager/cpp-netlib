@@ -22,24 +22,24 @@ class request_options;
 class client_options;
 
 struct client_base {
-  typedef
-    std::function<void(boost::iterator_range<char const *> const &, boost::system::error_code const &)>
-    body_callback_function_type;
+  typedef std::function<
+      void(boost::iterator_range<char const*> const&,
+           boost::system::error_code const&)> body_callback_function_type;
 
   client_base();
-  explicit client_base(client_options const &options);
+  explicit client_base(client_options const& options);
   ~client_base();
-  response const request_skeleton(request const & request_,
-                                  std::string const & method,
+  response const request_skeleton(request const& request_,
+                                  std::string const& method,
                                   bool get_body,
                                   body_callback_function_type callback,
-                                  request_options const &options);
+                                  request_options const& options);
   void clear_resolved_cache();
  private:
-  client_base_pimpl * pimpl;
+  client_base_pimpl* pimpl;
 };
-  
+
 }  // namespace http
 }  // namespace network
-  
+
 #endif /* NETWORK_PROTOCOL_HTTP_CLIENT_BASE_HPP_20111008 */

@@ -21,38 +21,36 @@ typedef http::async_server<async_hello_world> server;
 
 struct async_hello_world {
 
-    struct is_content_length {
-        template <class Header>
-        bool operator()(Header const & header) {
-            return boost::iequals(name(header), "content-length");
-        }
-    };
-
-    void operator()(server::request const & request, server::connection_ptr connection) {
-        static server::response_header headers[] = {
-            {"Connection", "close"}
-            , {"Content-Type", "text/plain"}
-            , {"Server", "cpp-netlib/0.9"}
-            , {"Content-Length", "13"}
-        };
-        static std::string hello_world("Hello, World!");
-        connection->set_status(server::connection::ok);
-        connection->set_headers(boost::make_iterator_range(headers, headers+4));
-        connection->write(hello_world);
+  struct is_content_length {
+    template <class Header> bool operator()(Header const& header) {
+      return boost::iequals(name(header), "content-length");
     }
+  };
+
+  void operator()(server::request const& request,
+                  server::connection_ptr connection) {
+    static server::response_header headers[] = { { "Connection", "close" },
+                                                 { "Content-Type",
+                                                   "text/plain" },
+                                                 { "Server", "cpp-netlib/0.9" },
+                                                 { "Content-Length", "13" } };
+    static std::string hello_world("Hello, World!");
+    connection->set_status(server::connection::ok);
+    connection->set_headers(boost::make_iterator_range(headers, headers + 4));
+    connection->write(hello_world);
+  }
 };
 
-int main(int argc, char * argv[]) {
-    utils::thread_pool thread_pool(2); 
-    async_hello_world handler;
-    std::string port = "8000";
-    if (argc > 1) port = argv[1];
-    http::server_options options;
-    options.port(port)
-           .address("localhost")
-           .reuse_address(true);
-    server instance(options, thread_pool, handler);
-    instance.run();
-    return 0;
+int main(int argc, char* argv[]) {
+  utils::thread_pool thread_pool(2);
+  async_hello_world handler;
+  std::string port = "8000";
+  if (argc > 1)
+    port = argv[1];
+  http::server_options options;
+  options.port(port).address("localhost").reuse_address(true);
+  server instance(options, thread_pool, handler);
+  instance.run();
+  return 0;
 }
 

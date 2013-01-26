@@ -8,4 +8,4 @@
 
 #include <network/protocol/http/response.hpp>
 
-#endif // NETWORK_HTTP_RESPONSE_INC__
+#endif  // NETWORK_HTTP_RESPONSE_INC__

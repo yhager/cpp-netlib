@@ -9,19 +9,19 @@
 
 #include <boost/cstdint.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct major_version_directive {
   boost::uint8_t major_version;
   explicit major_version_directive(boost::uint8_t major_version);
-  void operator()(request_base &request) const;
+  void operator()(request_base& request) const;
 };
 
-inline major_version_directive
-major_version(boost::uint8_t major_version_) {
+inline major_version_directive major_version(boost::uint8_t major_version_) {
   return major_version_directive(major_version_);
 }
-    
+
 }  // namespace http
 }  // namespace network
 

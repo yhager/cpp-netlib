@@ -9,17 +9,20 @@
 
 #include <boost/asio/ip/tcp.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 class server_options;
 
 class socket_options_setter {
  protected:
-  void set_socket_options(server_options const &options, boost::asio::ip::tcp::socket &socket);
-  void set_acceptor_options(server_options const &options, boost::asio::ip::tcp::acceptor &acceptor);
+  void set_socket_options(server_options const& options,
+                          boost::asio::ip::tcp::socket& socket);
+  void set_acceptor_options(server_options const& options,
+                            boost::asio::ip::tcp::acceptor& acceptor);
 };
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_SERVER_IMPL_SOCKET_OPIONS_SETTER_20120319

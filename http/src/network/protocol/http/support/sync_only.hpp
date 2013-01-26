@@ -10,22 +10,18 @@
 #include <network/protocol/http/tags.hpp>
 #include <network/support/sync_only.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-    template <class Tag>
-    struct sync_only :
-        mpl::inherit_linearly<
-            typename mpl::replace_if<
-                typename tags::components<Tag>::type,
-                is_same<mpl::placeholders::_,tags::async>,
-                tags::sync
-            >::type
-            , mpl::inherit<mpl::placeholders::_1, mpl::placeholders::_2>
-        >
-    {};
+template <class Tag>
+struct sync_only : mpl::inherit_linearly<
+    typename mpl::replace_if<typename tags::components<Tag>::type,
+                             is_same<mpl::placeholders::_, tags::async>,
+                             tags::sync>::type,
+    mpl::inherit<mpl::placeholders::_1, mpl::placeholders::_2>> {};
 
 }  // namespace http
-    
+
 }  // namespace network
-    
+
 #endif /* NETWORK_PROTOCOL_HTTP_SUPPORT_SYNC_ONLY_HPP_20100927 */

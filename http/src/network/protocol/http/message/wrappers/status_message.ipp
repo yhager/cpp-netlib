@@ -9,21 +9,22 @@
 
 #include <network/protocol/http/message/wrappers/status_message.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-status_message_wrapper::status_message_wrapper(response_base &response)
-: response_(response)
-{}
+status_message_wrapper::status_message_wrapper(response_base& response)
+    : response_(response) {}
 
-status_message_wrapper::operator std::string () const {
-  if (cache_) return *cache_;
+status_message_wrapper::operator std:: string() const {
+  if (cache_)
+    return *cache_;
   std::string tmp;
   response_.get_status_message(tmp);
   cache_ = tmp;
   return *cache_;
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_STATUS_MESSAGE_IPP_20120311

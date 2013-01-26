@@ -17,5 +17,5 @@
 #include <network/message/directives.hpp>
 #include <network/message/transformers.hpp>
 
-#endif // NETWORK_INCLUDE_HTTP_CLIENT_HPP_
+#endif  // NETWORK_INCLUDE_HTTP_CLIENT_HPP_
 

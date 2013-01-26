@@ -12,24 +12,23 @@
 namespace network {
 namespace http {
 
-uri_wrapper::uri_wrapper(request_base const & request_)
-: request_(request_) {
+uri_wrapper::uri_wrapper(request_base const& request_) : request_(request_) {
   // do nothing here
 }
 
-uri_wrapper::operator std::string() const {
+uri_wrapper::operator std:: string() const {
   std::string uri;
   request_.get_uri(uri);
   return uri;
 }
 
-uri_wrapper::operator ::network::uri() const {
+uri_wrapper::operator:: network:: uri() const {
   ::network::uri uri;
   request_.get_uri(uri);
   return uri;
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_URI_IPP_20120315
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_URI_IPP_20120315

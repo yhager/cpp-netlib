@@ -10,4 +10,4 @@
 
 #include <network/protocol/http/request/request.hpp>
 
-#endif // NETWORK_PROTOCOL_HTTP_REQUEST_HPP_20111021
+#endif  // NETWORK_PROTOCOL_HTTP_REQUEST_HPP_20111021
