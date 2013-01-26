@@ -14,21 +14,20 @@ namespace network {
 namespace impl {
 
 struct header_directive {
-  explicit header_directive(std::string const & name,
-                            std::string const & value);
-  void operator() (message_base & msg) const;
+  explicit header_directive(std::string const& name, std::string const& value);
+  void operator()(message_base& msg) const;
  private:
-  std::string const & name_;
-  std::string const & value_;
+  std::string const& name_;
+  std::string const& value_;
 };
 
-} // namespace impl
+}  // namespace impl
 
-inline impl::header_directive
-header(std::string const & header_name, std::string const & header_value) {
-    return impl::header_directive(header_name, header_value);
+inline impl::header_directive header(std::string const& header_name,
+                                     std::string const& header_value) {
+  return impl::header_directive(header_name, header_value);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_DIRECTIVES_HEADER_HPP__
+#endif  // NETWORK_MESSAGE_DIRECTIVES_HEADER_HPP__

@@ -11,10 +11,8 @@
 
 namespace network {
 
-inline void clear_headers(message_base & message) {
-  message.remove_headers();
-}
+inline void clear_headers(message_base& message) { message.remove_headers(); }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_MODIFIER_CLEAR_HEADERS_HPP_20100824
+#endif  // NETWORK_MESSAGE_MODIFIER_CLEAR_HEADERS_HPP_20100824

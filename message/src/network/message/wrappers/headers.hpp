@@ -15,18 +15,17 @@ struct message_base;
 
 struct headers_wrapper {
   typedef std::multimap<std::string, std::string> container_type;
-  explicit headers_wrapper(message_base const & message);
-  operator container_type () const;
+  explicit headers_wrapper(message_base const& message);
+  operator container_type() const;
  private:
-  message_base const & message_;
+  message_base const& message_;
 };
 
 /// Factory method to create the right wrapper object
-inline headers_wrapper const
-headers(message_base const & message_) {
-    return headers_wrapper(message_);
+inline headers_wrapper const headers(message_base const& message_) {
+  return headers_wrapper(message_);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // __NETWORK_MESSAGE_WRAPPERS_HEADERS_HPP__
+#endif  // __NETWORK_MESSAGE_WRAPPERS_HEADERS_HPP__

@@ -13,12 +13,12 @@
 
 namespace network {
 
-inline void add_header(message_base & message,
-                       std::string const & key,
-                       std::string const & value) {
+inline void add_header(message_base& message,
+                       std::string const& key,
+                       std::string const& value) {
   message.append_header(key, value);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_MODIFIER_ADD_HEADER_HPP_20100824
+#endif  // NETWORK_MESSAGE_MODIFIER_ADD_HEADER_HPP_20100824

@@ -10,14 +10,15 @@
 #include <string>
 #include <network/message/directives/header.hpp>
 
-namespace network { namespace impl {
+namespace network {
+namespace impl {
 
-header_directive::header_directive(std::string const & name,
-                                   std::string const & value):
-  name_(name),
-  value_(value) {}
+header_directive::header_directive(std::string const& name,
+                                   std::string const& value)
+    : name_(name),
+      value_(value) {}
 
-void header_directive::operator() (message_base & msg) const {
+void header_directive::operator()(message_base& msg) const {
   msg.append_header(name_, value_);
 }
 

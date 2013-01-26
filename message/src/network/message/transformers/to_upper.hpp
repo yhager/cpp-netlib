@@ -23,12 +23,10 @@
 namespace network {
 namespace impl {
 
-template <class Selector>
-struct to_upper_transformer {};
+template <class Selector> struct to_upper_transformer {};
 
-template <>
-struct to_upper_transformer<selectors::source_selector> {
-  void operator() (message_base & message_) const {
+template <> struct to_upper_transformer<selectors::source_selector> {
+  void operator()(message_base& message_) const {
     std::string source_;
     message_.get_source(source_);
     boost::to_upper(source_);
@@ -36,12 +34,13 @@ struct to_upper_transformer<selectors::source_selector> {
   }
 
  protected:
-  ~to_upper_transformer() {};
-};
+  ~to_upper_transformer() {}
+  ;
+}
+;
 
-template <>
-struct to_upper_transformer<selectors::destination_selector> {
-  void operator() (message_base & message_) const {
+template <> struct to_upper_transformer<selectors::destination_selector> {
+  void operator()(message_base& message_) const {
     std::string destination_;
     message_.get_destination(destination_);
     boost::to_upper(destination_);
@@ -49,37 +48,43 @@ struct to_upper_transformer<selectors::destination_selector> {
   }
 
  protected:
-  ~to_upper_transformer() {};
-};
+  ~to_upper_transformer() {}
+  ;
+}
+;
 
-} // namespace impl
+}  // namespace impl
 
 namespace detail {
-  struct to_upper_placeholder_helper;
+struct to_upper_placeholder_helper;
 }  // namespace detail
 
-detail::to_upper_placeholder_helper to_upper_(detail::to_upper_placeholder_helper);
+detail::to_upper_placeholder_helper to_upper_(
+    detail::to_upper_placeholder_helper);
 
 namespace detail {
 
 struct to_upper_placeholder_helper {
   template <class Selector>
-  struct type : public impl::to_upper_transformer<Selector> { };
+  struct type : public impl::to_upper_transformer<Selector> {};
 
  private:
   to_upper_placeholder_helper() {}
-  to_upper_placeholder_helper(to_upper_placeholder_helper const &) {}
-  friend to_upper_placeholder_helper network::to_upper_(to_upper_placeholder_helper);
+  to_upper_placeholder_helper(to_upper_placeholder_helper const&) {}
+  friend to_upper_placeholder_helper network::to_upper_(
+      to_upper_placeholder_helper);
 };
 
 }  // namespace detail
 
-typedef detail::to_upper_placeholder_helper (*to_upper_placeholder)(detail::to_upper_placeholder_helper);
+typedef detail::to_upper_placeholder_helper(*to_upper_placeholder)(
+    detail::to_upper_placeholder_helper);
 
-inline detail::to_upper_placeholder_helper to_upper_(detail::to_upper_placeholder_helper) {
-    return detail::to_upper_placeholder_helper();
+inline detail::to_upper_placeholder_helper to_upper_(
+    detail::to_upper_placeholder_helper) {
+  return detail::to_upper_placeholder_helper();
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_TRANSFORMERS_TO_UPPER_HPP
+#endif  // NETWORK_MESSAGE_TRANSFORMERS_TO_UPPER_HPP

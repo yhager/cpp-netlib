@@ -17,6 +17,6 @@ NETWORK_STRING_DIRECTIVE(source);
 NETWORK_STRING_DIRECTIVE(destination);
 NETWORK_STRING_DIRECTIVE(body);
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_DIRECTIVES_HPP__
+#endif  // NETWORK_MESSAGE_DIRECTIVES_HPP__

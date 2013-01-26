@@ -9,10 +9,11 @@
 
 namespace network {
 
-inline void destination(message_base & message, std::string const & destination_) {
+inline void destination(message_base& message,
+                        std::string const& destination_) {
   message.set_destination(destination_);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_MODIFIER_DESTINATION_HPP_20100824
+#endif  // NETWORK_MESSAGE_MODIFIER_DESTINATION_HPP_20100824

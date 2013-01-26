@@ -23,12 +23,10 @@
 namespace network {
 namespace impl {
 
-template <class Selector>
-struct to_lower_transformer {};
+template <class Selector> struct to_lower_transformer {};
 
-template <>
-struct to_lower_transformer<selectors::source_selector> {
-  void operator() (message_base & message_) const {
+template <> struct to_lower_transformer<selectors::source_selector> {
+  void operator()(message_base& message_) const {
     std::string source_;
     message_.get_source(source_);
     boost::to_lower(source_);
@@ -36,12 +34,12 @@ struct to_lower_transformer<selectors::source_selector> {
   }
 
  protected:
-  ~to_lower_transformer() { }
-};
+  ~to_lower_transformer() {}
+}
+;
 
-template <>
-struct to_lower_transformer<selectors::destination_selector> {
-  void operator() (message_base & message_) const {
+template <> struct to_lower_transformer<selectors::destination_selector> {
+  void operator()(message_base& message_) const {
     std::string destination_;
     message_.get_destination(destination_);
     boost::to_lower(destination_);
@@ -49,36 +47,42 @@ struct to_lower_transformer<selectors::destination_selector> {
   }
 
  protected:
-  ~to_lower_transformer() { };
-};
+  ~to_lower_transformer() {}
+  ;
+}
+;
 
-} // namespace impl
+}  // namespace impl
 
 namespace detail {
 struct to_lower_placeholder_helper;
 }  // namespace detail
 
-detail::to_lower_placeholder_helper to_lower_(detail::to_lower_placeholder_helper);
+detail::to_lower_placeholder_helper to_lower_(
+    detail::to_lower_placeholder_helper);
 
 namespace detail {
 
 struct to_lower_placeholder_helper {
   template <class Selector>
-      struct type : public impl::to_lower_transformer<Selector> { };
+  struct type : public impl::to_lower_transformer<Selector> {};
  private:
   to_lower_placeholder_helper() {}
-  to_lower_placeholder_helper(to_lower_placeholder_helper const &) {}
-  friend to_lower_placeholder_helper network::to_lower_(to_lower_placeholder_helper);
+  to_lower_placeholder_helper(to_lower_placeholder_helper const&) {}
+  friend to_lower_placeholder_helper network::to_lower_(
+      to_lower_placeholder_helper);
 };
 
 }  // namespace detail
 
-typedef detail::to_lower_placeholder_helper (*to_lower_placeholder)(detail::to_lower_placeholder_helper);
+typedef detail::to_lower_placeholder_helper(*to_lower_placeholder)(
+    detail::to_lower_placeholder_helper);
 
-inline detail::to_lower_placeholder_helper to_lower_(detail::to_lower_placeholder_helper) {
+inline detail::to_lower_placeholder_helper to_lower_(
+    detail::to_lower_placeholder_helper) {
   return detail::to_lower_placeholder_helper();
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_TRANSFORMERS_TO_LOWER_HPP
+#endif  // NETWORK_MESSAGE_TRANSFORMERS_TO_LOWER_HPP

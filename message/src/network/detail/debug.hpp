@@ -16,23 +16,26 @@
     The user can force the logging to be enabled by defining NETWORK_ENABLE_LOGGING.
 */
 #if defined(NETWORK_DEBUG) && !defined(NETWORK_ENABLE_LOGGING)
-#  define NETWORK_ENABLE_LOGGING
+#define NETWORK_ENABLE_LOGGING
 #endif
 
 #ifdef NETWORK_ENABLE_LOGGING
 
-#  include <network/logging/logging.hpp>
-#  ifndef NETWORK_MESSAGE
-#  define NETWORK_MESSAGE(msg) { network::logging::log( network::logging::log_record( __FILE__, __LINE__ ) << msg ); }
-#  endif
+#include <network/logging/logging.hpp>
+#ifndef NETWORK_MESSAGE
+#define NETWORK_MESSAGE(msg)                                                   \
+  {                                                                            \
+    network::logging::log(network::logging::log_record(__FILE__, __LINE__)     \
+                          << msg);                                             \
+  }
+#endif
 
 #else
 
-#  ifndef NETWORK_MESSAGE
-#    define NETWORK_MESSAGE(msg)
-#  endif
-
+#ifndef NETWORK_MESSAGE
+#define NETWORK_MESSAGE(msg)
 #endif
 
+#endif
 
 #endif /* end of include guard: NETWORK_DEBUG_HPP_20110410 */

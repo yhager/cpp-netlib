@@ -11,10 +11,9 @@
 
 namespace network {
 
-body_wrapper::body_wrapper(message_base const & message):
-  message_(message) {}
+body_wrapper::body_wrapper(message_base const& message) : message_(message) {}
 
-body_wrapper::operator std::string () const {
+body_wrapper::operator std:: string() const {
   if (cache_) {
     return *cache_;
   }
@@ -34,7 +33,8 @@ std::size_t body_wrapper::size() const {
   return cache_->size();
 }
 
-body_wrapper::operator boost::iterator_range<std::string::const_iterator> () const {
+body_wrapper::operator boost:: iterator_range< std:: string:: const_iterator>
+    () const {
   if (cache_) {
     return boost::make_iterator_range(*cache_);
   }
