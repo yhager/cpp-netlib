@@ -4,33 +4,29 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifdef BUILD_SHARED_LIBS
-# define BOOST_TEST_DYN_LINK
-#endif
-#define BOOST_TEST_MODULE HTTP Client Response Test
+#include <gtest/gtest.h>
 #include <network/protocol/http/response.hpp>
-#include <boost/test/unit_test.hpp>
 
 namespace http = network::http;
 
-BOOST_AUTO_TEST_CASE(response_constructor_test) {
+TEST(response_test, response_constructor) {
   http::response created;
 }
 
-BOOST_AUTO_TEST_CASE(response_value_semantics_test) {
+TEST(response_test, response_value_semantics) {
   http::response original;
   http::response copy(original);
   http::response assigned;
   assigned = original;
-  BOOST_CHECK(original == assigned);
+  ASSERT_TRUE(original == assigned);
   assigned.set_source("http://www.google.com/");
-  BOOST_CHECK(original != assigned);
+  ASSERT_TRUE(original != assigned);
   std::swap(assigned, copy);
-  BOOST_CHECK(assigned == original);
-  BOOST_CHECK(copy != original);
-  BOOST_CHECK(assigned != copy);
+  ASSERT_TRUE(assigned == original);
+  ASSERT_TRUE(copy != original);
+  ASSERT_TRUE(assigned != copy);
   original = copy;
-  BOOST_CHECK(original == copy);
+  ASSERT_TRUE(original == copy);
 }
 
 struct multimap_inserter {
@@ -43,7 +39,7 @@ struct multimap_inserter {
   std::multimap<std::string,std::string> & multimap_;
 };
 
-BOOST_AUTO_TEST_CASE(response_setters_and_getters_test) {
+TEST(response_test, response_setters_and_getters) {
   http::response response;
   response.set_source("http://www.google.com/");
   response.set_destination("127.0.0.1");
@@ -65,10 +61,10 @@ BOOST_AUTO_TEST_CASE(response_setters_and_getters_test) {
   response.get_version(version);
   response.get_headers(multimap_inserter(headers));
   response.get_status(status);
-  BOOST_CHECK_EQUAL(source, std::string("http://www.google.com/"));
-  BOOST_CHECK_EQUAL(destination, std::string("127.0.0.1"));
-  BOOST_CHECK_EQUAL(body, std::string("Hello, World!"));
-  BOOST_CHECK_EQUAL(status, 200u);
-  BOOST_CHECK_EQUAL(version, std::string("HTTP/1.1"));
-  BOOST_CHECK(expected_headers == headers);
+  ASSERT_EQ(source, std::string("http://www.google.com/"));
+  ASSERT_EQ(destination, std::string("127.0.0.1"));
+  ASSERT_EQ(body, std::string("Hello, World!"));
+  ASSERT_EQ(status, 200u);
+  ASSERT_EQ(version, std::string("HTTP/1.1"));
+  ASSERT_TRUE(expected_headers == headers);
 }
