@@ -11,6 +11,6 @@
 // Author: Dean Michael Berris
 // Date Created: Oct. 08, 2007
 
-#include <network/protocol/http.hpp> // include HTTP implementation
+#include <network/protocol/http.hpp>  // include HTTP implementation
 
-#endif // NETWORK_PROTOCOLS_20070908-1_HPP
+#endif                                // NETWORK_PROTOCOLS_20070908-1_HPP

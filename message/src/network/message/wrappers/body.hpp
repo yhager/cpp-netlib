@@ -15,27 +15,26 @@
 namespace network {
 
 struct body_wrapper {
-  explicit body_wrapper(message_base const & message);
-  operator std::string () const;
+  explicit body_wrapper(message_base const& message);
+  operator std:: string() const;
   std::size_t size() const;
-  operator boost::iterator_range<std::string::const_iterator> () const;
+  operator boost:: iterator_range< std:: string:: const_iterator>() const;
   std::string::const_iterator begin() const;
   std::string::const_iterator end() const;
  private:
-  message_base const & message_;
+  message_base const& message_;
   mutable boost::optional<std::string> cache_;
 };
 
-inline std::ostream & operator<<(std::ostream & os, body_wrapper const & body) {
+inline std::ostream& operator<<(std::ostream& os, body_wrapper const& body) {
   os << static_cast<std::string>(body);
   return os;
 }
 
-inline body_wrapper const
-body(message_base const & message_) {
-    return body_wrapper(message_);
+inline body_wrapper const body(message_base const& message_) {
+  return body_wrapper(message_);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_WRAPPERS_BODY_HPP
+#endif  // NETWORK_MESSAGE_WRAPPERS_BODY_HPP

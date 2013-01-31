@@ -11,7 +11,8 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/asio/error.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct request;
 struct response;
@@ -19,22 +20,20 @@ struct response;
 class request_options;
 
 struct client_connection {
-  typedef std::function<
-    void(boost::iterator_range<char const *> const &,
-         boost::system::error_code const &)>
-    callback_type;
-  virtual response send_request(std::string const & method,
-                                request const & request,
+  typedef std::function<void(boost::iterator_range<char const*> const&,
+                             boost::system::error_code const&)> callback_type;
+  virtual response send_request(std::string const& method,
+                                request const& request,
                                 bool get_body,
                                 callback_type callback,
-                                request_options const &options) = 0;
-  virtual client_connection * clone() const = 0;
+                                request_options const& options) = 0;
+  virtual client_connection* clone() const = 0;
   virtual void reset() = 0;
   virtual ~client_connection() = 0;
 };
 
 } /* http */
-  
+
 } /* network */
-  
+
 #endif /* NETWORK_PROTOCOL_HTTP_CLIENT_CLIENT_CONNECTION_HPP_20111103 */

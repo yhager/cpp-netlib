@@ -15,7 +15,7 @@ namespace http {
 
 NETWORK_STRING_DIRECTIVE(uri);
 
-} // namespace http
-} // namespace network 
+}       // namespace http
+}       // namespace network 
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_URI_HPP_20100620
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_URI_HPP_20100620

@@ -18,8 +18,8 @@ struct async_resolver_pimpl;
 struct async_resolver : resolver_delegate {
   using resolver_delegate::resolve_completion_function;
 
-  async_resolver(boost::asio::io_service & service, bool cache_resolved);
-  virtual void resolve(std::string const & host,
+  async_resolver(boost::asio::io_service& service, bool cache_resolved);
+  virtual void resolve(std::string const& host,
                        uint16_t port,
                        resolve_completion_function once_resolved);  // override
   virtual void clear_resolved_cache();  // override
@@ -31,8 +31,8 @@ struct async_resolver : resolver_delegate {
   std::shared_ptr<async_resolver_pimpl> pimpl;
 };
 
-} // namespace http
+}       // namespace http
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_CLIENT_CONNECTION_ASYNC_RESOLVER_20111126
+#endif  // NETWORK_PROTOCOL_HTTP_CLIENT_CONNECTION_ASYNC_RESOLVER_20111126

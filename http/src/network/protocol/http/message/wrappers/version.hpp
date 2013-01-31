@@ -12,27 +12,27 @@
 #include <network/protocol/http/response/response_base.hpp>
 #include <network/protocol/http/response/response_base.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 struct version_wrapper {
-  explicit version_wrapper(response_base & response_);
-  operator std::string() const;
+  explicit version_wrapper(response_base& response_);
+  operator std:: string() const;
  private:
-  response_base & response_;
+  response_base& response_;
   mutable boost::optional<std::string> cache_;
 };
 
-inline std::ostream & operator<< (std::ostream & os, version_wrapper const & version) {
+inline std::ostream& operator
+    <<(std::ostream& os, version_wrapper const& version) {
   return os << static_cast<std::string>(version);
 }
 
-inline 
-version_wrapper
-version(response_base & response) {
+inline version_wrapper version(response_base& response) {
   return version_wrapper(response);
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_VERSION_HPP_20100603
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_VERSION_HPP_20100603

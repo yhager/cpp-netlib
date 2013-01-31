@@ -9,10 +9,10 @@
 
 namespace network {
 namespace http {
-    
+
 NETWORK_STRING_DIRECTIVE(method);
 
 }  // namespace http
 }  // namespace network
-    
+
 #endif /* NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_METHOD_HPP_20101120 */

@@ -20,16 +20,14 @@
 #include <boost/tuple/tuple.hpp>
 #include <network/protocol/http/request.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-namespace tag {
-    struct default_;
-}
+namespace tag { struct default_; }
 
 /// Parser for incoming requests.
-class request_parser
-{
-public:
+class request_parser {
+ public:
   /// Construct ready to parse the request method.
   request_parser() : state_(method_start) {}
 
@@ -41,11 +39,10 @@ public:
   /// data is required. The InputIterator return value indicates how much of the
   /// input has been consumed.
   template <typename InputIterator>
-  boost::tuple<boost::tribool, InputIterator> parse_headers(request & req,
-      InputIterator begin, InputIterator end)
-  {
-    while (begin != end)
-    {
+  boost::tuple<boost::tribool, InputIterator> parse_headers(request& req,
+                                                            InputIterator begin,
+                                                            InputIterator end) {
+    while (begin != end) {
       boost::tribool result = consume(req, *begin++);
       if (result || !result)
         return boost::make_tuple(result, begin);
@@ -54,9 +51,9 @@ public:
     return boost::make_tuple(result, begin);
   }
 
-private:
+ private:
   /// Handle the next character of input.
-  boost::tribool consume(request & req, char input);
+  boost::tribool consume(request& req, char input);
 
   /// Check if a byte is an HTTP character.
   static bool is_char(int c);
@@ -71,8 +68,7 @@ private:
   static bool is_digit(int c);
 
   /// The current state of the parser.
-  enum state
-  {
+  enum state {
     method_start,
     method,
     uri_start,
@@ -97,9 +93,9 @@ private:
   } state_;
 };
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
 #include <network/protocol/http/impl/request_parser.ipp>
 
-#endif // HTTP_SERVER3_REQUEST_PARSER_HPP
+#endif  // HTTP_SERVER3_REQUEST_PARSER_HPP

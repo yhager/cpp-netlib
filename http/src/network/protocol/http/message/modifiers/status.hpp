@@ -10,13 +10,14 @@
 
 #include <network/protocol/http/response/response_base.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-inline void status(response_base & response, boost::uint16_t value) {
+inline void status(response_base& response, boost::uint16_t value) {
   response.set_status(value);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_STATUS_HPP_20100608
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_STATUS_HPP_20100608

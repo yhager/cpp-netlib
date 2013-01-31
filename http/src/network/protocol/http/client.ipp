@@ -11,20 +11,16 @@
 #include <network/protocol/http/client/options.hpp>
 #include <network/detail/debug.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-client::client()
-: base_facade_type() {
-  NETWORK_MESSAGE("client::client()");
-}
+client::client() : base_facade_type() { NETWORK_MESSAGE("client::client()"); }
 
-client::client(client_options const &options)
-: base_facade_type(options)
-{
+client::client(client_options const& options) : base_facade_type(options) {
   NETWORK_MESSAGE("client::client(client_options const &)");
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_CLIENT_IPP_20120306

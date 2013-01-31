@@ -13,14 +13,13 @@ namespace network {
 namespace http {
 namespace errors {
 
-struct connection_timeout_exception : std::runtime_error
-{};
+struct connection_timeout_exception : std::runtime_error {};
 
 typedef connection_timeout_exception connection_timeout;
 
-} // namespace errors
-} // namespace http
-} // namespace network
+}       // namespace errors
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_20080516_HPP
+#endif  // NETWORK_PROTOCOL_HTTP_20080516_HPP
 

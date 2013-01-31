@@ -10,17 +10,18 @@
 
 #include <network/protocol/http/request/request_base.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-inline void uri(request_base & request, std::string const & value) {
+inline void uri(request_base& request, std::string const& value) {
   request.set_uri(value);
 }
 
-inline void uri(request_base & request, ::network::uri const & value) {
+inline void uri(request_base& request, ::network::uri const& value) {
   request.set_uri(value);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_URI_HPP_20100621
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_URI_HPP_20100621

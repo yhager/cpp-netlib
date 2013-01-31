@@ -9,14 +9,14 @@
 
 namespace network {
 
-inline void body(message_base & message, std::string const & body_) {
+inline void body(message_base& message, std::string const& body_) {
   message.set_body(body_);
 }
 
-inline void append_body(message_base & message, std::string const & data) {
+inline void append_body(message_base& message, std::string const& data) {
   message.append_body(data);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MODIFIERS_BODY_HPP_20100824
+#endif  // NETWORK_MODIFIERS_BODY_HPP_20100824

@@ -15,20 +15,16 @@ namespace http = network::http;
 // check on the internals of the implementation.
 struct request_test : http::request_storage_base {
   typedef http::request_storage_base base_type;
-  
+
   // Expose the protected functions so that we can test them.
   using base_type::append;
   using base_type::read;
   using base_type::flatten;
   using base_type::clear;
 
-  explicit request_test(size_t chunk_size)
-  : base_type(chunk_size)
-  {}
+  explicit request_test(size_t chunk_size) : base_type(chunk_size) {}
 
-  request_test(request_test const &other)
-  : base_type(other)
-  {}
+  request_test(request_test const& other) : base_type(other) {}
 
   ~request_test() {
     // do nothing here.
@@ -39,7 +35,7 @@ TEST(request_test, request_storage_flow) {
   // Use a few byte chunks just to make it manageable.
   request_test simple(64);
   static char data[] =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vitae ante sed nunc dapibus convallis in at neque. Vestibulum sed congue nunc. Sed tempus lorem non dui ultrices porttitor porta ligula venenatis. Sed a orci gravida tellus condimentum laoreet. Vivamus pulvinar, tortor eu adipiscing tempus, dolor urna tincidunt enim, id pretium eros ante quis dui. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In hac habitasse platea dictumst. Maecenas mattis metus.";
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vitae ante sed nunc dapibus convallis in at neque. Vestibulum sed congue nunc. Sed tempus lorem non dui ultrices porttitor porta ligula venenatis. Sed a orci gravida tellus condimentum laoreet. Vivamus pulvinar, tortor eu adipiscing tempus, dolor urna tincidunt enim, id pretium eros ante quis dui. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In hac habitasse platea dictumst. Maecenas mattis metus.";
   simple.append(data, sizeof(data));
   std::string output;
   size_t bytes_read = simple.read(output, 0, sizeof(data));
@@ -63,7 +59,8 @@ TEST(request_test, request_storage_copy) {
   std::string flattened;
   copy.flatten(flattened);
   ASSERT_EQ(flattened, std::string(output, sizeof(quick_brown)));
-  ASSERT_EQ(std::string(quick_brown, sizeof(quick_brown)), std::string(output, sizeof(quick_brown)));
+  ASSERT_EQ(std::string(quick_brown, sizeof(quick_brown)),
+            std::string(output, sizeof(quick_brown)));
   copy.clear();
   flattened.clear();
   original.flatten(flattened);

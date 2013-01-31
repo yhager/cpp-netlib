@@ -9,12 +9,14 @@
 
 #include <memory>
 
-namespace boost { namespace asio {
+namespace boost {
+namespace asio {
 class io_service;
 }  // namespace asio
 }  // namespace boost
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 class client_options;
 struct client_connection;
@@ -22,12 +24,12 @@ struct request_base;
 
 struct connection_factory {
   virtual std::shared_ptr<client_connection> create_connection(
-      boost::asio::io_service &service,
-      request_base const & request,
-      client_options const &options) = 0;
-  virtual ~connection_factory() = 0; // pure virtual, interface only.
+      boost::asio::io_service& service,
+      request_base const& request,
+      client_options const& options) = 0;
+  virtual ~connection_factory() = 0;  // pure virtual, interface only.
 };
-  
+
 }  // namespace http
 }  // namespace network
 

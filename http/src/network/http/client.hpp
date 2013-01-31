@@ -13,4 +13,4 @@
 #include <network/http/response.hpp>
 #include <network/http/errors.hpp>
 
-#endif // NETWORK_HTTP_CLIENT_INC__
+#endif  // NETWORK_HTTP_CLIENT_INC__

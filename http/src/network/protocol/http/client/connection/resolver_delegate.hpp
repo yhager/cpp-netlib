@@ -16,17 +16,16 @@ namespace http {
 
 struct resolver_delegate {
   typedef boost::asio::ip::udp::resolver::iterator resolver_iterator;
-  typedef std::pair<resolver_iterator, resolver_iterator>
-          iterator_pair;
-  typedef std::function<void(boost::system::error_code const &, iterator_pair)>
-          resolve_completion_function;
-  virtual void resolve(std::string const & host,
+  typedef std::pair<resolver_iterator, resolver_iterator> iterator_pair;
+  typedef std::function<void(boost::system::error_code const&,
+                             iterator_pair)> resolve_completion_function;
+  virtual void resolve(std::string const& host,
                        uint16_t port,
                        resolve_completion_function once_resolved) = 0;
   virtual void clear_resolved_cache() = 0;
   virtual ~resolver_delegate() = 0;
 };
-  
+
 }  // namespace http
 }  // namespace network
 

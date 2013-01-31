@@ -21,8 +21,7 @@ namespace http {
 
 struct client : basic_client_facade {
  private:
-  typedef basic_client_facade
-          base_facade_type;
+  typedef basic_client_facade base_facade_type;
  public:
   typedef network::http::request request;
   typedef network::http::response response;
@@ -35,12 +34,12 @@ struct client : basic_client_facade {
   // client_options instance. To find out what the supported options are
   // see the boost/network/protocol/http/client/options.hpp file.
   //
-  explicit client(client_options const &options);
+  explicit client(client_options const& options);
   //
   // =================================================================
 };
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_CLIENT_20091215
+#endif  // NETWORK_PROTOCOL_HTTP_CLIENT_20091215

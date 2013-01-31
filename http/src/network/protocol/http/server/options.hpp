@@ -9,7 +9,8 @@
 
 #include <string>
 
-namespace boost { namespace asio {
+namespace boost {
+namespace asio {
 
 class io_service;
 
@@ -17,26 +18,27 @@ class io_service;
 
 }  // namespace boost
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 class server_options_pimpl;
 
 class server_options {
  public:
   server_options();
-  server_options(server_options const &other);
-  void swap(server_options &other);
+  server_options(server_options const& other);
+  void swap(server_options& other);
   server_options& operator=(server_options rhs);
   ~server_options();
-  
-  server_options& address(std::string const &address);
+
+  server_options& address(std::string const& address);
   std::string const address() const;
-  
-  server_options& port(std::string const &port);
+
+  server_options& port(std::string const& port);
   std::string const port() const;
-  
-  server_options& io_service(boost::asio::io_service *service);
-  boost::asio::io_service *io_service() const;
+
+  server_options& io_service(boost::asio::io_service* service);
+  boost::asio::io_service* io_service() const;
 
   server_options& reuse_address(bool setting);
   bool reuse_address() const;
@@ -72,11 +74,11 @@ class server_options {
   int linger_timeout() const;
 
  private:
-  server_options_pimpl *pimpl_;
+  server_options_pimpl* pimpl_;
 };
 
-}  // namespace http
+}       // namespace http
 
-}  // namespace network
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_SERVER_OPTIONS_HPP_20120318

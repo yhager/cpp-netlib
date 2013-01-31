@@ -15,20 +15,18 @@ namespace network {
 namespace http {
 
 struct uri_wrapper {
-  explicit uri_wrapper(request_base const & request_);
-  operator std::string() const;
-  operator ::network::uri() const;
+  explicit uri_wrapper(request_base const& request_);
+  operator std:: string() const;
+  operator:: network:: uri() const;
  private:
-  request_base const & request_;
+  request_base const& request_;
 };
 
-inline
-uri_wrapper const
-uri(request_base const & request) {
-    return uri_wrapper(request);
+inline uri_wrapper const uri(request_base const& request) {
+  return uri_wrapper(request);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_URI_HPP_20100620
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_URI_HPP_20100620

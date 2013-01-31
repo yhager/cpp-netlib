@@ -28,7 +28,7 @@ struct request_header {
   std::string name, value;
 };
 
-inline void swap(request_header & l, request_header & r) {
+inline void swap(request_header& l, request_header& r) {
   swap(l.name, r.name);
   swap(l.value, r.value);
 }
@@ -38,7 +38,7 @@ struct response_header {
   std::string name, value;
 };
 
-inline void swap(response_header & l, response_header & r) {
+inline void swap(response_header& l, response_header& r) {
   std::swap(l.name, r.name);
   std::swap(l.value, r.value);
 }
@@ -46,16 +46,9 @@ inline void swap(response_header & l, response_header & r) {
 }  // namespace http
 }  // namespace network
 
-BOOST_FUSION_ADAPT_STRUCT(
-  network::http::request_header,
-  (std::string, name)
-  (std::string, value)
-  )
+BOOST_FUSION_ADAPT_STRUCT(network::http::request_header,
+                          (std::string, name)(std::string, value))
+    BOOST_FUSION_ADAPT_STRUCT(network::http::response_header,
+                              (std::string, name)(std::string, value))
 
-BOOST_FUSION_ADAPT_STRUCT(
-  network::http::response_header,
-  (std::string, name)
-  (std::string, value)
-  )
-
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_HEADER_HPP_20101122
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_HEADER_HPP_20101122

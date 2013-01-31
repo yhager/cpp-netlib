@@ -13,11 +13,11 @@
 namespace network {
 namespace http {
 
-inline void status_message(response_base & response, std::string const & value) {
+inline void status_message(response_base& response, std::string const& value) {
   response.set_status_message(value);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_STATUS_MESSAGE_HPP_20100608
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_STATUS_MESSAGE_HPP_20100608

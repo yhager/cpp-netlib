@@ -13,17 +13,16 @@ namespace network {
 namespace http {
 
 struct method_wrapper {
-  explicit method_wrapper(request_base & message);
-  operator std::string () const;
+  explicit method_wrapper(request_base& message);
+  operator std:: string() const;
  private:
-  request_base & message_;
+  request_base& message_;
 };
 
-inline method_wrapper const
-method(request_base & message) {
+inline method_wrapper const method(request_base& message) {
   return method_wrapper(message);
 }
-    
+
 }  // namespace http
 }  // namespace network
 

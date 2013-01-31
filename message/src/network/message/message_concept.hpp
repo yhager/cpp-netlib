@@ -16,50 +16,47 @@
 #include <map>
 
 namespace network {
-    
-    template <class M>
-    struct Message 
-        : boost::DefaultConstructible<M>,
-          boost::CopyConstructible<M>,
-          boost::Assignable<M> {
 
-        BOOST_CONCEPT_USAGE(Message) {
-            M message_;
-            swap(message, message_);
-            typedef std::string source_type;
-            typedef std::string destination_type;
-            typedef std::string body_type;
-            typedef std::string header_key_type;
-            typedef std::string header_value_type;
+template <class M>
+struct Message : boost::DefaultConstructible<M>,
+    boost::CopyConstructible<M>,
+    boost::Assignable<M> {
 
-            std::multimap<std::string, std::string> headers_ = headers(message);
-            std::string body_ = body(message);
-            std::string source_ = source(message);
-            std::string destination_ = destination(message);
+  BOOST_CONCEPT_USAGE(Message) {
+    M message_;
+    swap(message, message_);
+    typedef std::string source_type;
+    typedef std::string destination_type;
+    typedef std::string body_type;
+    typedef std::string header_key_type;
+    typedef std::string header_value_type;
 
-            message << source(source_type())
-                << destination(destination_type())
-                << header(std::string(), std::string())
-                << body(body_type());
+    std::multimap<std::string, std::string> headers_ = headers(message);
+    std::string body_ = body(message);
+    std::string source_ = source(message);
+    std::string destination_ = destination(message);
 
-            add_header(message, std::string(), std::string());
-            remove_header(message, std::string());
-            clear_headers(message);
-            source(message, source_type());
-            destination(message, destination_type());
-            body(message, body_type());
+    message << source(source_type()) << destination(destination_type())
+            << header(std::string(), std::string()) << body(body_type());
 
-            (void)headers_;
-            (void)body_;
-            (void)source_;
-            (void)destination_;
-        }
+    add_header(message, std::string(), std::string());
+    remove_header(message, std::string());
+    clear_headers(message);
+    source(message, source_type());
+    destination(message, destination_type());
+    body(message, body_type());
 
-    private:
+    (void) headers_;
+    (void) body_;
+    (void) source_;
+    (void) destination_;
+  }
 
-        M message;
-    };
+ private:
 
-} // namespace network
+  M message;
+};
 
-#endif // NETWORK_MESSAGE_MESSAGE_CONCEPT_HPP_20100903
+}       // namespace network
+
+#endif  // NETWORK_MESSAGE_MESSAGE_CONCEPT_HPP_20100903

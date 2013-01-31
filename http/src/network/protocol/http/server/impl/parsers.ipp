@@ -14,45 +14,40 @@
 #include <boost/fusion/tuple.hpp>
 
 #ifdef NETWORK_NO_LIB
-#  ifndef NETWORK_INLINE
-#    define NETWORK_INLINE inline
-#  endif
+#ifndef NETWORK_INLINE
+#define NETWORK_INLINE inline
+#endif
 #else
-#  define NETWORK_INLINE
+#define NETWORK_INLINE
 #endif
 #include <vector>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-    NETWORK_INLINE void parse_version(std::string const & partial_parsed, boost::fusion::tuple<uint8_t,uint8_t> & version_pair) {
-        using namespace boost::spirit::qi;
-        parse(
-            partial_parsed.begin(), partial_parsed.end(),
-            (
-                lit("HTTP/")
-                >> ushort_
-                >> '.'
-                >> ushort_
-            )
-            , version_pair);
-    }
+NETWORK_INLINE void parse_version(
+    std::string const& partial_parsed,
+    boost::fusion::tuple<uint8_t, uint8_t>& version_pair) {
+  using namespace boost::spirit::qi;
+  parse(partial_parsed.begin(),
+        partial_parsed.end(),
+        (lit("HTTP/") >> ushort_ >> '.' >> ushort_),
+        version_pair);
+}
 
-    NETWORK_INLINE void parse_headers(std::string const & input, std::vector<std::pair<std::string, std::string> > & container) {
-        using namespace boost::spirit::qi;
-        parse(
-            input.begin(), input.end(),
-            *(
-                +(alnum|(punct-':'))
-                >> lit(": ")
-                >> +((alnum|space|punct) - '\r' - '\n')
-                >> lit("\r\n")
-            )
-            >> lit("\r\n")
-            , container
-            );
-    }
+NETWORK_INLINE void parse_headers(
+    std::string const& input,
+    std::vector<std::pair<std::string, std::string>>& container) {
+  using namespace boost::spirit::qi;
+  parse(input.begin(),
+        input.end(),
+        *(+(alnum | (punct - ':')) >> lit(": ") >>
+          +((alnum | space | punct) - '\r' - '\n') >> lit("\r\n")) >>
+        lit("\r\n"),
+        container);
+}
 
 }  // namespace http
 }  // namespace network
-    
+
 #endif /* SERVER_REQUEST_PARSERS_IMPL_UW3PM6V6 */

@@ -10,19 +10,19 @@
 #include <network/protocol/http/message/wrappers/query.hpp>
 #include <network/uri.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-query_wrapper::query_wrapper(request_base const & request)
-: request_(request) {}
+query_wrapper::query_wrapper(request_base const& request) : request_(request) {}
 
-query_wrapper::operator std::string () const {
+query_wrapper::operator std:: string() const {
   ::network::uri uri_;
   request_.get_uri(uri_);
   auto query = uri_.query();
-  return query? std::string(*query) : std::string("");
+  return query ? std::string(*query) : std::string("");
 }
 
-}  // namespace http
-}  // namespace network
+}       // namespace http
+}       // namespace network
 
 #endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_QUERY_IPP_20111204

@@ -9,7 +9,8 @@
 
 #include <network/protocol/http/client/connection/connection_factory.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 connection_factory::~connection_factory() {}
 

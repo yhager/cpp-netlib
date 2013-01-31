@@ -14,16 +14,16 @@
 namespace network {
 namespace http {
 
-template <class Tag>
-struct basic_request;
+template <class Tag> struct basic_request;
 
 template <class Tag>
-inline typename enable_if<is_server<Tag>, void>::type
-major_version(basic_request<Tag> & request, boost::uint8_t major_version_) {
-    request.http_version_major = major_version_;
+inline typename enable_if<is_server<Tag>, void>::type major_version(
+    basic_request<Tag>& request,
+    boost::uint8_t major_version_) {
+  request.http_version_major = major_version_;
 }
-    
+
 }  // namespace http
 }  // namespace network
-    
+
 #endif /* NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_MAJOR_VERSION_HPP_20101120 */

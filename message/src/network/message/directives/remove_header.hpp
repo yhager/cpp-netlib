@@ -11,19 +11,19 @@ namespace network {
 namespace impl {
 
 struct remove_header_directive {
-  explicit remove_header_directive(std::string const & header_name);
-  void operator() (message_base & msg) const;
+  explicit remove_header_directive(std::string const& header_name);
+  void operator()(message_base& msg) const;
  private:
-  std::string const & header_name_;
+  std::string const& header_name_;
 };
 
-} // namespace impl
+}  // namespace impl
 
-inline impl::remove_header_directive const
-remove_header(std::string const & header_name) {
-    return impl::remove_header_directive(header_name);
+inline impl::remove_header_directive const remove_header(
+    std::string const& header_name) {
+  return impl::remove_header_directive(header_name);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_DIRECTIVES_REMOVE_HEADER_HPP_20111021
+#endif  // NETWORK_MESSAGE_DIRECTIVES_REMOVE_HEADER_HPP_20111021

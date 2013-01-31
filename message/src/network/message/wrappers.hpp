@@ -16,4 +16,4 @@
 #include <network/message/wrappers/source.hpp>
 #include <network/message/wrappers/destination.hpp>
 
-#endif // __NETWORK_MESSAGE_WRAPPERS_HPP__
+#endif  // __NETWORK_MESSAGE_WRAPPERS_HPP__

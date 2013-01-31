@@ -13,11 +13,11 @@
 namespace network {
 namespace http {
 
-inline void version(response_base & response, std::string const & value) {
+inline void version(response_base& response, std::string const& value) {
   response.set_version(value);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_VERSION_HPP_20100608
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_VERSION_HPP_20100608

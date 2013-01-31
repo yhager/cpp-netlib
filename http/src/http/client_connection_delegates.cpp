@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #ifdef NETWORK_NO_LIB
-#undef NETWORK_NO_LIB 
+#undef NETWORK_NO_LIB
 #endif
 
 #include <network/protocol/http/client/connection/normal_delegate.ipp>

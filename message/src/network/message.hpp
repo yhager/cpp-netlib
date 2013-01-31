@@ -28,4 +28,4 @@
 #include <network/message/message_concept.hpp>
 #endif
 
-#endif // NETWORK_MESSAGE_HPP_20111021
+#endif  // NETWORK_MESSAGE_HPP_20111021

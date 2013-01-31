@@ -9,16 +9,19 @@
 
 #include <boost/utility/enable_if.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
-    template <class Tag, class Enable = void>
-    struct is_client : mpl::false_ {};
-    
-    template <class Tag>
-    struct is_client<Tag, typename enable_if<typename Tag::is_client>::type> : mpl::true_ {};
-    
+template <class Tag, class Enable = void> struct is_client : mpl::false_ {};
+
+template <class Tag>
+struct is_client<
+    Tag,
+    typename enable_if<typename Tag::is_client>::type> : mpl::true_ {}
+;
+
 }  // namespace http
 }  // namespace network
-    
+
 #endif /* NETWORK_PROTOCOL_SUPPORT_IS_CLIENT_HPP_20101118 */
 

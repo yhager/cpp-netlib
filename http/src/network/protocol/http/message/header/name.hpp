@@ -14,20 +14,13 @@ namespace network {
 namespace http {
 
 template <class T1, class T2>
-inline T1 const & 
-name(std::pair<T1,T2> const & p) {
+inline T1 const& name(std::pair<T1, T2> const& p) {
   return p.first;
 }
 
-inline std::string const &
-name(request_header const & h) {
-  return h.name;
-}
+inline std::string const& name(request_header const& h) { return h.name; }
 
-inline std::string const &
-name(response_header const & h) {
-  return h.name;
-}
+inline std::string const& name(response_header const& h) { return h.name; }
 
 }  // namespace http
 }  // namespace network

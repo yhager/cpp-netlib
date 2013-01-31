@@ -28,4 +28,4 @@
 #include <network/protocol/http/response/response.hpp>
 #include <network/protocol/http/response/response_concept.hpp>
 
-#endif // NETWORK_PROTOCOL_HTTP_RESPONSE_HPP
+#endif  // NETWORK_PROTOCOL_HTTP_RESPONSE_HPP

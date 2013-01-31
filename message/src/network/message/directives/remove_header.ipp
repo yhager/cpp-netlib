@@ -12,10 +12,10 @@
 namespace network {
 namespace impl {
 
-remove_header_directive::remove_header_directive(std::string const & header_name):
-  header_name_(header_name) {}
+remove_header_directive::remove_header_directive(std::string const& header_name)
+    : header_name_(header_name) {}
 
-void remove_header_directive::operator() (message_base & msg) const {
+void remove_header_directive::operator()(message_base& msg) const {
   msg.remove_headers(header_name_);
 }
 

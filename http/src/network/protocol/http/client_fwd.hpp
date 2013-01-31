@@ -14,12 +14,11 @@ namespace network {
 namespace http {
 
 // Forward declaration of basic_client template.
-template <class String>
-class basic_client;
+template <class String> class basic_client;
 
 typedef basic_client<std::string> client;
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_CLIENT_20080923_1_HPP
+#endif  // NETWORK_PROTOCOL_HTTP_CLIENT_20080923_1_HPP

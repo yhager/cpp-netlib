@@ -12,11 +12,10 @@
 
 namespace network {
 
-inline
-void remove_header(message_base & message, std::string const & key) {
-   message.remove_headers(key);
+inline void remove_header(message_base& message, std::string const& key) {
+  message.remove_headers(key);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_MODIFIER_REMOVE_HEADER_HPP_20100824
+#endif  // NETWORK_MESSAGE_MODIFIER_REMOVE_HEADER_HPP_20100824

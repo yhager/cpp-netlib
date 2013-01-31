@@ -11,10 +11,9 @@
 /** Defines the base type from which all directives inherit
  * to allow friend access to message and other types' internals.
  */
-namespace network { namespace detail {
+namespace network {
+namespace detail {}  // namespace detail
 
-} // namespace detail
+}                    // namespace network
 
-} // namespace network
-
-#endif // NETWORK_DETAIL_DIRECTIVE_BASE_HPP__
+#endif               // NETWORK_DETAIL_DIRECTIVE_BASE_HPP__

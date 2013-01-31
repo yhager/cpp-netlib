@@ -9,10 +9,10 @@
 
 namespace network {
 
-inline void source(message_base & message, std::string const & source_) {
+inline void source(message_base& message, std::string const& source_) {
   message.set_source(source_);
 }
 
-} // namespace network
+}       // namespace network
 
-#endif // NETWORK_MESSAGE_MODIFIER_SOURCE_HPP_20100824
+#endif  // NETWORK_MESSAGE_MODIFIER_SOURCE_HPP_20100824

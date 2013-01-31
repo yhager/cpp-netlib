@@ -27,23 +27,20 @@
 // 
 
 #ifndef NETWORK_STRING_DIRECTIVE
-#define NETWORK_STRING_DIRECTIVE(name)                                      \
-    struct name##_directive {                                               \
-        std::string const & value;                                          \
-        explicit name##_directive(std::string const & value_)               \
-        : value(value_) {}                                                  \
-        name##_directive(name##_directive const & other)                    \
-        : value(other.value) {}                                             \
-        template <class Message>                                            \
-        void operator()(Message & message) const {                          \
-            message.set_##name(value);                                      \
-        }                                                                   \
-    };                                                                      \
-                                                                            \
-    inline name##_directive const                                           \
-    name (std::string const & input) {                                      \
-        return name##_directive(input);                                     \
-    }
+#define NETWORK_STRING_DIRECTIVE(name)\
+  struct name##_directive {\
+    std::string const& value;\
+    explicit name##_directive(std::string const& value_) : value(value_) {}\
+    name##_directive(name##_directive const& other) : value(other.value) {}\
+    template <class Message> void operator()(Message& message) const {\
+      message.set_##name(value);\
+    }\
+  }\
+  ;\
+inline name##_directive const name(std::string const& input) {\
+  return name##_directive(input);\
+}
+
 #endif /* NETWORK_STRING_DIRECTIVE */
 
 #endif /* NETWORK_MESSAGE_DIRECTIVES_DETAIL_STRING_DIRECTIVE_HPP_20100915 */

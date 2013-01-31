@@ -9,13 +9,14 @@
 
 #include <network/protocol/http/request/request_base.hpp>
 
-namespace network { namespace http {
-    
-inline void method(request_base & request, std::string const & method_) {
+namespace network {
+namespace http {
+
+inline void method(request_base& request, std::string const& method_) {
   request.set_method(method_);
 }
 
 }  // namespace http
 }  // namespace network
-    
+
 #endif /* NETWORK_PROTOCOL_HTTP_MESSAGE_MODIFIERS_METHOD_HPP_20101118 */

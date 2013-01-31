@@ -12,7 +12,8 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace network { namespace utils {
+namespace network {
+namespace utils {
 
 struct thread_pool;
 
@@ -20,7 +21,8 @@ struct thread_pool;
 
 }  // namespace network
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 class server_options;
 class sync_server_impl;
@@ -29,11 +31,9 @@ class async_server_connection;
 struct request;
 struct response;
 
-
-template <class SyncHandler>
-class sync_server {
+template <class SyncHandler> class sync_server {
  public:
-  sync_server(server_options const &options, SyncHandler &handler);
+  sync_server(server_options const& options, SyncHandler& handler);
   void run();
   void stop();
   void listen();
@@ -42,15 +42,16 @@ class sync_server {
   typedef http::request request;
   typedef http::response response;
  private:
-  sync_server_impl *pimpl_;
-  sync_server(sync_server const &other);  // = delete
+  sync_server_impl* pimpl_;
+  sync_server(sync_server const& other);      // = delete
   sync_server& operator=(sync_server other);  // = delete
 };
 
-template <class AsyncHandler>
-class async_server {
+template <class AsyncHandler> class async_server {
  public:
-  explicit async_server(server_options const &options, AsyncHandler &handler, utils::thread_pool &pool);
+  explicit async_server(server_options const& options,
+                        AsyncHandler& handler,
+                        utils::thread_pool& pool);
   void run();
   void stop();
   void listen();
@@ -59,18 +60,18 @@ class async_server {
   typedef http::request request;
   typedef boost::shared_ptr<async_server_connection> connection_ptr;
  private:
-  async_server_impl *pimpl_;
-  async_server(async_server const &other);  // = delete
+  async_server_impl* pimpl_;
+  async_server(async_server const& other);      // = delete
   async_server& operator=(async_server other);  // = delete
 };
 
-} // namespace http
+}       // namespace http
 
-} // namespace network
+}       // namespace network
 
 // We're hiding the implementation from here, but still explicitly including
-// it here. This is mostly a style point, to keep this header clean.
+        // it here. This is mostly a style point, to keep this header clean.
 #include <network/protocol/http/server/server.ipp>
 
-#endif // NETWORK_HTTP_SERVER_HPP_
+#endif  // NETWORK_HTTP_SERVER_HPP_
 

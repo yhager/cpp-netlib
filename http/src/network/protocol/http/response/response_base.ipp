@@ -9,7 +9,8 @@
 
 #include <network/protocol/http/response/response_base.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 response_base::~response_base() {
   // default implementation, required only for linking.
@@ -17,5 +18,5 @@ response_base::~response_base() {
 
 }  // namespace http
 }  // namespace network
-  
+
 #endif /* NETWORK_PROTOCOL_HTTP_RESPONSE_RESPONSE_BASE_IPP_20111102 */

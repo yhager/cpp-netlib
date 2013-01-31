@@ -11,10 +11,10 @@
 
 namespace network {
 
-source_wrapper::source_wrapper(message_base const & message):
-  message_(message) {}
+source_wrapper::source_wrapper(message_base const& message)
+    : message_(message) {}
 
-source_wrapper::operator std::string () const {
+source_wrapper::operator std:: string() const {
   if (cache_) {
     return *cache_;
   }

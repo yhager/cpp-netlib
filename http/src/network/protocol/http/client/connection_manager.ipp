@@ -10,7 +10,8 @@
 #include <network/protocol/http/client/connection_manager.hpp>
 #include <network/detail/debug.hpp>
 
-namespace network { namespace http {
+namespace network {
+namespace http {
 
 connection_manager::~connection_manager() {
   NETWORK_MESSAGE("connection_manager::~connection_manager()");

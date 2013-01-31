@@ -14,18 +14,17 @@ namespace network {
 namespace http {
 
 struct protocol_wrapper {
-  explicit protocol_wrapper(request_base const & request);
-  operator std::string () const;
+  explicit protocol_wrapper(request_base const& request);
+  operator std:: string() const;
  private:
-  request_base const & request_;
+  request_base const& request_;
 };
 
-inline protocol_wrapper const
-protocol(request_base const & request) {
+inline protocol_wrapper const protocol(request_base const& request) {
   return protocol_wrapper(request);
 }
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_PROTOCOL_HPP_20100619
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_WRAPPERS_PROTOCOL_HPP_20100619

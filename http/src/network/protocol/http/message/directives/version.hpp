@@ -15,7 +15,7 @@ namespace http {
 
 NETWORK_STRING_DIRECTIVE(version);
 
-} // namespace http
-} // namespace network
+}       // namespace http
+}       // namespace network
 
-#endif // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_VERSION_HPP_20100603
+#endif  // NETWORK_PROTOCOL_HTTP_MESSAGE_DIRECTIVES_VERSION_HPP_20100603
