@@ -83,7 +83,8 @@ if (CPP-NETLIB_BUILD_TESTS)
         cppnetlib-http-message
         cppnetlib-http-message-wrappers
         cppnetlib-http-client
-        cppnetlib-http-client-connections)
+        cppnetlib-http-client-connections
+        cppnetlib-logging)
     if (OPENSSL_FOUND)
         target_link_libraries(cpp-netlib-http-client_test ${OPENSSL_LIBRARIES})
     endif()
