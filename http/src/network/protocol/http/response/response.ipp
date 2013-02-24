@@ -7,8 +7,12 @@
 #ifndef NETWORK_PROTOCOL_HTTP_RESPONSE_RESPONSE_IPP_20111206
 #define NETWORK_PROTOCOL_HTTP_RESPONSE_RESPONSE_IPP_20111206
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <network/protocol/http/response/response.hpp>
+
+#include <algorithm>
 #include <set>
+#include <sstream>
 
 namespace network {
 namespace http {
@@ -91,7 +95,23 @@ struct response_pimpl {
   void get_headers(
       std::string const& name,
       std::function<void(std::string const&, std::string const&)> inserter) {
-    /* FIXME: Do something! */
+    if (removed_headers_.find(name) != removed_headers_.end())
+      return;
+    
+    std::pair<std::multimap<std::string, std::string>::const_iterator,
+              std::multimap<std::string, std::string>::const_iterator> 
+        range;
+    if (!headers_future_.valid()) {
+      range = added_headers_.equal_range(name);
+    } else {
+      std::multimap<std::string, std::string> const& headers_ = 
+          headers_future_.get();
+      range = headers_.equal_range(name);
+    }
+    
+    for (auto it = range.first; it != range.second; ++it) {
+      inserter(it->first, it->second);
+    }
   }
   void get_headers(
       std::function<bool(std::string const&, std::string const&)> predicate,
@@ -113,7 +133,34 @@ struct response_pimpl {
     if (!body_future_.valid()) {
       body = "";
     } else {
-      body = body_future_.get();
+      std::string partial_parsed = body_future_.get();
+      bool chunked = false;
+      auto check = [&](std::string const& key, std::string const& value) {
+        chunked = chunked || boost::iequals(value, "chunked");
+      };
+      get_headers(std::string("Transfer-Encoding"), check);
+      if (chunked) {
+        auto begin = partial_parsed.begin();
+        std::string crlf = "\r\n";
+        for (auto iter = std::search(begin,partial_parsed.end(), crlf.begin(), crlf.end());
+            iter != partial_parsed.end(); 
+            iter = std::search(begin,partial_parsed.end(), crlf.begin(), crlf.end())) {
+          std::string line(begin, iter);
+          if (line.empty()) break;
+          std::stringstream stream(line);
+          int len;
+          stream >> std::hex >> len;
+          iter += 2;
+          if (!len) break;
+          if (len <= partial_parsed.end() - iter) {
+            body.insert(body.end(), iter, iter + len);
+            iter += len;
+          }
+          begin = iter;
+        }
+      } else {
+        std::swap(body, partial_parsed);
+      }
     }
   }
 
