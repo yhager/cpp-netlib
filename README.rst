@@ -43,6 +43,7 @@ submodules:
 ::
 
     $ cd ~/cpp-netlib
+    $ git submodule init
     $ git submodule update
 
 Building with CMake
