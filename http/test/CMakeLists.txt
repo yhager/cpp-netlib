@@ -86,7 +86,7 @@ if (CPP-NETLIB_BUILD_TESTS)
   add_test(cpp-netlib-http-client_test
     ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
 
-  set (SERVER_TESTS server_simple_sessions_test)
+  set (SERVER_TESTS server_simple_sessions_test server_dynamic_dispatcher_test)
   foreach (test ${SERVER_TESTS})
     add_executable(cpp-netlib-http-${test} ${test}.cpp)
     add_dependencies(cpp-netlib-http-${test} cppnetlib-http-server)
