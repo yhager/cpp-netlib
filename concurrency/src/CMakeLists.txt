@@ -5,25 +5,5 @@
 
 include_directories(${CPP-NETLIB_SOURCE_DIR}/concurrency/src)
 
-if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-  set(CPP-NETLIB_CXXFLAGS "-Wall -std=c++11")
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-  CHECK_CXX_COMPILER_FLAG(-std=c++11 HAVE_STD11)
-  if (CPP-NETLIB_DISABLE_LIBCXX)
-    set(CPP-NETLIB_CXXFLAGS "-Wall -std=c++11")
-  else()
-    set(CPP-NETLIB_CXXFLAGS "-Wall -std=c++11 -stdlib=libc++")
-  endif()
-endif()
-
 set(CPP-NETLIB_CONCURRENCY_SRCS thread_pool.cpp)
 add_library(cppnetlib-concurrency ${CPP-NETLIB_CONCURRENCY_SRCS})
-foreach (src_file ${CPP-NETLIB_CONCURRENCY_SRCS})
-if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-endif()
-endforeach(src_file)

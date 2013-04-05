@@ -7,8 +7,6 @@ include_directories(${CPP-NETLIB_SOURCE_DIR}/concurrency/src
   ${GTEST_INCLUDE_DIRS}
 )
 
-set_source_files_properties(thread_pool_test.cpp
-  PROPERTIES COMPILE_FLAGS "-Wall")
 add_executable(cpp-netlib-thread_pool_test thread_pool_test.cpp)
 target_link_libraries(cpp-netlib-thread_pool_test
   cppnetlib-concurrency

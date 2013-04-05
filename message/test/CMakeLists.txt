@@ -10,10 +10,6 @@ include_directories(${CPP-NETLIB_SOURCE_DIR}/message/src)
 if (CPP-NETLIB_BUILD_TESTS)
   set(TESTS message_test message_transform_test)
   foreach (test ${TESTS})
-    if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-      set_source_files_properties(${test}.cpp
-	PROPERTIES COMPILE_FLAGS "-Wall")
-    endif()
     add_executable(cpp-netlib-${test} ${test}.cpp)
     add_dependencies(cpp-netlib-${test} cppnetlib-message cppnetlib-message-directives cppnetlib-message-wrappers)
     target_link_libraries(cpp-netlib-${test}
