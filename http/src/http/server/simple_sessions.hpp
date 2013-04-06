@@ -23,7 +23,8 @@ struct simple_sessions {
   simple_sessions& operator=(const simple_sessions&) = delete;
   simple_sessions& operator=(simple_sessions&) = delete;
 
-  session &lookup(boost::string_ref session_id);
+  session lookup(boost::string_ref session_id);
+  void update(boost::string_ref session_id, session&& session);
  private:
   typedef std::unordered_map<std::string, session> session_map_type;
   std::mutex sessions_mutex_;

@@ -10,7 +10,7 @@
 namespace network {
 namespace http {
 
-session& simple_sessions::lookup(boost::string_ref session_id) {
+session simple_sessions::lookup(boost::string_ref session_id) {
   std::string real_session_id =
       session_id.empty() ? std::to_string(next_session_id_.fetch_add(
           1, std::memory_order::memory_order_seq_cst)) :
@@ -24,6 +24,24 @@ session& simple_sessions::lookup(boost::string_ref session_id) {
     assert(result.first->second["id"] != "");
   }
   return result.first->second;
+}
+
+void simple_sessions::update(boost::string_ref session_id, session&& session) {
+  std::string real_session_id =
+      session_id.empty() ? std::to_string(next_session_id_.fetch_add(
+          1, std::memory_order::memory_order_seq_cst)) :
+      static_cast<std::string>(session_id);
+  assert(real_session_id != "");
+  std::lock_guard<std::mutex> lock_sessions(sessions_mutex_);
+  auto it = sessions_.find(real_session_id);
+  if (it != sessions_.end()) {
+    it->second = session;
+  } else {
+    bool added = false;
+    std::tie(it, added) = sessions_.insert(make_pair(std::move(real_session_id),
+                                                     session));
+    assert(added && " -- for some reason we cannot add here.");
+  }
 }
 
 }  // namespace http
