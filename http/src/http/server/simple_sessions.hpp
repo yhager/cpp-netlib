@@ -11,6 +11,7 @@
 #include <http/server/session.hpp>
 #include <boost/utility/string_ref.hpp>
 #include <atomic>
+#include <thread>
 
 namespace network {
 namespace http {
@@ -25,6 +26,7 @@ struct simple_sessions {
   session &lookup(boost::string_ref session_id);
  private:
   typedef std::unordered_map<std::string, session> session_map_type;
+  std::mutex sessions_mutex_;
   session_map_type sessions_;
   std::atomic_uint_fast64_t next_session_id_;
 };
