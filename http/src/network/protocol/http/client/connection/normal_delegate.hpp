@@ -41,8 +41,8 @@ struct normal_delegate : connection_delegate {
   boost::asio::io_service& service_;
   std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
 
-  normal_delegate(normal_delegate const&);      // = delete
-  normal_delegate& operator=(normal_delegate);  // = delete
+  normal_delegate(normal_delegate const&) = delete;
+  normal_delegate& operator=(normal_delegate) = delete;
 };
 
 }  // namespace http

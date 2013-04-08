@@ -33,7 +33,8 @@ connection_delegate_factory::connection_delegate_ptr connection_delegate_factory
   if (https) {
 #ifdef NETWORK_ENABLE_HTTPS
     NETWORK_MESSAGE("creating an SSL delegate");
-    delegate.reset(new ssl_delegate(service, options));
+    std::shared_ptr<ssl_delegate> delegate_ptr(new ssl_delegate(service, options));
+    delegate = std::move(delegate_ptr);
 #else
     NETWORK_MESSAGE("creating an SSL delegate, but not supported");
     BOOST_THROW_EXCEPTION(std::runtime_error("HTTPS not supported."));
