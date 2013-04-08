@@ -61,6 +61,7 @@ if (CPP-NETLIB_BUILD_TESTS)
       ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
   endforeach(test)
 
+  # HTTP Client tests.
   add_executable(cpp-netlib-http-client_test client_test.cpp)
   target_link_libraries(cpp-netlib-http-client_test
     ${Boost_LIBRARIES}
@@ -86,6 +87,7 @@ if (CPP-NETLIB_BUILD_TESTS)
   add_test(cpp-netlib-http-client_test
     ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
 
+  # HTTP Server tests
   set (SERVER_TESTS server_simple_sessions_test server_dynamic_dispatcher_test server_test)
   foreach (test ${SERVER_TESTS})
     add_executable(cpp-netlib-http-${test} ${test}.cpp)
