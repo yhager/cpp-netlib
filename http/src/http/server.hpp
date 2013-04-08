@@ -11,14 +11,15 @@
 #include <utility>
 #include <functional>
 #include <boost/utility/string_ref.hpp>
+#include <http/server/simple_sessions.hpp>
 
 namespace network {
 namespace http {
 
 struct dynamic_dispatcher;
-struct simple_sessions;
 struct no_auth;
 struct default_connection_manager;
+struct connection;
 
 template <class Handler = dynamic_dispatcher,
           class SessionManager = simple_sessions, class Authenticator = no_auth,
@@ -27,8 +28,8 @@ struct basic_server {
   void register_handler(
       boost::string_ref spec,
       std::function<void(
-          typename SessionManager::session &,
-          std::shared_ptr<typename ConnectionManager::connection>)> handler);
+          session &,
+          std::shared_ptr<connection>)> handler);
 };
 
 typedef basic_server<> server;
