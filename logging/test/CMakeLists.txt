@@ -15,15 +15,22 @@ if (CPP-NETLIB_BUILD_TESTS)
     logging_log_record
     logging_custom_handler
     )
+  if(CPP-NETLIB_BUILD_SINGLE_LIB)
+    set(link_cppnetlib_lib cppnetlib)
+    set(dependency cppnetlib)
+  else()
+    set(link_cppnetlib_lib cppnetlib-logging)
+    set(dependency cppnetlib-logging)
+  endif()
   foreach (test ${TESTS})
     if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
       set_source_files_properties(${test}.cpp
-	PROPERTIES COMPILE_FLAGS "-Wall")
+  PROPERTIES COMPILE_FLAGS "-Wall")
     endif()
     add_executable(cpp-netlib-${test} ${test}.cpp)
-    add_dependencies(cpp-netlib-${test} cppnetlib-logging)
+    add_dependencies(cpp-netlib-${test} ${dependency})
     target_link_libraries(cpp-netlib-${test}
-      ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES} cppnetlib-logging)
+      ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${link_cppnetlib_lib})
     set_target_properties(cpp-netlib-${test}
       PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-${test}

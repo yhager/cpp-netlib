@@ -9,16 +9,29 @@ include_directories(${CPP-NETLIB_SOURCE_DIR}/message/src)
 
 if (CPP-NETLIB_BUILD_TESTS)
   set(TESTS message_test message_transform_test)
+  if(CPP-NETLIB_BUILD_SINGLE_LIB)
+    set(link_cppnetlib_lib cppnetlib)
+    set(dependencies cppnetlib)
+  else()
+    set(link_cppnetlib_lib cppnetlib-message
+      cppnetlib-message-directives
+      cppnetlib-message-wrappers)
+    set(dependencies cppnetlib-message
+      cppnetlib-message-directives
+      cppnetlib-message-wrappers)
+  endif()
   foreach (test ${TESTS})
     if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
       set_source_files_properties(${test}.cpp
-	PROPERTIES COMPILE_FLAGS "-Wall")
+  PROPERTIES COMPILE_FLAGS "-Wall")
     endif()
     add_executable(cpp-netlib-${test} ${test}.cpp)
-    add_dependencies(cpp-netlib-${test} cppnetlib-message cppnetlib-message-directives cppnetlib-message-wrappers)
+    add_dependencies(cpp-netlib-${test} ${dependencies})
     target_link_libraries(cpp-netlib-${test}
-     ${Boost_SYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES}
-     cppnetlib-message cppnetlib-message-directives cppnetlib-message-wrappers)
+      ${Boost_SYSTEM_LIBRARY}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${GTEST_BOTH_LIBRARIES}
+      ${link_cppnetlib_lib})
     if (OPENSSL_FOUND)
       target_link_libraries(cpp-netlib-${test} ${OPENSSL_LIBRARIES})
     endif()
