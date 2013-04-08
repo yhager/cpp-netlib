@@ -5,16 +5,15 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
-#include <http/server.hpp>
+#include <http/server/default_connection_manager.hpp>
 
 namespace http = network::http;
-namespace net = network;
 
-namespace {
+namespace  {
 
-TEST(server_test, default_constructor) {
-  http::server server;
-  (void) server;
+TEST(default_connection_manager_test, constructor_test) {
+  http::default_connection_manager manager;
+  (void)manager;
 }
 
-}  // namespace 
+}  // namespace   

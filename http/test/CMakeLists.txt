@@ -27,12 +27,8 @@ set( CPP-NETLIB_LOGGING_LIB cppnetlib-logging )
 
 if (CPP-NETLIB_BUILD_TESTS)
   # These are the internal (simple) tests.
-  set (MESSAGE_TESTS
-    request_base_test
-    request_test
-    response_test
-    response_incremental_parser_test
-    )
+  set (MESSAGE_TESTS request_base_test request_test response_test
+    response_incremental_parser_test)
   foreach ( test ${MESSAGE_TESTS} )
     add_executable(cpp-netlib-http-${test} ${test}.cpp)
     add_dependencies(cpp-netlib-http-${test}
@@ -85,10 +81,11 @@ if (CPP-NETLIB_BUILD_TESTS)
   set_target_properties(cpp-netlib-http-client_test
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
   add_test(cpp-netlib-http-client_test
-    ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
+    ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-client_test)
 
   # HTTP Server tests
-  set (SERVER_TESTS server_simple_sessions_test server_dynamic_dispatcher_test server_test)
+  set (SERVER_TESTS server_simple_sessions_test server_dynamic_dispatcher_test
+    server_default_connection_manager_test server_test)
   foreach (test ${SERVER_TESTS})
     add_executable(cpp-netlib-http-${test} ${test}.cpp)
     add_dependencies(cpp-netlib-http-${test} cppnetlib-http-server)
