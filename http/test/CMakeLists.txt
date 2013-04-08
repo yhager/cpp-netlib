@@ -91,7 +91,7 @@ if (CPP-NETLIB_BUILD_TESTS)
     set_target_properties(cpp-netlib-http-client_test
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-http-client_test
-        ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-${test})
+        ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-client_test)
 
 #    set ( SERVER_API_TESTS
 #        server_constructor_test
