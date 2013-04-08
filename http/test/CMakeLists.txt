@@ -17,14 +17,6 @@ if (OPENSSL_FOUND)
   add_definitions(-DNETWORK_ENABLE_HTTPS)
 endif()
 
-if( NOT CPP-NETLIB_DISABLE_LOGGING )
-  set( CPP-NETLIB_LOGGING_LIB cppnetlib-logging )
-endif()
-
-# this library name is defined only if we created the target
-# if not then it will be empty
-set( CPP-NETLIB_LOGGING_LIB cppnetlib-logging )
-
 if (CPP-NETLIB_BUILD_TESTS)
   # These are the internal (simple) tests.
   set (MESSAGE_TESTS request_base_test request_test response_test
@@ -37,8 +29,7 @@ if (CPP-NETLIB_BUILD_TESTS)
       cppnetlib-http-message
       cppnetlib-http-message-wrappers
       cppnetlib-uri
-      cppnetlib-constants
-      )
+      cppnetlib-constants)
     target_link_libraries(cpp-netlib-http-${test}
       ${Boost_LIBRARIES}
       ${GTEST_BOTH_LIBRARIES}
@@ -49,8 +40,7 @@ if (CPP-NETLIB_BUILD_TESTS)
       cppnetlib-http-message
       cppnetlib-http-message-wrappers
       cppnetlib-uri
-      cppnetlib-constants
-      )
+      cppnetlib-constants)
     set_target_properties(cpp-netlib-http-${test}
       PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-http-${test}
@@ -73,8 +63,7 @@ if (CPP-NETLIB_BUILD_TESTS)
     cppnetlib-http-message
     cppnetlib-http-message-wrappers
     cppnetlib-http-client
-    cppnetlib-http-client-connections
-    cppnetlib-logging)
+    cppnetlib-http-client-connections)
   if (OPENSSL_FOUND)
     target_link_libraries(cpp-netlib-http-client_test ${OPENSSL_LIBRARIES})
   endif()

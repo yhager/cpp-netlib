@@ -14,6 +14,7 @@ if( NOT CPP-NETLIB_DISABLE_LOGGING )
   # this library name is defined only if we created the target
   # if not then it will be empty
   set( CPP-NETLIB_LOGGING_LIB cppnetlib-logging )
+  add_definitions(-DNETWORK_ENABLE_LOGGING)
 
   if(CPP-NETLIB_BUILD_TESTS)
     enable_testing()
