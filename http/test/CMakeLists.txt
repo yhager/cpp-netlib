@@ -30,34 +30,37 @@ if (CPP-NETLIB_BUILD_TESTS)
         request_base_test
         request_test
         response_test
-        response_incremental_parser_test
-        )
+        response_incremental_parser_test)
+    if(CPP-NETLIB_BUILD_SINGLE_LIB)
+      set(link_cppnetlib_lib cppnetlib)
+      set(dependencies cppnetlib)
+    else()
+      set(link_cppnetlib_lib cppnetlib-message
+            cppnetlib-message-wrappers
+            cppnetlib-http-message
+            cppnetlib-http-message-wrappers
+            cppnetlib-uri
+            cppnetlib-constants)
+      set(dependencies cppnetlib-message
+            cppnetlib-message-wrappers
+            cppnetlib-http-message
+            cppnetlib-http-message-wrappers
+            cppnetlib-uri
+            cppnetlib-constants)
+    endif()
     foreach ( test ${MESSAGE_TESTS} )
         if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
             set_source_files_properties(${test}.cpp
                 PROPERTIES COMPILE_FLAGS "-Wall")
         endif()
         add_executable(cpp-netlib-http-${test} ${test}.cpp)
-        add_dependencies(cpp-netlib-http-${test}
-            cppnetlib-message
-            cppnetlib-message-wrappers
-            cppnetlib-http-message
-            cppnetlib-http-message-wrappers
-            cppnetlib-uri
-            cppnetlib-constants
-            )
+        add_dependencies(cpp-netlib-http-${test} ${dependencies})
         target_link_libraries(cpp-netlib-http-${test}
             ${Boost_LIBRARIES}
             ${GTEST_BOTH_LIBRARIES}
             ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
             ${CMAKE_THREAD_LIBS_INIT}
-            cppnetlib-message
-            cppnetlib-message-wrappers
-            cppnetlib-http-message
-            cppnetlib-http-message-wrappers
-            cppnetlib-uri
-            cppnetlib-constants
-            )
+            ${link_cppnetlib_lib})
         set_target_properties(cpp-netlib-http-${test}
             PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
         add_test(cpp-netlib-http-${test}
@@ -68,13 +71,10 @@ if (CPP-NETLIB_BUILD_TESTS)
         set_source_files_properties(client_test.cpp
             PROPERTIES COMPILE_FLAGS "-Wall")
     endif()
-    add_executable(cpp-netlib-http-client_test client_test.cpp)
-    target_link_libraries(cpp-netlib-http-client_test
-        ${Boost_LIBRARIES}
-        ${GTEST_BOTH_LIBRARIES}
-        ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-        cppnetlib-constants
+    if(CPP-NETLIB_BUILD_SINGLE_LIB)
+      set(link_cppnetlib_lib cppnetlib)
+    else()
+      set(link_cppnetlib_lib cppnetlib-constants
         cppnetlib-uri
         cppnetlib-message
         cppnetlib-message-wrappers
@@ -85,6 +85,14 @@ if (CPP-NETLIB_BUILD_TESTS)
         cppnetlib-http-client
         cppnetlib-http-client-connections
         cppnetlib-logging)
+    endif()
+    add_executable(cpp-netlib-http-client_test client_test.cpp)
+    target_link_libraries(cpp-netlib-http-client_test
+        ${Boost_LIBRARIES}
+        ${GTEST_BOTH_LIBRARIES}
+        ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${link_cppnetlib_lib})
     if (OPENSSL_FOUND)
         target_link_libraries(cpp-netlib-http-client_test ${OPENSSL_LIBRARIES})
     endif()

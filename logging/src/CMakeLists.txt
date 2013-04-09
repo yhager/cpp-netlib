@@ -15,8 +15,10 @@ elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
 endif()
 
 include_directories(${CPP-NETLIB_SOURCE_DIR}/logging/src)
-set(CPP-NETLIB_LOGGING_SRCS logging.cpp)
-add_library(cppnetlib-logging ${CPP-NETLIB_LOGGING_SRCS})
+set(CPP-NETLIB_LOGGING_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/logging.cpp)
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-logging ${CPP-NETLIB_LOGGING_SRCS})
+endif()
 foreach (src_file ${CPP-NETLIB_LOGGING_SRCS})
 if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
     set_source_files_properties(${src_file}
@@ -26,3 +28,6 @@ elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
         PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
 endif()
 endforeach(src_file)
+
+# propagate sources to parent directory for one-lib-build
+set(CPP-NETLIB_LOGGING_SRCS ${CPP-NETLIB_LOGGING_SRCS} PARENT_SCOPE)
