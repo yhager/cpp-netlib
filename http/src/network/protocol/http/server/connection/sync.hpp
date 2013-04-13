@@ -64,7 +64,7 @@ class sync_server_connection
               << socket_.remote_endpoint().port();
     request_.set_source(ip_stream.str());
     socket_.async_read_some(boost::asio::buffer(read_buffer_),
-                            wrapper_.wrap(boost::bind(
+                            wrapper_.wrap(std::bind(
                                 &sync_server_connection::handle_read_data,
                                 sync_server_connection::shared_from_this(),
                                 method,
@@ -196,7 +196,7 @@ class sync_server_connection
                   socket_,
                   response_buffers,
                   wrapper_.wrap(
-                      boost::bind(&sync_server_connection::handle_write,
+                      std::bind(&sync_server_connection::handle_write,
                                   sync_server_connection::shared_from_this(),
                                   boost::asio::placeholders::error)));
             }
@@ -235,7 +235,7 @@ class sync_server_connection
         socket(),
         boost::asio::buffer(bad_request, strlen(bad_request)),
         wrapper_.wrap(
-            boost::bind(&sync_server_connection::client_error_sent,
+            std::bind(&sync_server_connection::client_error_sent,
                         sync_server_connection::shared_from_this(),
                         boost::asio::placeholders::error,
                         boost::asio::placeholders::bytes_transferred)));
@@ -254,7 +254,7 @@ class sync_server_connection
 
   void read_more(state_t state) {
     socket_.async_read_some(boost::asio::buffer(read_buffer_),
-                            wrapper_.wrap(boost::bind(
+                            wrapper_.wrap(std::bind(
                                 &sync_server_connection::handle_read_data,
                                 sync_server_connection::shared_from_this(),
                                 state,

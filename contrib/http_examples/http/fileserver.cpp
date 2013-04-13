@@ -143,7 +143,7 @@ struct connection_handler : std::enable_shared_from_this<connection_handler> {
     connection->write(boost::asio::const_buffers_1(
         static_cast<char const*>(mmaped_region.first) + offset,
         rightmost_bound),
-                      boost::bind(&connection_handler::handle_chunk,
+                      std::bind(&connection_handler::handle_chunk,
                                   connection_handler::shared_from_this(),
                                   mmaped_region,
                                   rightmost_bound,

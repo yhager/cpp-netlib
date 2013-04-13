@@ -32,7 +32,8 @@
 #include <vector>
 #include <iterator>
 #include <mutex>
-#include <boost/bind.hpp>
+// #include <boost/bind.hpp>
+#include <functional>
 #include <network/constants.hpp>
 
 #ifndef NETWORK_HTTP_SERVER_CONNECTION_HEADER_BUFFER_MAX_SIZE
@@ -213,7 +214,7 @@ class async_server_connection
     }
 
     write_headers_only(
-        boost::bind(&async_server_connection::do_nothing,
+        std::bind(&async_server_connection::do_nothing,
                     async_server_connection::shared_from_this()));
   }
 
@@ -279,7 +280,7 @@ class async_server_connection
       input_range input = boost::make_iterator_range(new_start,
                                                      read_buffer_.end());
       thread_pool()
-          .post(boost::bind(callback,
+          .post(std::bind(callback,
                             input,
                             boost::system::error_code(),
                             std::distance(new_start, data_end),
@@ -290,7 +291,7 @@ class async_server_connection
 
     socket().async_read_some(
         boost::asio::buffer(read_buffer_),
-        strand.wrap(boost::bind(&async_server_connection::wrap_read_handler,
+        strand.wrap(std::bind(&async_server_connection::wrap_read_handler,
                                 async_server_connection::shared_from_this(),
                                 callback,
                                 boost::asio::placeholders::error,
@@ -315,7 +316,7 @@ class async_server_connection
                                              data_end = read_buffer_.begin();
     std::advance(data_end, bytes_transferred);
     thread_pool()
-        .post(boost::bind(callback,
+        .post(std::bind(callback,
                           boost::make_iterator_range(data_start, data_end),
                           ec,
                           bytes_transferred,
@@ -371,7 +372,7 @@ class async_server_connection
   void read_more(state_t state) {
     socket_.async_read_some(
         boost::asio::buffer(read_buffer_),
-        strand.wrap(boost::bind(&async_server_connection::handle_read_data,
+        strand.wrap(std::bind(&async_server_connection::handle_read_data,
                                 async_server_connection::shared_from_this(),
                                 state,
                                 boost::asio::placeholders::error,
@@ -473,7 +474,7 @@ class async_server_connection
             }
             new_start = boost::end(result_range);
             thread_pool()
-                .post(boost::bind(handler,
+                .post(std::bind(handler,
                                   boost::cref(request_),
                                   async_server_connection::shared_from_this()));
             return;
@@ -502,7 +503,7 @@ class async_server_connection
     boost::asio::async_write(
         socket(),
         boost::asio::buffer(bad_request, strlen(bad_request)),
-        strand.wrap(boost::bind(&async_server_connection::client_error_sent,
+        strand.wrap(std::bind(&async_server_connection::client_error_sent,
                                 async_server_connection::shared_from_this(),
                                 boost::asio::placeholders::error,
                                 boost::asio::placeholders::bytes_transferred)));
@@ -528,7 +529,7 @@ class async_server_connection
     boost::asio::async_write(
         socket(),
         headers_buffer,
-        strand.wrap(boost::bind(&async_server_connection::handle_write_headers,
+        strand.wrap(std::bind(&async_server_connection::handle_write_headers,
                                 async_server_connection::shared_from_this(),
                                 callback,
                                 boost::asio::placeholders::error,
@@ -561,7 +562,7 @@ class async_server_connection
       boost::system::error_code const& ec,
       std::size_t bytes_transferred) {
     // we want to forget the temporaries and buffers
-    thread_pool().post(boost::bind(callback, ec));
+    thread_pool().post(std::bind(callback, ec));
   }
 
   template <class Range>
@@ -621,7 +622,7 @@ class async_server_connection
     std::function<void(boost::system::error_code)> callback_function = callback;
 
     std::function<void()> continuation =
-        boost::bind(
+        std::bind(
             &async_server_connection::template write_vec_impl<
                                                    ConstBufferSeq,
                                                    std::function<void(
@@ -643,7 +644,7 @@ class async_server_connection
     boost::asio::async_write(
         socket_,
         seq,
-        boost::bind(&async_server_connection::handle_write,
+        std::bind(&async_server_connection::handle_write,
                     async_server_connection::shared_from_this(),
                     callback_function,
                     temporaries,
