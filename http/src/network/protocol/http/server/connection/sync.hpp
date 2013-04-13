@@ -14,7 +14,7 @@
 
 #include <utility>
 #include <iterator>
-#include <boost/enable_shared_from_this.hpp>
+// #include <boost/enable_shared_from_this.hpp>
 #include <network/constants.hpp>
 #include <network/protocol/http/server/request_parser.hpp>
 #include <network/protocol/http/request.hpp>
@@ -43,7 +43,7 @@ extern void parse_headers(
 #endif
 
 class sync_server_connection
-    : public boost::enable_shared_from_this<sync_server_connection> {
+    : public std::enable_shared_from_this<sync_server_connection> {
  public:
   sync_server_connection(boost::asio::io_service& service,
                          std::function<void(request const&, response&)> handler)

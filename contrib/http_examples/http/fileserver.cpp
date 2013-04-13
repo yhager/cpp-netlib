@@ -101,7 +101,7 @@ struct file_cache {
 
 };
 
-struct connection_handler : boost::enable_shared_from_this<connection_handler> {
+struct connection_handler : std::enable_shared_from_this<connection_handler> {
   explicit connection_handler(file_cache& cache) : file_cache_(cache) {}
 
   void operator()(std::string const& path,
