@@ -7,10 +7,24 @@
 #ifndef NETWORK_HTTP_SERVER_DYNAMIC_DISPATCHER_HPP_20130327
 #define NETWORK_HTTP_SERVER_DYNAMIC_DISPATCHER_HPP_20130327
 
+#include <http/server/session.hpp>
+#include <http/server/connection.hpp>
+#include <string>
+#include <functional>
+#include <memory>
+#include <unordered_map>
+
 namespace network {
 namespace http {
 
-struct dynamic_dispatcher{};
+struct dynamic_dispatcher{
+  void register_handler(boost::string_ref pattern, std::function<void(session&, std::shared_ptr<connection>)> handler);
+  void dispatch(boost::string_ref path, session& s, std::shared_ptr<connection> c);
+  private:
+  std::unordered_map<
+      std::string,
+      std::function<void(session &, std::shared_ptr<connection>)> > handlers_;
+};
 
 }  // namespace http
 }  // namespace network

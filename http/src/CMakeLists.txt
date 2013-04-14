@@ -128,5 +128,7 @@ set(CPP-NETLIB_CONSTANTS_SRCS constants.cpp)
 add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
 
 # Server implementation files.
-set(CPP-NETLIB_HTTP_SERVER_SRCS http/server/session.cpp http/server/simple_sessions.cpp)
+set(CPP-NETLIB_HTTP_SERVER_SRCS
+  http/server/session.cpp http/server/simple_sessions.cpp
+  http/server/dynamic_dispatcher.cpp)
 add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
