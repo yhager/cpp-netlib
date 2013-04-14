@@ -246,19 +246,18 @@ struct http_async_connection_pimpl
                             boost::system::error_code const& ec,
                             std::size_t bytes_transferred) {
     NETWORK_MESSAGE("http_async_connection_pimpl::handle_received_data(...)");
+#ifdef NETWORK_ENABLE_HTTPS
     // Okay, there's some weirdness with Boost.Asio's handling of SSL errors
     // so we need to do some acrobatics to make sure that we're handling the
     // short-read errors correctly. This is such a PITA that we have to deal
     // with this here.
-    static long short_read_error = 335544539;
+    constexpr static long short_read_error = 335544539;
     bool is_short_read_error =
-#ifdef NETWORK_ENABLE_HTTPS
-        ec.category() == boost::asio::error::ssl_category &&
-        ec.value() == short_read_error
+        (ec.category() == boost::asio::error::ssl_category) &&
+        (ec.value() == short_read_error);
 #else
-        false
+    constexpr bool is_short_read_error = false;
 #endif
-        ;
     if (!ec || ec == boost::asio::error::eof || is_short_read_error) {
       NETWORK_MESSAGE("processing data chunk, no error encountered so far...");
       boost::logic::tribool parsed_ok;

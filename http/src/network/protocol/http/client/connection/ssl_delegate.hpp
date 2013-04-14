@@ -11,7 +11,6 @@
 #include <boost/asio/ssl.hpp>
 #include <network/protocol/http/client/connection/connection_delegate.hpp>
 #include <network/protocol/http/client/options.hpp>
-#include <boost/enable_shared_from_this.hpp>
 
 namespace boost {
 namespace asio {
@@ -23,7 +22,7 @@ namespace network {
 namespace http {
 
 struct ssl_delegate : connection_delegate,
-    boost::enable_shared_from_this<ssl_delegate> {
+    std::enable_shared_from_this<ssl_delegate> {
   ssl_delegate(boost::asio::io_service& service, client_options const& options);
 
   virtual void connect(

@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     util::thread_pool pool;
     async_server server_instance(ASYNC_SERVER_TEST_CONFIG);
 
-    boost::thread running_thread(boost::bind(&async_server::run,
+    boost::thread running_thread(std::bind(&async_server::run,
                                              &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
@@ -60,11 +60,11 @@ int main(int argc, char* argv[]) {
     util::thread_pool pool;
     async_server server_instance(ASYNC_SERVER_TEST_CONFIG);
 
-    boost::thread running_thread(boost::bind(&async_server::run,
+    boost::thread running_thread(std::bind(&async_server::run,
                                              &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread stopping_thread(boost::bind(&async_server::stop,
+    boost::thread stopping_thread(std::bind(&async_server::stop,
                                               &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
@@ -78,19 +78,19 @@ int main(int argc, char* argv[]) {
     util::thread_pool pool;
     async_server server_instance(ASYNC_SERVER_TEST_CONFIG);
 
-    boost::thread running_thread(boost::bind(&async_server::run,
+    boost::thread running_thread(std::bind(&async_server::run,
                                              &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread stopping_thread(boost::bind(&async_server::stop,
+    boost::thread stopping_thread(std::bind(&async_server::stop,
                                               &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread second_running_thread(boost::bind(&async_server::run,
+    boost::thread second_running_thread(std::bind(&async_server::run,
                                                     &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread second_stopping_thread(boost::bind(&async_server::stop,
+    boost::thread second_stopping_thread(std::bind(&async_server::stop,
                                                      &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
@@ -106,15 +106,15 @@ int main(int argc, char* argv[]) {
     util::thread_pool pool;
     async_server server_instance(ASYNC_SERVER_TEST_CONFIG);
 
-    boost::thread running_thread(boost::bind(&async_server::run,
+    boost::thread running_thread(std::bind(&async_server::run,
                                              &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread second_running_thread(boost::bind(&async_server::run,
+    boost::thread second_running_thread(std::bind(&async_server::run,
                                                     &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread stopping_thread(boost::bind(&async_server::stop,
+    boost::thread stopping_thread(std::bind(&async_server::stop,
                                               &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
@@ -129,15 +129,15 @@ int main(int argc, char* argv[]) {
     util::thread_pool pool;
     async_server server_instance(ASYNC_SERVER_TEST_CONFIG);
 
-    boost::thread running_thread(boost::bind(&async_server::run,
+    boost::thread running_thread(std::bind(&async_server::run,
                                              &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread stopping_thread(boost::bind(&async_server::stop,
+    boost::thread stopping_thread(std::bind(&async_server::stop,
                                               &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 
-    boost::thread second_stopping_thread(boost::bind(&async_server::stop,
+    boost::thread second_stopping_thread(std::bind(&async_server::stop,
                                                      &server_instance));
     boost::this_thread::sleep(ASYNC_SERVER_SLEEP_TIME);
 

@@ -30,9 +30,8 @@ struct connection_delegate_factory {
   virtual ~connection_delegate_factory();
 
  private:
-  connection_delegate_factory(connection_delegate_factory const&);  // = delete
-  connection_delegate_factory& operator=(
-      connection_delegate_factory);  // = delete
+  connection_delegate_factory(connection_delegate_factory const &) = delete;
+  connection_delegate_factory &operator=(connection_delegate_factory) = delete;
 };
 
 }  // namespace http

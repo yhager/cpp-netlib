@@ -13,7 +13,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/enable_shared_from_this.hpp>
+// #include <boost/enable_shared_from_this.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <functional>
 #include <functional>
@@ -47,7 +47,7 @@ struct simple_async_connection_manager : connection_manager {
 struct http_1_1_async_connection;
 
 struct http_1_1_async_connection_manager : connection_manager,
-    enable_shared_from_this<http_1_1_async_connection_manager> {
+    std::enable_shared_from_this<http_1_1_async_connection_manager> {
   http_1_1_async_connection_manager(bool cache_resolved,
                                     bool follow_redirects,
                                     optional<std::string> openssl_certificate,

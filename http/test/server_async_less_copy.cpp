@@ -42,7 +42,7 @@ struct async_hello_world {
     connection->set_headers(boost::make_iterator_range(headers, headers + 4));
     std::vector<boost::asio::const_buffer> iovec;
     iovec.push_back(boost::asio::const_buffer(hello_world, 13));
-    connection->write(iovec, boost::bind(&async_hello_world::error, this, _1));
+    connection->write(iovec, std::bind(&async_hello_world::error, this, _1));
   }
 
   void error(boost::system::error_code const& ec) {

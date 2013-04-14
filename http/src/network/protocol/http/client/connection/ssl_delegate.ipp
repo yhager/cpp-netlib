@@ -10,7 +10,6 @@
 #include <network/protocol/http/client/options.hpp>
 #include <network/protocol/http/client/connection/ssl_delegate.hpp>
 #include <boost/asio/placeholders.hpp>
-#include <functional>
 #include <network/detail/debug.hpp>
 
 network::http::ssl_delegate::ssl_delegate(boost::asio::io_service& service,
@@ -48,8 +47,7 @@ void network::http::ssl_delegate::connect(
   } else {
     NETWORK_MESSAGE("not verifying peer");
     context_->set_default_verify_paths();
-    context_->set_verify_mode(boost::asio::ssl::context::verify_peer);
-    context_->set_verify_callback(boost::asio::ssl::rfc2818_verification(host));
+    context_->set_verify_mode(boost::asio::ssl::context::verify_none);
   }
   socket_.reset(new boost::asio::ssl::stream<
                         boost::asio::ip::tcp::socket>(service_, *context_));
