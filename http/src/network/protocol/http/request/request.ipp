@@ -161,6 +161,15 @@ request& request::operator=(request rhs) {
   return *this;
 }
 
+void request::swap(request& other ) {
+  std::swap(pimpl_, other.pimpl_);
+  request_storage_base::swap(other);
+}
+
+bool request::equals(request const& other) const {
+  return pimpl_->equals(*other.pimpl_) && request_storage_base::equals(other);
+} 
+
 // From message_base...
 // Mutators
 void request::set_destination(std::string const& destination) {

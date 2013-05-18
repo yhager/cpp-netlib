@@ -30,9 +30,8 @@ struct request : request_base {
   request(request const&);
   request& operator=(request);
 
-  // Then we lift the swap and equals implementation.
-  using request_base::swap;
-  using request_base::equals;
+  virtual void swap(request& other);
+  virtual bool equals(request const& other) const;
 
   // From message_base...
   // Mutators
