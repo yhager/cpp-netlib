@@ -42,8 +42,8 @@ TEST(request_test, request_storage_flow) {
   ASSERT_EQ(bytes_read, sizeof(data));
   std::string flattened;
   simple.flatten(flattened);
-  ASSERT_EQ(flattened, std::string(output, sizeof(data)));
-  ASSERT_EQ(std::string(data, sizeof(data)), std::string(output, sizeof(data)));
+  ASSERT_EQ(flattened, output);
+  ASSERT_EQ(std::string(data, sizeof(data)), output);
   simple.clear();
 }
 
@@ -58,9 +58,8 @@ TEST(request_test, request_storage_copy) {
   ASSERT_EQ(bytes_read, sizeof(quick_brown));
   std::string flattened;
   copy.flatten(flattened);
-  ASSERT_EQ(flattened, std::string(output, sizeof(quick_brown)));
-  ASSERT_EQ(std::string(quick_brown, sizeof(quick_brown)),
-            std::string(output, sizeof(quick_brown)));
+  ASSERT_EQ(flattened, output);
+  ASSERT_EQ(std::string(quick_brown, sizeof(quick_brown)), output);
   copy.clear();
   flattened.clear();
   original.flatten(flattened);
