@@ -8,6 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 project(CPP-NETLIB)
 
 option( CPP-NETLIB_BUILD_SHARED_LIBS "Build cpp-netlib as shared libraries." OFF )
+option( CPP-NETLIB_BUILD_SINGLE_LIB "Build cpp-netlib into a single library" OFF )
 option( CPP-NETLIB_BUILD_TESTS "Build the unit tests." ON )
 option( CPP-NETLIB_BUILD_EXAMPLES "Build the examples using cpp-netlib." ON )
 option( CPP-NETLIB_ALWAYS_LOGGING "Allow cpp-netlib to log debug messages even in non-debug mode." OFF )
@@ -18,10 +19,14 @@ option( CPP-NETLIB_DISABLE_LIBCXX "Disable using libc++ when compiling with clan
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package( ICU )
 
-if(CPP-NETLIB_BUILD_SHARED_LIBS)
+if(CPP-NETLIB_BUILD_SHARED_LIBS OR BUILD_SHARED_LIBS)
   set(Boost_USE_STATIC_LIBS OFF)
+  set(CPP-NETLIB_BUILD_SHARED_LIBS ON)
+  set(BUILD_SHARED_LIBS ON)
 else()
   set(Boost_USE_STATIC_LIBS ON)
+  set(CPP-NETLIB_BUILD_SHARED_LIBS OFF)
+  set(BUILD_SHARED_LIBS OFF)
 endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_COMPONENTS system regex date_time filesystem program_options )
@@ -82,6 +87,7 @@ endif(Boost_FOUND)
 
 message(STATUS "CPP-NETLIB options selected:")
 message(STATUS "  CPP-NETLIB_BUILD_SHARED_LIBS: ${CPP-NETLIB_BUILD_SHARED_LIBS}\t(Build cpp-netlib as shared libraries: OFF, ON)")
+message(STATUS "  CPP-NETLIB_BUILD_SINGLE_LIB:  ${CPP-NETLIB_BUILD_SINGLE_LIB}\t(Build cpp-netlib into a single library: OFF, ON)")
 message(STATUS "  CPP-NETLIB_BUILD_TESTS:       ${CPP-NETLIB_BUILD_TESTS}\t(Build the unit tests: ON, OFF)")
 message(STATUS "  CPP-NETLIB_BUILD_EXAMPLES:    ${CPP-NETLIB_BUILD_EXAMPLES}\t(Build the examples using cpp-netlib: ON, OFF)")
 message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:    ${CPP-NETLIB_ALWAYS_LOGGING}\t(Allow cpp-netlib to log debug messages even in non-debug mode: ON, OFF)")
@@ -122,6 +128,16 @@ if(CPP-NETLIB_BUILD_TESTS)
   set(GMOCK_BOTH_LIBRARIES ${GMOCK_LIBRARIES} ${GMOCK_MAIN_LIBRARIES})
 endif()
 
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/concurrency/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/logging/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/message/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/uri/src
+  )
+endif()
+
 add_subdirectory(uri)
 add_subdirectory(message)
 add_subdirectory(logging)
@@ -130,4 +146,21 @@ add_subdirectory(http)
 #add_subdirectory(mime)
 if(CPP-NETLIB_BUILD_EXAMPLES)
   add_subdirectory(contrib/http_examples)
+endif()
+
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib
+    ${Uri_SRCS}
+    ${CPP-NETLIB_MESSAGE_SRCS}
+    ${CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS}
+    ${CPP-NETLIB_MESSAGE_WRAPPERS_SRCS}
+    ${CPP-NETLIB_LOGGING_SRCS}
+    ${CPP-NETLIB_HTTP_CLIENT_SRCS}
+    ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS}
+    ${CPP-NETLIB_HTTP_MESSAGE_SRCS}
+    ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS}
+    ${CPP-NETLIB_CONSTANTS_SRCS}
+    ${CPP-NETLIB_CONCURRENCY_SRCS}
+  )
+  target_link_libraries(cppnetlib ${Boost_LIBRARIES})
 endif()

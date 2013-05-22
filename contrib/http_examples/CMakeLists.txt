@@ -40,46 +40,64 @@ set(BOOST_SERVER_LIBS
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
   )
 
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  set(simple_wget_linklibs cppnetlib)
+else()
+  set(simple_wget_linklibs
+    cppnetlib-uri
+    cppnetlib-message
+    cppnetlib-message-directives
+    cppnetlib-message-wrappers
+    cppnetlib-http-message-wrappers
+    cppnetlib-http-message
+    cppnetlib-constants
+    cppnetlib-http-client
+    cppnetlib-http-client-connections
+    ${CPP-NETLIB_LOGGING_LIB})
+endif()
 target_link_libraries(simple_wget
     ${BOOST_CLIENT_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${simple_wget_linklibs})
+
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  set(atom_reader_linklibs cppnetlib)
+else()
+  set(atom_reader_linklibs
     cppnetlib-uri
     cppnetlib-message
     cppnetlib-message-directives
     cppnetlib-message-wrappers
-    cppnetlib-http-message-wrappers
     cppnetlib-http-message
+    cppnetlib-http-message-wrappers
     cppnetlib-constants
     cppnetlib-http-client
     cppnetlib-http-client-connections
     ${CPP-NETLIB_LOGGING_LIB})
-
+endif()
 target_link_libraries(atom_reader
     ${BOOST_CLIENT_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${atom_reader_linklibs})
+
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  set(rss_reader_linklibs cppnetlib)
+else()
+  set(rss_reader_linklibs
     cppnetlib-uri
     cppnetlib-message
     cppnetlib-message-directives
     cppnetlib-message-wrappers
     cppnetlib-http-message
-    cppnetlib-http-message-wrappers
     cppnetlib-constants
     cppnetlib-http-client
     cppnetlib-http-client-connections
     ${CPP-NETLIB_LOGGING_LIB})
-
+endif()
 target_link_libraries(rss_reader
     ${BOOST_CLIENT_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
-    cppnetlib-uri
-    cppnetlib-message
-    cppnetlib-message-directives
-    cppnetlib-message-wrappers
-    cppnetlib-http-message
-    cppnetlib-constants
-    cppnetlib-http-client
-    cppnetlib-http-client-connections
-    ${CPP-NETLIB_LOGGING_LIB})
+    ${rss_reader_linklibs})
 
 #target_link_libraries(twitter_search
 #    ${BOOST_CLIENT_LIBS}
@@ -102,9 +120,10 @@ target_link_libraries(rss_reader
 #    cppnetlib-http-server
 #    ${CPP-NETLIB_LOGGING_LIB})
 
-target_link_libraries(hello_world_client
-    ${BOOST_CLIENT_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  set(hello_world_client_linklibs cppnetlib)
+else()
+  set(hello_world_client_linklibs
     cppnetlib-uri
     cppnetlib-message
     cppnetlib-message-directives
@@ -115,6 +134,11 @@ target_link_libraries(hello_world_client
     cppnetlib-http-client
     cppnetlib-http-client-connections
     ${CPP-NETLIB_LOGGING_LIB})
+endif()
+target_link_libraries(hello_world_client
+    ${BOOST_CLIENT_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${hello_world_client_linklibs})
 
 if (OPENSSL_FOUND)
   target_link_libraries(simple_wget ${OPENSSL_LIBRARIES})

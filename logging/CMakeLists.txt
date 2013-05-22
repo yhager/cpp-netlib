@@ -5,7 +5,7 @@
 
 
 if( CPP-NETLIB_ALWAYS_LOGGING )
-  add_definitions( /D NETWORK_ENABLE_LOGGING )
+  add_definitions( -DNETWORK_ENABLE_LOGGING )
 endif()
 
 if( NOT CPP-NETLIB_DISABLE_LOGGING )
@@ -22,3 +22,6 @@ if( NOT CPP-NETLIB_DISABLE_LOGGING )
   endif(CPP-NETLIB_BUILD_TESTS)
 
 endif()
+
+# propagate sources to parent directory for one-lib-build
+set(CPP-NETLIB_LOGGING_SRCS ${CPP-NETLIB_LOGGING_SRCS} PARENT_SCOPE)

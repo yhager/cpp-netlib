@@ -8,10 +8,16 @@ include_directories(${CPP-NETLIB_SOURCE_DIR}/concurrency/src
   ${CPP-NETLIB_SOURCE_DIR}
 )
 
+if(CPP-NETLIB_BUILD_SINGLE_LIB)
+  set(link_cppnetlib_lib cppnetlib)
+else()
+  set(link_cppnetlib_lib cppnetlib-concurrency)
+endif()
+
 if (CPP-NETLIB_BUILD_TESTS)
   add_executable(cpp-netlib-thread_pool_test thread_pool_test.cpp)
   target_link_libraries(cpp-netlib-thread_pool_test
-    cppnetlib-concurrency
+    ${link_cppnetlib_lib}
     ${Boost_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT})

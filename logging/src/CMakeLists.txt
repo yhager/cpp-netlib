@@ -8,3 +8,6 @@ set(CPP-NETLIB_LOGGING_SRCS logging.cpp)
 add_library(cppnetlib-logging ${CPP-NETLIB_LOGGING_SRCS})
 foreach (src_file ${CPP-NETLIB_LOGGING_SRCS})
 endforeach(src_file)
+
+# propagate sources to parent directory for one-lib-build
+set(CPP-NETLIB_LOGGING_SRCS ${CPP-NETLIB_LOGGING_SRCS} PARENT_SCOPE)
