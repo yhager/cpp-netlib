@@ -50,33 +50,6 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-http-client-connections ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
 endif()
 
-set(CPP-NETLIB_HTTP_CLIENT_SRCS
-    http/client.cpp)
-add_library(cppnetlib-http-client ${CPP-NETLIB_HTTP_CLIENT_SRCS})
-add_dependencies(cppnetlib-http-client
-  ${CPP-NETLIB_LOGGING_LIB}
-  cppnetlib-constants
-  cppnetlib-uri
-  cppnetlib-message
-  cppnetlib-message-wrappers
-  cppnetlib-message-directives
-  cppnetlib-http-message
-  cppnetlib-http-message-wrappers
-  cppnetlib-http-client-connections
-  )
-target_link_libraries(cppnetlib-http-client
-  ${Boost_LIBRARIES}
-  ${CPP-NETLIB_LOGGING_LIB}
-  cppnetlib-constants
-  cppnetlib-uri
-  cppnetlib-message
-  cppnetlib-message-wrappers
-  cppnetlib-message-directives
-  cppnetlib-http-message
-  cppnetlib-http-message-wrappers
-  cppnetlib-http-client-connections
-  )
-
 set(CPP-NETLIB_CONSTANTS_SRCS constants.cpp)
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
