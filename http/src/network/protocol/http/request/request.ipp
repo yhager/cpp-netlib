@@ -162,7 +162,8 @@ request& request::operator=(request rhs) {
 }
 
 void request::swap(request& other ) {
-  std::swap(pimpl_, other.pimpl_);
+  using std::swap;
+  swap(pimpl_, other.pimpl_);
   request_storage_base::swap(other);
 }
 
