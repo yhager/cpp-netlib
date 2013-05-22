@@ -24,7 +24,6 @@ set(CPP-NETLIB_HTTP_MESSAGE_SRCS
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-http-message ${CPP-NETLIB_HTTP_MESSAGE_SRCS})
   add_dependencies(cppnetlib-http-message
-#     ${Boost_LIBRARIES}
     cppnetlib-message)
   target_link_libraries(cppnetlib-http-message
     ${Boost_LIBRARIES}
@@ -36,73 +35,20 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-http-message-wrappers ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS})
 endif()
 
-#set(CPP-NETLIB_HTTP_SERVER_PARSERS_SRCS server_request_parsers_impl.cpp)
-#add_library(cppnetlib-http-server-parsers ${CPP-NETLIB_HTTP_SERVER_PARSERS_SRCS})
-#foreach (src_file ${CPP-NETLIB_HTTP_SERVER_PARSERS_SRCS})
-#if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-#    set_source_files_properties(${src_file}
-#        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-#elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-#    set_source_files_properties(${src_file}
-#        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-#endif()
-#endforeach(src_file)
-#
-#set(CPP-NETLIB_HTTP_SERVER_SRCS
-#    http/server_async_impl.cpp
-#    http/server_options.cpp
-#    http/server_socket_options_setter.cpp
-#    http/server_sync_impl.cpp
-#    )
-#add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
-#add_dependencies(cppnetlib-http-server
-#  ${CPP-NETLIB_LOGGING_LIB}
-#  cppnetlib-constants
-#  cppnetlib-uri
-#  cppnetlib-message
-#  cppnetlib-message-wrappers
-#  cppnetlib-message-directives
-#  cppnetlib-http-message
-#  cppnetlib-http-message-wrappers
-#  cppnetlib-http-server-parsers
-#  cppnetlib-utils-thread_pool
-#  )
-#target_link_libraries(cppnetlib-http-server
-#  ${Boost_LIBRARIES}
-#  ${CPP-NETLIB_LOGGING_LIB}
-#  cppnetlib-constants
-#  cppnetlib-uri
-#  cppnetlib-message
-#  cppnetlib-message-wrappers
-#  cppnetlib-message-directives
-#  cppnetlib-http-message
-#  cppnetlib-http-message-wrappers
-#  cppnetlib-http-server-parsers
-#  cppnetlib-utils-thread_pool
-#  )
-#foreach (src_file ${CPP-NETLIB_HTTP_SERVER_SRCS})
-#if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-#    set_source_files_properties(${src_file}
-#        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-#elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-#    set_source_files_properties(${src_file}
-#        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-#endif()
-#endforeach(src_file)
-
 set(CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS
-<<<<<<< HEAD
-    http/client_connections.cpp
-    http/simple_connection_manager.cpp
-    http/simple_connection_factory.cpp
-    http/connection_delegate_factory.cpp
-    http/client_resolver_delegate.cpp
-    http/client_resolver_delegate_factory.cpp
-    http/client_connection_delegates.cpp
-    http/client_connection_factory.cpp
-    http/client_async_resolver.cpp
-    http/client_connection_normal.cpp)
-add_library(cppnetlib-http-client-connections ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connections.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/simple_connection_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/simple_connection_factory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/connection_delegate_factory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_resolver_delegate.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_resolver_delegate_factory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_delegates.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_factory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_async_resolver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_normal.cpp)
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-http-client-connections ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
+endif()
 
 set(CPP-NETLIB_HTTP_CLIENT_SRCS
     http/client.cpp)
@@ -132,36 +78,17 @@ target_link_libraries(cppnetlib-http-client
   )
 
 set(CPP-NETLIB_CONSTANTS_SRCS constants.cpp)
-add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
+endif()
 
 # Server implementation files.
 set(CPP-NETLIB_HTTP_SERVER_SRCS
-  http/server/session.cpp http/server/simple_sessions.cpp
-  http/server/dynamic_dispatcher.cpp)
-add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
-=======
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connections.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/simple_connection_manager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/simple_connection_factory.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/connection_delegate_factory.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_resolver_delegate.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_resolver_delegate_factory.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_delegates.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_factory.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_async_resolver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/http/client_connection_normal.cpp)
-if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-  add_library(cppnetlib-http-client-connections ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/server/session.cpp http/server/simple_sessions.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/server/dynamic_dispatcher.cpp)
+if (NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
 endif()
-foreach (src_file ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
-if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-endif()
-endforeach(src_file)
 
 set(CPP-NETLIB_HTTP_CLIENT_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/http/client.cpp)
@@ -191,30 +118,6 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
     cppnetlib-http-client-connections
     )
 endif()
-foreach (src_file ${CPP-NETLIB_HTTP_CLIENT_SRCS})
-if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-endif()
-endforeach(src_file)
-
-set(CPP-NETLIB_CONSTANTS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/constants.cpp)
-if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-  add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
-endif()
-foreach (src_file ${CPP-NETLIB_CONSTANTS_SRCS})
-if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-    set_source_files_properties(${src_file}
-        PROPERTIES COMPILE_FLAGS ${CPP-NETLIB_CXXFLAGS})
-endif()
-endforeach(src_file)
-
 
 # propagate sources to parent directory for one-lib-build
 set(CPP-NETLIB_HTTP_MESSAGE_SRCS ${CPP-NETLIB_HTTP_MESSAGE_SRCS} PARENT_SCOPE)
@@ -222,4 +125,3 @@ set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRC
 set(CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS} PARENT_SCOPE)
 set(CPP-NETLIB_HTTP_CLIENT_SRCS ${CPP-NETLIB_HTTP_CLIENT_SRCS} PARENT_SCOPE)
 set(CPP-NETLIB_CONSTANTS_SRCS ${CPP-NETLIB_CONSTANTS_SRCS} PARENT_SCOPE)
->>>>>>> master
