@@ -19,6 +19,21 @@ TEST(message_test, request_construction) {
   http::request other(request);
 }
 
+TEST(message_test, request_swap) {
+  network::uri tmp_uri;
+  network::uri request_uri("http://www.google.com/");
+  network::uri other_uri("http://www.google.it/");
+  http::request request(request_uri);
+  http::request other(other_uri);
+
+  request.swap(other);
+
+  request.get_uri(tmp_uri);
+  ASSERT_EQ(tmp_uri, other_uri);
+  other.get_uri(tmp_uri);
+  ASSERT_EQ(tmp_uri, request_uri);
+}
+
 TEST(message_test, request_value_semantics) {
   // First let's default construct a request.
   http::request original;
