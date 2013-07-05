@@ -12,6 +12,7 @@
 #include <boost/utility/string_ref.hpp>
 #include <atomic>
 #include <thread>
+#include <mutex>
 
 namespace network {
 namespace http {
