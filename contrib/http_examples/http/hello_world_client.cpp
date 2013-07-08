@@ -23,12 +23,16 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  /*<< Creates the client. >>*/
+  http::client client;
+  
   try {
-    /*<< Creates the client. >>*/
-    http::client client;
     /*<< Creates a request using a URI supplied on the command
              line. >>*/
     http::client::request request(argv[1]);
+    /*<< Explicitly set a Connection: close header to the
+             request. >>*/
+    request << network::header("Connection", "close");
     /*<< Gets a response from the HTTP server. >>*/
     http::client::response response = client.get(request);
     /*<< Prints the response body to the console. >>*/
