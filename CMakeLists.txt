@@ -15,7 +15,6 @@ option( CPP-NETLIB_ALWAYS_LOGGING "Allow cpp-netlib to log debug messages even i
 option( CPP-NETLIB_DISABLE_LOGGING "Disable logging definitely, no logging code will be generated or compiled." OFF )
 option( CPP-NETLIB_DISABLE_LIBCXX "Disable using libc++ when compiling with clang." OFF )
 
-
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package( ICU )
 
@@ -39,8 +38,6 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_definitions(-DNETWORK_DEBUG)
 endif()
 
-
-
 if (OPENSSL_FOUND)
   add_definitions(-DNETWORK_ENABLE_HTTPS)
 endif()
@@ -49,7 +46,7 @@ if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
   INCLUDE(CheckCXXCompilerFlag)
   CHECK_CXX_COMPILER_FLAG(-std=c++11 HAVE_STD11)
   if (HAVE_STD11)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
   else()
     message(FATAL_ERROR "No advanced standard C++ support (-std=c++11 not defined).")
   endif()
