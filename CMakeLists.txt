@@ -127,6 +127,7 @@ endif()
 
 if(CPP-NETLIB_BUILD_SINGLE_LIB)
   include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/src
     ${CMAKE_CURRENT_SOURCE_DIR}/concurrency/src
     ${CMAKE_CURRENT_SOURCE_DIR}/http/src
     ${CMAKE_CURRENT_SOURCE_DIR}/logging/src
