@@ -92,6 +92,17 @@ message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:   ${CPP-NETLIB_DISABLE_LOGGING}\t(
 message(STATUS "  CPP-NETLIB_DISABLE_LIBCXX:    ${CPP-NETLIB_DISABLE_LIBCXX}\t(Disable using libc++ when building with clang: ON, OFF)")
 message(STATUS "CMake build options selected:")
 
+# Takes one or more lists as parameter and prepends the prefix to every element.
+function(prependToElements prefix)
+  foreach(list ${ARGN} ) # iterate over lists
+    set(newlist "")
+    foreach(ele ${${list}} ) # iterate over the elements
+      set(newlist ${newlist} "${prefix}${ele}")
+    endforeach(ele)
+    set(${list} ${newlist} PARENT_SCOPE) # replace the original list
+  endforeach(list)
+endfunction(prependToElements)
+
 ############################################################################
 #
 # The code following this point is for the new directory structure
@@ -133,6 +144,7 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CMAKE_CURRENT_SOURCE_DIR}/logging/src
     ${CMAKE_CURRENT_SOURCE_DIR}/message/src
     ${CMAKE_CURRENT_SOURCE_DIR}/uri/src
+    ${CMAKE_CURRENT_SOURCE_DIR}
   )
 endif()
 
@@ -155,6 +167,7 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CPP-NETLIB_LOGGING_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS}
+    ${CPP-NETLIB_HTTP_SERVER_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS}
     ${CPP-NETLIB_CONSTANTS_SRCS}

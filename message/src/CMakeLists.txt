@@ -7,16 +7,28 @@
 
 include_directories(${CPP-NETLIB_SOURCE_DIR}/uri/src ${CPP-NETLIB_SOURCE_DIR}/message/src)
 
-set(CPP-NETLIB_MESSAGE_SRCS message.cpp)
+set(CPP-NETLIB_MESSAGE_SRCS
+    message.cpp)
+
 add_library(cppnetlib-message ${CPP-NETLIB_MESSAGE_SRCS})
 add_dependencies(cppnetlib-message cppnetlib-uri)
 target_link_libraries(cppnetlib-message cppnetlib-uri)
 
-set(CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS directives.cpp)
+set(CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS
+    directives.cpp)
+
 add_library(cppnetlib-message-directives ${CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS})
 
-set(CPP-NETLIB_MESSAGE_WRAPPERS_SRCS wrappers.cpp)
+set(CPP-NETLIB_MESSAGE_WRAPPERS_SRCS
+    wrappers.cpp)
+
 add_library(cppnetlib-message-wrappers ${CPP-NETLIB_MESSAGE_WRAPPERS_SRCS})
+
+# prepend current directory to make paths absolut
+prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
+    CPP-NETLIB_MESSAGE_SRCS
+    CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS
+    CPP-NETLIB_MESSAGE_WRAPPERS_SRCS )
 
 # propagate sources to parent directory for one-lib-build
 set(CPP-NETLIB_MESSAGE_SRCS ${CPP-NETLIB_MESSAGE_SRCS} PARENT_SCOPE)
