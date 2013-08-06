@@ -24,7 +24,7 @@ set(CPP-NETLIB_MESSAGE_WRAPPERS_SRCS
 
 add_library(cppnetlib-message-wrappers ${CPP-NETLIB_MESSAGE_WRAPPERS_SRCS})
 
-# prepend current directory to make paths absolut
+# prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
     CPP-NETLIB_MESSAGE_SRCS
     CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS

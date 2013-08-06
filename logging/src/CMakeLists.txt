@@ -10,7 +10,7 @@ set(CPP-NETLIB_LOGGING_SRCS
 
 add_library(cppnetlib-logging ${CPP-NETLIB_LOGGING_SRCS})
 
-# prepend current directory to make paths absolut
+# prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
     CPP-NETLIB_LOGGING_SRCS )
 

@@ -101,7 +101,7 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
     )
 endif()
 
-# prepend current directory to make paths absolut
+# prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
     CPP-NETLIB_HTTP_MESSAGE_SRCS
     CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS

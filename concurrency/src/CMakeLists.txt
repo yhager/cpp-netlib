@@ -12,7 +12,7 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-concurrency ${CPP-NETLIB_CONCURRENCY_SRCS})
 endif()
 
-# prepend current directory to make paths absolut
+# prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
     CPP-NETLIB_CONCURRENCY_SRCS )
 
