@@ -70,8 +70,8 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
   -DASIO_HAS_STD_ADDRESSOFF -DASIO_HAS_STD_FUNCTION -DASIO_HAS_STD_TYPE_TRAITS)
 endif()
 
-message("C++ Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message("C++ Flags: ${CMAKE_CXX_FLAGS} link flags: ${CMAKE_CXX_LINK_FLAGS}")
+message(STATUS "C++ Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS} link flags: ${CMAKE_CXX_LINK_FLAGS}")
 if (Boost_FOUND)
   if (MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
@@ -91,6 +91,17 @@ message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:    ${CPP-NETLIB_ALWAYS_LOGGING}\t(A
 message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:   ${CPP-NETLIB_DISABLE_LOGGING}\t(Disable logging definitely, no logging code will be generated or compiled: ON, OFF)")
 message(STATUS "  CPP-NETLIB_DISABLE_LIBCXX:    ${CPP-NETLIB_DISABLE_LIBCXX}\t(Disable using libc++ when building with clang: ON, OFF)")
 message(STATUS "CMake build options selected:")
+
+# Takes one or more lists as parameter and prepends the prefix to every element.
+function(prependToElements prefix)
+  foreach(list ${ARGN} ) # iterate over lists
+    set(newlist "")
+    foreach(ele ${${list}} ) # iterate over the elements
+      set(newlist ${newlist} "${prefix}${ele}")
+    endforeach(ele)
+    set(${list} ${newlist} PARENT_SCOPE) # replace the original list
+  endforeach(list)
+endfunction(prependToElements)
 
 ############################################################################
 #
@@ -133,6 +144,7 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CMAKE_CURRENT_SOURCE_DIR}/logging/src
     ${CMAKE_CURRENT_SOURCE_DIR}/message/src
     ${CMAKE_CURRENT_SOURCE_DIR}/uri/src
+    ${CMAKE_CURRENT_SOURCE_DIR}
   )
 endif()
 
@@ -155,6 +167,7 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CPP-NETLIB_LOGGING_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS}
+    ${CPP-NETLIB_HTTP_SERVER_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS}
     ${CPP-NETLIB_CONSTANTS_SRCS}
