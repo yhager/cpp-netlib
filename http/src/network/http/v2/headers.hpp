@@ -19,20 +19,20 @@ namespace network {
     namespace v2 {
 
       struct header {
-	typedef std::string string-type;
+	typedef std::string string_type;
 	typedef boost::string_ref string_view;
 	string_type name, value;
       };
 
       class headers {
 
-	typedef header::string_type string-type;
+      public:
+
+	typedef header::string_type string_type;
 	typedef boost::string_ref string_view;
 	typedef std::map<string_type, string_type> map_type;
 
-      public:
-
-	typedef map_type::value_type_type value_type;
+	typedef map_type::value_type value_type;
 	typedef map_type::key_type key_type;
 	typedef map_type::mapped_type mapped_type;
 	typedef map_type::allocator_type allocator_type;
@@ -47,7 +47,35 @@ namespace network {
 	typedef map_type::reference reference;
 	typedef map_type::const_reference const_reference;
 
-	headers();
+	headers() = default;
+
+	const_iterator begin() {
+	  return std::begin(headers_);
+	}
+
+	const_iterator end() {
+	  return std::end(headers_);
+	}
+
+	const_iterator begin() const {
+	  return std::begin(headers_);
+	}
+
+	const_iterator end() const {
+	  return std::end(headers_);
+	}
+
+	const_iterator cbegin() const {
+	  return std::begin(headers_);
+	}
+
+	const_iterator cend() const {
+	  return std::end(headers_);
+	}
+
+      private:
+
+	map_type headers_;
 
       };
 

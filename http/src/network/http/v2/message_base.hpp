@@ -16,40 +16,40 @@
 namespace network {
   namespace http {
     namespace v2 {
-    class message_base {
+      class message_base {
 
-    public:
+      public:
 
-      typedef headers::string_type string_type;
-      typedef string_type::size_type size_type;
-      typedef boost::string_ref string_view;
+	typedef headers::string_type string_type;
+	typedef string_type::size_type size_type;
+	typedef boost::string_ref string_view;
 
-      message_base() NETWORK_DEFAULTED_FUNCTION;
-      message_base(const message_base &) NETWORK_DELETED_FUNCTION;
-      message_base &operator = (const message_base &) NETWORK_DELETED_FUNCTION;
-      virtual ~message_base() NETWORK_NOEXCEPT = 0;
+	message_base() = default;
+	message_base(const message_base &) = delete;
+	message_base &operator = (const message_base &) = delete;
+	virtual ~message_base() noexcept = 0;
 
-      // Mutators
-      virtual void set_destination(string_type destination) = 0;
-      virtual void set_source(string_type source) = 0;
-      virtual void append_header(string_type name, string_type value) = 0;
-      virtual void remove_headers(string_type name) = 0;
-      virtual void clear_headers() = 0;
-      virtual void set_body(std::string body) = 0;
-      virtual void append_body(std::string data) = 0;
+	// Mutators
+	virtual void set_destination(string_type destination) = 0;
+	virtual void set_source(string_type source) = 0;
+	virtual void append_header(string_type name, string_type value) = 0;
+	virtual void remove_headers(string_type name) = 0;
+	virtual void clear_headers() = 0;
+	virtual void set_body(std::string body) = 0;
+	virtual void append_body(std::string data) = 0;
 
-      // Accessors
-      virtual string_type get_destination() const = 0;
-      virtual string_type get_source() = 0;
-      virtual void get_headers(std::function<void (string_type, string_type)> inserter) const = 0;
-      virtual void get_headers(std::function<bool (string_type, string_type)> predicate,
-			   std::function<void (string_type, string_type)> inserter) const = 0;
-      virtual header get_header(std::string header) = 0;
-      virtual string_type get_body() const = 0;
-      //virtual void get_body(std::function<void (string_type::const_iterator, size_type)> chunk_reader,
-      //			    size_type size) const = 0;
+	// Accessors
+	virtual string_type get_destination() const = 0;
+	virtual string_type get_source() = 0;
+	virtual void get_headers(std::function<void (string_type, string_type)> inserter) const = 0;
+	virtual void get_headers(std::function<bool (string_type, string_type)> predicate,
+				 std::function<void (string_type, string_type)> inserter) const = 0;
+	virtual header get_header(std::string header) = 0;
+	virtual string_type get_body() const = 0;
+	//virtual void get_body(std::function<void (string_type::const_iterator, size_type)> chunk_reader,
+	//			    size_type size) const = 0;
 
-    };
+      };
     } // namespace v2
   } // namespace http
 } // namespace network

@@ -9,6 +9,7 @@ set(CPP-NETLIB_CLIENT_TESTS
   request_options_test
   byte_source_test
   request_test
+  client_test
   )
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})
@@ -20,6 +21,8 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
   add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
   target_link_libraries(cpp-netlib-http-v2-${test}
     cppnetlib-uri
+    network-http-constants-v2
+    network-http-client-v2
     ${Boost_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}

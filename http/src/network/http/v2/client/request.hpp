@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 #include <network/http/v2/message_base.hpp>
-#include <network/http/v2/url.hpp>
+#include <network/uri.hpp>
 
 namespace network {
   namespace http {
@@ -50,7 +50,7 @@ namespace network {
 
       public:
 
-	request(url locator, std::shared_ptr<byte_source> source = nullptr)
+	request(uri locator, std::shared_ptr<byte_source> source = nullptr)
 	  : locator_(locator), source_(source) { }
 
 	request(const request &other)
@@ -84,7 +84,7 @@ namespace network {
 	// uri
 	// version
 
-	url locator_;
+	uri locator_;
 	std::shared_ptr<byte_source> source_;
 
       };

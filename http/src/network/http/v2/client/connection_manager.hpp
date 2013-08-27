@@ -28,11 +28,11 @@ namespace network {
 
 	connection_manager &operator = (const connection_manager &) = delete;
 
-	virtual connection_manager() = default;
+	virtual connection_manager() = default noexcept;
 
-	virtual std::shared_ptr<client_connection> get_connection(boost::asio::io_service &io_service,
-								  const request &req,
-								  const client_options &options) = 0;
+	virtual std::shared_ptr<connection> get_connection(boost::asio::io_service &io_service,
+							   const request &req,
+							   const client_options &options) = 0;
 
 	virtual void clear_resolved_cache() = 0;
 
