@@ -40,11 +40,6 @@ namespace network {
 	// append_body
 	// get_body
 
-      private:
-
-	struct impl;
-	impl *pimpl_;
-
 
       };
     } // namespace v2

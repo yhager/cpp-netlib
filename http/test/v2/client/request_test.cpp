@@ -14,7 +14,7 @@ TEST(request_test, request_constructor_https_url) {
   ASSERT_NO_THROW(network::http::v2::request(network::uri("https://www.example.com/")));
 }
 
-//TEST(request_test, request_constructor_invalid_url) {
-//  ASSERT_THROW(network::http::v2::invalid_scheme,
-//	       network::http::v2::request(network::uri("mailto:john.doe@example.com")));
-//}
+TEST(request_test, request_constructor_invalid_url) {
+  ASSERT_THROW(network::http::v2::request(network::uri("mailto:john.doe@example.com")),
+	       network::http::v2::invalid_scheme);
+}

@@ -116,6 +116,7 @@ target_link_libraries(network-http-constants-v2
 
 set(CPP-NETLIB_HTTP_CLIENT-V2_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client_errors.cpp
   )
 add_library(network-http-client-v2 ${CPP-NETLIB_HTTP_CLIENT-V2_SRCS})
 add_dependencies(network-http-client-v2
