@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <network/http/v2/constants.hpp>
 #include <network/http/v2/message_base.hpp>
 #include <network/uri.hpp>
 
@@ -46,18 +47,19 @@ namespace network {
 
       class request {
 
-	typedef byte_source::string_type string_type;
-
       public:
 
-	request(uri locator, std::shared_ptr<byte_source> source = nullptr)
-	  : locator_(locator), source_(source) { }
+	typedef byte_source::string_type string_type;
+
+	request(uri destination, std::shared_ptr<byte_source> source = nullptr)
+	  : destination_(destination), byte_source_(source) { }
 
 	request(const request &other)
-	  : locator_(other.locator_), source_(other.source_) { }
+	  : destination_(other.destination_), byte_source_(other.byte_source_) { }
 
 	request(request &&other) noexcept
-	: locator_(std::move(other.locator_)), source_(std::move(other.source_)) { }
+	  : destination_(std::move(other.destination_))
+	  , byte_source_(std::move(other.byte_source_)) { }
 
 	request &operator = (request other) {
 	  other.swap(*this);
@@ -65,27 +67,49 @@ namespace network {
 	}
 
 	void swap(request &other) noexcept {
-	  locator_.swap(other.locator_);
-	  source_.swap(other.source_);
+	  std::swap(destination_, other.destination_);
+	  std::swap(byte_source_, other.byte_source_);
+	  std::swap(headers_, other.headers_);
+	  std::swap(method_, other.method_);
+	  std::swap(version_, other.version_);
 	}
 
-	void set_destination(string_type destination);
-	// source
-	// add_header
-	// remove_header
-	// clear_headers
-	// set_body
-	// append_body
-	// get_body
+	void set_body(std::shared_ptr<byte_source> byte_source) {
+	  byte_source_ = byte_source;
+	}
 
-	// method
-	// status
-	// status_message
-	// uri
-	// version
+	void add_header(string_type key, string_type value) {
+	  headers_.emplace(key, value);
+	}
 
-	uri locator_;
-	std::shared_ptr<byte_source> source_;
+	void remove_header(string_type key) {
+	  headers_.erase(key);
+	}
+
+	void clear_headers() {
+	  headers_.clear();
+	}
+
+	void set_method(string_type method) {
+	  method_ = std::move(method);
+	}
+
+	string_type method() const {
+	  return method_;
+	}
+
+	void set_version(string_type version) {
+	  version_ = std::move(version);
+	}
+
+	string_type version() const {
+	  return version_;
+	}
+
+	uri destination_;
+	std::shared_ptr<byte_source> byte_source_;
+	std::map<string_type, string_type> headers_;
+	string_type method_, version_;
 
       };
     } // namespace v2

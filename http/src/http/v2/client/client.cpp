@@ -8,27 +8,36 @@
 namespace network {
   namespace http {
     namespace v2 {
-      client::client() {
+      client::client(client_options options)
+	: options_(options) {
 
       }
 
-      std::future<response> client::get(const request &req) {
-	return std::future<response>();
+      std::future<response> client::get(request req, request_options options) {
+	return do_request("GET", req, options);
       }
 
-      std::future<response> client::post(const request &req) {
-	return std::future<response>();
+      std::future<response> client::post(request req, request_options options) {
+	return do_request("POST", req, options);
       }
 
-      std::future<response> client::put(const request &req) {
-	return std::future<response>();
+      std::future<response> client::put(request req, request_options options) {
+	return do_request("PUT", req, options);
       }
 
-      std::future<response> client::delete_(const request &req) {
-	return std::future<response>();
+      std::future<response> client::delete_(request req, request_options options) {
+	return do_request("DELETE", req, options);
       }
 
-      std::future<response> client::head(const request &req) {
+      std::future<response> client::head(request req, request_options options) {
+	return do_request("HEAD", req, options);
+      }
+
+      std::future<response> client::options(request req, request_options options) {
+	return do_request("OPTIONS", req, options);
+      }
+
+      std::future<response> client::do_request(string_type method, request req, request_options options) {
 	return std::future<response>();
       }
     } // namespace v2
