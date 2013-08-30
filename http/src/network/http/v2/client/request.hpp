@@ -12,6 +12,7 @@
 #include <network/http/v2/constants.hpp>
 #include <network/http/v2/message_base.hpp>
 #include <network/http/v2/client/client_errors.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/as_literal.hpp>
 #include <network/uri.hpp>
@@ -19,6 +20,11 @@
 namespace network {
   namespace http {
     namespace v2 {
+      /**
+       * \class byte_source network::http::v2::byte_source <network/http/request.hpp>
+       * \brief An abstract class that allows a request object to read
+       *        data from any source.
+       */
       class byte_source {
 
       public:
@@ -26,12 +32,22 @@ namespace network {
 	typedef message_base::string_type string_type;
 	typedef message_base::size_type size_type;
 
-	virtual ~byte_source() {}
+	/**
+	 * \brief Destructor.
+	 */
+	virtual ~byte_source() noexcept {}
 
+	/**
+	 * \brief Allows the request to read the data into a local
+	 *        copy of it's source string.
+	 */
 	virtual size_type read(string_type &source, size_type length) = 0;
 
       };
 
+      /**
+       * \class string_byte_source network::http::v2::string_byte_source <network/http/request.hpp>
+       */
       class string_byte_source : public byte_source {
 
       public:
@@ -53,6 +69,9 @@ namespace network {
       public:
 
 	typedef byte_source::string_type string_type;
+	typedef std::vector<std::pair<std::string, std::string>> headers_type;
+	typedef headers_type::iterator headers_iterator;
+	typedef headers_type::const_iterator const_headers_iterator;
 
 	request()
 	  : byte_source_(nullptr) { }
@@ -105,12 +124,26 @@ namespace network {
 	  byte_source_ = byte_source;
 	}
 
-	void add_header(string_type key, string_type value) {
-	  headers_.emplace(key, value);
+	void append_header(string_type key, string_type value) {
+	  headers_.emplace_back(std::make_pair(key, value));
+	}
+
+	boost::iterator_range<const_headers_iterator> headers() const {
+	  return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
 	}
 
 	void remove_header(string_type key) {
-	  headers_.erase(key);
+	  bool found_all = false;
+	  while (!found_all) {
+	    auto it = std::find_if(std::begin(headers_), std::end(headers_),
+				   [&key] (const std::pair<string_type, string_type> &header) {
+				     return header.first == key;
+				   });
+	    found_all = (it == std::end(headers_));
+	    if (!found_all) {
+	      headers_.erase(it);
+	    }
+	  }
 	}
 
 	void clear_headers() {
@@ -133,14 +166,30 @@ namespace network {
 	  return version_;
 	}
 
+      private:
+
 	uri destination_;
 	std::shared_ptr<byte_source> byte_source_;
-	std::multimap<string_type, string_type> headers_;
+	std::vector<std::pair<string_type, string_type>> headers_;
 	string_type method_, version_;
 
-      };
+	friend std::ostream &operator << (std::ostream &os, const request &req) {
+	  std::string path{std::begin(*req.destination_.path()), std::end(*req.destination_.path())};
+	  std::string host;
+	  host.append(std::string{std::begin(*req.destination_.scheme()),
+		                  std::end(*req.destination_.scheme())});
+	  host.append("://");
+	  host.append(std::string{std::begin(*req.destination_.authority()),
+		                  std::end(*req.destination_.authority())});
 
-      std::ostream &operator << (std::ostream &os, const request &req);
+	  os << req.method_ << " " << path << " HTTP/" << req.version_ << "\r\n";
+	  os << "Host: " << host << "\r\n";
+	  for (auto header : req.headers_) {
+	    os << header.first << ": " << header.second << "\r\n";
+	  }
+	  return os;
+	}
+      };
     } // namespace v2
   } // namespace http
 } // namespace network
