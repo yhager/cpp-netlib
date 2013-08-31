@@ -6,9 +6,10 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_REQUEST_INC__
 #define __NETWORK_HTTP_V2_CLIENT_REQUEST_INC__
 
-#include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
+#include <utility>
 #include <network/http/v2/constants.hpp>
 #include <network/http/v2/message_base.hpp>
 #include <network/http/v2/client/client_errors.hpp>
@@ -69,7 +70,7 @@ namespace network {
       public:
 
 	typedef byte_source::string_type string_type;
-	typedef std::vector<std::pair<std::string, std::string>> headers_type;
+	typedef std::vector<std::pair<string_type, string_type>> headers_type;
 	typedef headers_type::iterator headers_iterator;
 	typedef headers_type::const_iterator const_headers_iterator;
 
@@ -91,17 +92,17 @@ namespace network {
 
 	request(const request &other)
 	  : destination_(other.destination_)
-	  , byte_source_(other.byte_source_)
-	  , headers_(other.headers_)
 	  , method_(other.method_)
-	  , version_(other.version_) { }
+	  , version_(other.version_)
+	  , headers_(other.headers_)
+	  , byte_source_(other.byte_source_) { }
 
 	request(request &&other) noexcept
 	  : destination_(std::move(other.destination_))
-	  , byte_source_(std::move(other.byte_source_))
-	  , headers_(std::move(other.headers_))
 	  , method_(std::move(other.method_))
-	  , version_(std::move(other.version_)) { }
+	  , version_(std::move(other.version_))
+	  , headers_(std::move(other.headers_))
+	  , byte_source_(std::move(other.byte_source_)) { }
 
 	request &operator = (request other) {
 	  other.swap(*this);
@@ -110,10 +111,10 @@ namespace network {
 
 	void swap(request &other) noexcept {
 	  std::swap(destination_, other.destination_);
-	  std::swap(byte_source_, other.byte_source_);
-	  std::swap(headers_, other.headers_);
 	  std::swap(method_, other.method_);
 	  std::swap(version_, other.version_);
+	  std::swap(headers_, other.headers_);
+	  std::swap(byte_source_, other.byte_source_);
 	}
 
 	void set_destination(uri destination) {
@@ -169,25 +170,25 @@ namespace network {
       private:
 
 	uri destination_;
-	std::shared_ptr<byte_source> byte_source_;
-	std::vector<std::pair<string_type, string_type>> headers_;
 	string_type method_, version_;
+	headers_type headers_;
+	std::shared_ptr<byte_source> byte_source_;
 
 	friend std::ostream &operator << (std::ostream &os, const request &req) {
-	  std::string path{std::begin(*req.destination_.path()), std::end(*req.destination_.path())};
-	  std::string host;
-	  host.append(std::string{std::begin(*req.destination_.scheme()),
-		                  std::end(*req.destination_.scheme())});
+	  request::string_type path{std::begin(*req.destination_.path()), std::end(*req.destination_.path())};
+	  request::string_type host;
+	  host.append(request::string_type{std::begin(*req.destination_.scheme()),
+		                           std::end(*req.destination_.scheme())});
 	  host.append("://");
-	  host.append(std::string{std::begin(*req.destination_.authority()),
-		                  std::end(*req.destination_.authority())});
+	  host.append(request::string_type{std::begin(*req.destination_.authority()),
+		                           std::end(*req.destination_.authority())});
 
 	  os << req.method_ << " " << path << " HTTP/" << req.version_ << "\r\n";
 	  os << "Host: " << host << "\r\n";
 	  for (auto header : req.headers_) {
 	    os << header.first << ": " << header.second << "\r\n";
 	  }
-	  return os;
+	  return os << "\r\n";
 	}
       };
     } // namespace v2

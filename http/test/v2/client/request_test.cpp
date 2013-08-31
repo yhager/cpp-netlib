@@ -62,7 +62,7 @@ TEST(request_test, stream_2) {
 	    "User-Agent: request_test\r\n", oss.str());
 }
 
-TEST(request, read_headers) {
+TEST(request_test, read_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
   instance.set_method("GET");
@@ -78,7 +78,7 @@ TEST(request, read_headers) {
   ASSERT_EQ("request_test", headers_it->second);
 }
 
-TEST(request, clear_headers) {
+TEST(request_test, clear_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
   instance.set_method("GET");
@@ -89,7 +89,7 @@ TEST(request, clear_headers) {
   ASSERT_TRUE(std::begin(headers) == std::end(headers));
 }
 
-TEST(request, remove_headers) {
+TEST(request_test, remove_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
   instance.set_method("GET");
@@ -106,7 +106,7 @@ TEST(request, remove_headers) {
   ASSERT_TRUE(headers_it == std::end(headers));
 }
 
-TEST(request, remove_duplicate_headers) {
+TEST(request_test, remove_duplicate_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
   instance.set_method("GET");

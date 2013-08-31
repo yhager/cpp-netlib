@@ -4,11 +4,12 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 set(CPP-NETLIB_CLIENT_TESTS
-  response_test
   client_options_test
   request_options_test
   byte_source_test
+  response_test
   request_test
+  async_resolver_test
   client_test
   )
 
