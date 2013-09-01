@@ -39,14 +39,12 @@ namespace network {
 	virtual void connect(boost::asio::ip::tcp::endpoint &endpoint,
 			     const std::string &host,
 			     std::function<void (const boost::system::error_code &)> handler) {
-	  context_.reset(
-			 new boost::asio::ssl::context(boost::asio::ssl::context::sslv23));
+	  context_.reset(new boost::asio::ssl::context(boost::asio::ssl::context::sslv23));
 	  std::vector<std::string> const& certificate_paths =
 	    options_.openssl_certificate_paths();
 	  std::vector<std::string> const& verifier_paths =
 	    options_.openssl_verify_paths();
-	  bool use_default_verification = certificate_paths.empty() &&
-	    verifier_paths.empty();
+	  bool use_default_verification = certificate_paths.empty() && verifier_paths.empty();
 	  if (!use_default_verification) {
 	    for (auto path : certificate_paths) {
 	      context_->load_verify_file(path);
@@ -56,7 +54,8 @@ namespace network {
 	    }
 	    context_->set_verify_mode(boost::asio::ssl::context::verify_peer);
 	    context_->set_verify_callback(boost::asio::ssl::rfc2818_verification(host));
-	  } else {
+	  }
+	  else {
 	    context_->set_default_verify_paths();
 	    context_->set_verify_mode(boost::asio::ssl::context::verify_none);
 	  }

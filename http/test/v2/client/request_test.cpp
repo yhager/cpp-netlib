@@ -4,7 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
-#include <network/http/v2/client/request.hpp>
+#include "network/http/v2/client/request.hpp"
 
 namespace http = network::http::v2;
 
@@ -19,25 +19,25 @@ TEST(request_test, constructor_https_url) {
 
 TEST(request_test, constructor_invalid_url) {
   ASSERT_THROW(http::request{network::uri{"mailto:john.doe@example.com"}},
-	       http::invalid_scheme);
+	       http::invalid_url);
 }
 
 TEST(request_test, constructor_empty_uri) {
   ASSERT_THROW(http::request{network::uri{}},
-	       http::invalid_scheme);
+	       http::invalid_url);
 }
 
 TEST(request_test, constructor_uri_no_scheme) {
   network::uri_builder builder;
   builder.host("www.example.com").path("/");
   ASSERT_THROW(http::request{builder.uri()},
-	       http::invalid_scheme);
+	       http::invalid_url);
 }
 
 TEST(request_test, stream) {
   http::request instance{network::uri{"http://www.example.com/"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
   std::ostringstream oss;
@@ -51,7 +51,7 @@ TEST(request_test, stream) {
 TEST(request_test, stream_2) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
   std::ostringstream oss;
@@ -65,7 +65,7 @@ TEST(request_test, stream_2) {
 TEST(request_test, read_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
 
@@ -81,7 +81,7 @@ TEST(request_test, read_headers) {
 TEST(request_test, clear_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
   instance.clear_headers();
@@ -92,7 +92,7 @@ TEST(request_test, clear_headers) {
 TEST(request_test, remove_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
   instance.remove_header("User-Agent");
@@ -109,7 +109,7 @@ TEST(request_test, remove_headers) {
 TEST(request_test, remove_duplicate_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance.set_version("1.1");
-  instance.set_method("GET");
+  instance.set_method(http::method::GET);
   instance.append_header("Connection", "close");
   instance.append_header("User-Agent", "request_test");
   instance.append_header("User-Agent", "request_test_2");

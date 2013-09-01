@@ -13,14 +13,15 @@ namespace network {
   namespace http {
     namespace v2 {
       enum class client_error {
-	// scheme
-	invalid_scheme,
+	// url
+	invalid_url,
 
 	// resolution
 	resolver_error,
 
 	// connection
 	connection_timeout,
+	https_not_supported,
       };
 
       class client_category_impl : public std::error_category {
@@ -41,13 +42,13 @@ namespace network {
 
       std::error_code make_error_code(client_error e);
 
-      class invalid_scheme : public std::system_error {
+      class invalid_url : public std::system_error {
 
       public:
 
-	explicit invalid_scheme(const std::string &scheme);
+	explicit invalid_url();
 
-	virtual ~invalid_scheme() noexcept;
+	virtual ~invalid_url() noexcept;
 
       };
 
@@ -56,21 +57,22 @@ namespace network {
 
       public:
 
-	explicit resolver_error(const std::string &msg);
+	explicit resolver_error();
 
 	virtual ~resolver_error() noexcept;
 
       };
 
-      class connection_timeout : public std::system_error {
+      class connection_error : public std::system_error {
 
       public:
 
-	connection_timeout();
+	explicit connection_error(client_error error);
 
-	virtual ~connection_timeout() noexcept;
+	virtual ~connection_error() noexcept;
 
       };
+
     } // namespace v2
   } // namespace http
 } // namespace network

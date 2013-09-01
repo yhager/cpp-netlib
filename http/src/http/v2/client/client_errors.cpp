@@ -19,8 +19,14 @@ namespace network {
 
       std::string client_category_impl::message(int ev) const {
 	switch (client_error(ev)) {
-	case client_error::invalid_scheme:
-	  return "Requires HTTP or HTTPS scheme.";
+	case client_error::invalid_url:
+	  return "Requires HTTP or HTTPS URL.";
+	case client_error::resolver_error:
+	  return "Unable to resolve host";
+	case client_error::connection_timeout:
+	  return "Connection timeout.";
+	case client_error::https_not_supported:
+	  return "HTTPS is not supported.";
 	default:
 	  break;
 	}
@@ -36,17 +42,17 @@ namespace network {
 	return std::error_code(static_cast<int>(e), client_category());
       }
 
-      invalid_scheme::invalid_scheme(const std::string &scheme)
-	: std::system_error(make_error_code(client_error::invalid_scheme), "Invalid scheme: " + scheme) {
+      invalid_url::invalid_url()
+	: std::system_error(make_error_code(client_error::invalid_url)) {
 
       }
 
-      invalid_scheme::~invalid_scheme() noexcept {
+      invalid_url::~invalid_url() noexcept {
 
       }
 
-      resolver_error::resolver_error(const std::string &msg)
-	: std::system_error(make_error_code(client_error::resolver_error), msg) {
+      resolver_error::resolver_error()
+	: std::system_error(make_error_code(client_error::resolver_error)) {
 
       }
 
@@ -54,12 +60,12 @@ namespace network {
 
       }
 
-      connection_timeout::connection_timeout()
-	: std::system_error(make_error_code(client_error::connection_timeout)) {
+      connection_error::connection_error(client_error error)
+	: std::system_error(make_error_code(error)) {
 
       }
 
-      connection_timeout::~connection_timeout() {
+      connection_error::~connection_error() {
 
       }
 

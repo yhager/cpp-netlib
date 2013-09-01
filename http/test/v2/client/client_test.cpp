@@ -4,7 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
-#include <network/http/v2/client.hpp>
+#include "network/http/v2/client.hpp"
 
 namespace http = network::http::v2;
 

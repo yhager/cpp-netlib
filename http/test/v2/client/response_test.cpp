@@ -4,7 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
-#include <network/http/v2/client/response.hpp>
+#include "network/http/v2/client/response.hpp"
 
 TEST(response_test, constructor) {
 

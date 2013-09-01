@@ -42,7 +42,6 @@ namespace network {
 
 	}
 
-
 	/**
 	 * \brief Resolves a host asynchronously.
 	 */

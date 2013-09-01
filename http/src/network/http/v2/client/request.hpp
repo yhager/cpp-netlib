@@ -10,13 +10,13 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <network/http/v2/constants.hpp>
-#include <network/http/v2/message_base.hpp>
-#include <network/http/v2/client/client_errors.hpp>
+#include "network/http/v2/constants.hpp"
+#include "network/http/v2/method.hpp"
+#include "network/http/v2/client/client_errors.hpp"
+#include "network/uri.hpp"
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/as_literal.hpp>
-#include <network/uri.hpp>
 
 namespace network {
   namespace http {
@@ -30,8 +30,8 @@ namespace network {
 
       public:
 
-	typedef message_base::string_type string_type;
-	typedef message_base::size_type size_type;
+	typedef std::string string_type;
+	typedef std::size_t size_type;
 
 	/**
 	 * \brief Destructor.
@@ -82,11 +82,11 @@ namespace network {
 	  if (auto scheme = destination.scheme()) {
 	    if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
 		(!boost::equal(*scheme, boost::as_literal("https")))) {
-	      throw invalid_scheme(std::string(std::begin(*scheme), std::end(*scheme)));
+	      throw invalid_url();
 	    }
 	  }
 	  else {
-	    throw invalid_scheme("<none>");
+	    throw invalid_url();
 	  }
 	}
 
@@ -151,11 +151,11 @@ namespace network {
 	  headers_.clear();
 	}
 
-	void set_method(string_type method) {
-	  method_ = std::move(method);
+	void set_method(network::http::v2::method method) {
+	  method_ = method;
 	}
 
-	string_type method() const {
+	network::http::v2::method method() const {
 	  return method_;
 	}
 
@@ -170,21 +170,18 @@ namespace network {
       private:
 
 	uri destination_;
-	string_type method_, version_;
+	network::http::v2::method method_;
+	string_type version_;
 	headers_type headers_;
 	std::shared_ptr<byte_source> byte_source_;
 
 	friend std::ostream &operator << (std::ostream &os, const request &req) {
-	  request::string_type path{std::begin(*req.destination_.path()), std::end(*req.destination_.path())};
-	  request::string_type host;
-	  host.append(request::string_type{std::begin(*req.destination_.scheme()),
-		                           std::end(*req.destination_.scheme())});
-	  host.append("://");
-	  host.append(request::string_type{std::begin(*req.destination_.authority()),
-		                           std::end(*req.destination_.authority())});
-
-	  os << req.method_ << " " << path << " HTTP/" << req.version_ << "\r\n";
-	  os << "Host: " << host << "\r\n";
+	  os << req.method_ << " " << *req.destination_.path() << " HTTP/" << req.version_ << "\r\n";
+	  os << "Host: ";
+	  os << *req.destination_.scheme();
+	  os << "://";
+	  os << *req.destination_.authority();
+	  os << "\r\n";
 	  for (auto header : req.headers_) {
 	    os << header.first << ": " << header.second << "\r\n";
 	  }
