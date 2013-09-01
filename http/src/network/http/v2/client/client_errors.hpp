@@ -15,6 +15,9 @@ namespace network {
       enum class client_error {
 	// scheme
 	invalid_scheme,
+
+	// connection
+	connnection_timeout
       };
 
       class client_category_impl : public std::error_category {
@@ -42,6 +45,16 @@ namespace network {
 	invalid_scheme(const std::string &scheme);
 
 	virtual ~invalid_scheme() noexcept;
+
+      };
+
+      class connection_timeout : public std::system_error {
+
+      public:
+
+	connection_timeout() = default;
+
+	virtual ~connection_timeout() noexcept;
 
       };
     } // namespace v2
