@@ -35,8 +35,6 @@ namespace network {
 
 	virtual void clear_resolved_cache() = 0;
 
-      private:
-
       };
     } // namespace v2
   } // namespace http

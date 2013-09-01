@@ -59,7 +59,7 @@ TEST(request_test, stream_2) {
   ASSERT_EQ("GET /path/to/resource/index.html HTTP/1.1\r\n"
 	    "Host: http://www.example.com\r\n"
 	    "Connection: close\r\n"
-	    "User-Agent: request_test\r\n", oss.str());
+	    "User-Agent: request_test\r\n\r\n", oss.str());
 }
 
 TEST(request_test, read_headers) {
