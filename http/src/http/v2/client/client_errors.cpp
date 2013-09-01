@@ -36,13 +36,33 @@ namespace network {
 	return std::error_code(static_cast<int>(e), client_category());
       }
 
-      invalid_scheme::invalid_scheme(const std::string &scheme) {
+      invalid_scheme::invalid_scheme(const std::string &scheme)
+	: std::system_error(make_error_code(client_error::invalid_scheme), "Invalid scheme: " + scheme) {
 
       }
 
       invalid_scheme::~invalid_scheme() noexcept {
 
       }
+
+      resolver_error::resolver_error(const std::string &msg)
+	: std::system_error(make_error_code(client_error::resolver_error), msg) {
+
+      }
+
+      resolver_error::~resolver_error() {
+
+      }
+
+      connection_timeout::connection_timeout()
+	: std::system_error(make_error_code(client_error::connection_timeout)) {
+
+      }
+
+      connection_timeout::~connection_timeout() {
+
+      }
+
     } // namespace v2
   } // namespace network
 } // namespace network

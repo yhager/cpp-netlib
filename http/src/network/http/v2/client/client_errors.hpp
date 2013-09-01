@@ -16,8 +16,11 @@ namespace network {
 	// scheme
 	invalid_scheme,
 
+	// resolution
+	resolver_error,
+
 	// connection
-	connnection_timeout
+	connection_timeout,
       };
 
       class client_category_impl : public std::error_category {
@@ -42,9 +45,20 @@ namespace network {
 
       public:
 
-	invalid_scheme(const std::string &scheme);
+	explicit invalid_scheme(const std::string &scheme);
 
 	virtual ~invalid_scheme() noexcept;
+
+      };
+
+
+      class resolver_error : std::system_error {
+
+      public:
+
+	explicit resolver_error(const std::string &msg);
+
+	virtual ~resolver_error() noexcept;
 
       };
 
@@ -52,7 +66,7 @@ namespace network {
 
       public:
 
-	connection_timeout() = default;
+	connection_timeout();
 
 	virtual ~connection_timeout() noexcept;
 
