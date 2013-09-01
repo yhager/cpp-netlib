@@ -3,9 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
+#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
+#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
 
+#include "network/http/v2/client/connection/resolver_delegate.hpp"
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -20,54 +21,32 @@
 namespace network {
   namespace http {
     namespace v2 {
+      class async_resolver_delegate : public resolver_delegate {
 
-      class resolver_error : std::runtime_error {
-
-      public:
-
-	resolver_error(const std::string &msg)
-	  : std::runtime_error(msg) {
-
-	}
-
-	virtual ~resolver_error() noexcept {
-
-	}
-
-      };
-
-      class async_resolver {
-
-	async_resolver(const async_resolver &) = delete;
-	async_resolver &operator = (const async_resolver &) = delete;
+	async_resolver_delegate(const async_resolver_delegate &) = delete;
+	async_resolver_delegate &operator = (const async_resolver_delegate &) = delete;
 
       public:
-
-	typedef boost::asio::ip::tcp::resolver resolver;
-	typedef resolver::iterator resolver_iterator;
 
 	/**
 	 * \brief Constructor.
 	 */
-	async_resolver(boost::asio::io_service &service, bool cache_resolved)
+	async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved)
 	  : resolver_(service)
 	  , cache_resolved_(cache_resolved_)
 	  , resolver_strand_(new boost::asio::io_service::strand(service)) {
 
 	}
 
-	/**
-	 * \brief Destructor.
-	 */
-	~async_resolver() noexcept {
+	virtual ~async_resolver_delegate() noexcept {
 
 	}
+
 
 	/**
 	 * \brief Resolves a host asynchronously.
 	 */
-	template <class OnResolved>
-	void resolve(const std::string &host, std::uint16_t port, OnResolved on_resolved) {
+	virtual void resolve(const std::string &host, std::uint16_t port, on_resolved_fn on_resolved) {
 	  if (cache_resolved_) {
 	    endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
 	    if (it != endpoint_cache_.end()) {
@@ -112,10 +91,8 @@ namespace network {
 	endpoint_cache endpoint_cache_;
 
       };
-
     } // namespace v2
   } // namespace http
 } // namespace network
 
-
-#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
+#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
