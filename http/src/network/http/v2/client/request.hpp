@@ -121,6 +121,16 @@ namespace network {
 	  destination_ = std::move(destination);
 	}
 
+	string_type host() const {
+	  assert(destination_.host());
+	  return string_type(std::begin(*destination_.host()), std::end(*destination_.host()));
+	}
+
+	std::uint16_t port() const {
+	  assert(destination_.port());
+	  return *destination_.port<std::uint16_t>();
+	}
+
 	void set_body(std::shared_ptr<byte_source> byte_source) {
 	  byte_source_ = byte_source;
 	}

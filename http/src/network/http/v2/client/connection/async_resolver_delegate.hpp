@@ -21,6 +21,10 @@
 namespace network {
   namespace http {
     namespace v2 {
+      /*!
+       * \class async_resolver_delegate network::http::v2::async_resolver_delegate <network/http/v2/client/connection/async_resolver_delegate.hpp>
+       * \brief Resolves and maintains a cache of hosts.
+       */
       class async_resolver_delegate : public resolver_delegate {
 
 	async_resolver_delegate(const async_resolver_delegate &) = delete;
@@ -28,12 +32,24 @@ namespace network {
 
       public:
 
-	/**
+	struct cache_resolved { };
+
+	/*!
 	 * \brief Constructor.
 	 */
-	async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved)
+	explicit async_resolver_delegate(boost::asio::io_service &service)
 	  : resolver_(service)
-	  , cache_resolved_(cache_resolved_)
+	  , cache_resolved_(false)
+	  , resolver_strand_(new boost::asio::io_service::strand(service)) {
+
+	}
+
+	/*!
+	 * \brief Constructor.
+	 */
+	async_resolver_delegate(boost::asio::io_service &service, cache_resolved)
+	  : resolver_(service)
+	  , cache_resolved_(true)
 	  , resolver_strand_(new boost::asio::io_service::strand(service)) {
 
 	}
@@ -42,7 +58,7 @@ namespace network {
 
 	}
 
-	/**
+	/*!
 	 * \brief Resolves a host asynchronously.
 	 */
 	virtual void resolve(const std::string &host, std::uint16_t port, on_resolved_fn on_resolved) {
@@ -74,6 +90,9 @@ namespace network {
 		  }));
 	}
 
+	/*!
+	 * \brief Clears the cache of already resolved endpoints.
+	 */
 	void clear_resolved_cache() {
 	  endpoint_cache_.clear();
 	}

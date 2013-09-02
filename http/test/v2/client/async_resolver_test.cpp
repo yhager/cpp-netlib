@@ -14,7 +14,7 @@ TEST(async_resolver_test, resolve_localhost) {
   // server must be running on 127.0.0.1:80
 
   boost::asio::io_service io_service;
-  http::async_resolver_delegate resolver(io_service, false);
+  http::async_resolver_delegate resolver(io_service);
   resolver.resolve("127.0.0.1", 80,
 		   [] (const boost::system::error_code &ec,
 		       const boost::iterator_range<http::async_resolver_delegate::resolver_iterator> &endpoints) {

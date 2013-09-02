@@ -21,27 +21,25 @@ namespace network {
 
 	typedef request::string_type string_type;
 
-	enum class method { GET, PUT, POST, DELETE, HEAD, OPTIONS, };
-
 	explicit client(client_options options = client_options());
 	client(client const &) = delete;
 	client(client &&) = delete;
 
-	std::future<response> get(request req, request_options options = request_options());
+	std::future<response> get(request request_, request_options options = request_options());
 
-	std::future<response> post(request req, request_options options = request_options());
+	std::future<response> post(request request_, request_options options = request_options());
 
-	std::future<response> put(request req, request_options options = request_options());
+	std::future<response> put(request request_, request_options options = request_options());
 
-	std::future<response> delete_(request req, request_options options = request_options());
+	std::future<response> delete_(request request_, request_options options = request_options());
 
-	std::future<response> head(request req, request_options options = request_options());
+	std::future<response> head(request request_, request_options options = request_options());
 
-	std::future<response> options(request req, request_options options = request_options());
+	std::future<response> options(request request_, request_options options = request_options());
 
       private:
 
-	std::future<response> do_request(string_type method, request req, request_options options);
+	std::future<response> do_request(method method_, request request_, request_options options);
 
 	client_options options_;
 
