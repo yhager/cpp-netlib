@@ -123,3 +123,18 @@ TEST(request_test, remove_duplicate_headers) {
   ++headers_it;
   ASSERT_TRUE(headers_it == std::end(headers));
 }
+
+TEST(request_test, port) {
+  http::request instance{network::uri{"http://www.example.com:8000/path/to/resource/index.html"}};
+  ASSERT_EQ(8000, instance.port());
+}
+
+TEST(request_test, http_default_port) {
+  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  ASSERT_EQ(80, instance.port());
+}
+
+TEST(request_test, https_default_port) {
+  http::request instance{network::uri{"https://www.example.com/path/to/resource/index.html"}};
+  ASSERT_EQ(443, instance.port());
+}

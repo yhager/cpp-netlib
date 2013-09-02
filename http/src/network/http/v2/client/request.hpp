@@ -127,7 +127,17 @@ namespace network {
 	}
 
 	std::uint16_t port() const {
-	  assert(destination_.port());
+	  assert(destination_.scheme());
+	  assert((string_type(*destination_.scheme()) == "http") ||
+		 (string_type(*destination_.scheme()) == "https"));
+	  if (!destination_.port()) {
+	    if (string_type(*destination_.scheme()) == "http") {
+	      return 80;
+	    }
+	    else if (string_type(*destination_.scheme()) == "https") {
+	      return 443;
+	    }
+	  }
 	  return *destination_.port<std::uint16_t>();
 	}
 
