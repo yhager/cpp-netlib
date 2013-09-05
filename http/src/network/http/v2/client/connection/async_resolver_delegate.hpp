@@ -32,25 +32,13 @@ namespace network {
 
       public:
 
-	struct cache_resolved { };
-
 	/*!
 	 * \brief Constructor.
 	 */
-	explicit async_resolver_delegate(boost::asio::io_service &service)
+	async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved = false)
 	  : resolver_(service)
-	  , cache_resolved_(false)
-	  , resolver_strand_(new boost::asio::io_service::strand(service)) {
-
-	}
-
-	/*!
-	 * \brief Constructor.
-	 */
-	async_resolver_delegate(boost::asio::io_service &service, cache_resolved)
-	  : resolver_(service)
-	  , cache_resolved_(true)
-	  , resolver_strand_(new boost::asio::io_service::strand(service)) {
+	  , resolver_strand_(new boost::asio::io_service::strand(service))
+	  , cache_resolved_(cache_resolved) {
 
 	}
 
@@ -94,7 +82,7 @@ namespace network {
 	 * \brief Clears the cache of already resolved endpoints.
 	 */
 	void clear_resolved_cache() {
-	  endpoint_cache_.clear();
+	  endpoint_cache().swap(endpoint_cache_);
 	}
 
       private:

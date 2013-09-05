@@ -28,7 +28,7 @@ namespace network {
 
 	connection_manager &operator = (const connection_manager &) = delete;
 
-	virtual connection_manager() = default noexcept;
+	virtual connection_manager() noexcept = 0;
 
 	virtual std::shared_ptr<connection> get_connection(boost::asio::io_service &io_service,
 							   const request &req,

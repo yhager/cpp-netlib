@@ -19,7 +19,7 @@ TEST(async_resolver_test, resolve_localhost) {
 		   [] (const boost::system::error_code &ec,
 		       const boost::iterator_range<http::async_resolver_delegate::resolver_iterator> &endpoints) {
 		     for (auto endpoint : endpoints) {
-		       std::cout << "Endpoint" << std::endl;
+		       //std::cout << endpoint << std::endl;
 		     }
 		   });
 

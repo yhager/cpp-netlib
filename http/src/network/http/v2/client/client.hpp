@@ -10,11 +10,14 @@
 #include <network/http/v2/client/request.hpp>
 #include <network/http/v2/client/request_options.hpp>
 #include <network/http/v2/client/response.hpp>
+#include <boost/asio/io_service.hpp>
 #include <future>
+#include <memory>
 
 namespace network {
   namespace http {
     namespace v2 {
+
       class client {
 
       public:
@@ -24,6 +27,7 @@ namespace network {
 	explicit client(client_options options = client_options());
 	client(client const &) = delete;
 	client(client &&) = delete;
+	~client() noexcept;
 
 	std::future<response> get(request request_, request_options options = request_options());
 
@@ -39,9 +43,8 @@ namespace network {
 
       private:
 
-	std::future<response> do_request(method method_, request request_, request_options options);
-
-	client_options options_;
+	struct impl;
+	impl *pimpl_;
 
       };
     } // namespace v2

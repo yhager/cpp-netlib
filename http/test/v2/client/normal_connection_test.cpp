@@ -8,4 +8,6 @@
 #include "network/http/v2/client/connection/normal_connection_delegate.hpp"
 #include <iostream>
 
+using boost::asio::ip::tcp;
 namespace http = network::http::v2;
+

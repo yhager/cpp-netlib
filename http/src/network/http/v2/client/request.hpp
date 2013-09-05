@@ -168,7 +168,7 @@ namespace network {
 	}
 
 	void clear_headers() {
-	  headers_.clear();
+	  headers_type().swap(headers_);
 	}
 
 	void set_method(network::http::v2::method method) {

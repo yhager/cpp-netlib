@@ -31,7 +31,7 @@ namespace network {
 
 	connection &operator = (const connection &) = delete;
 
-	virtual connection() = default;
+	virtual ~connection() noexcept;
 
 	virtual response send_request(std::string method,
 				      request req,

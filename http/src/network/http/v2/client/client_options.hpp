@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <boost/asio/io_service.hpp>
 
 namespace network {
   namespace http {
