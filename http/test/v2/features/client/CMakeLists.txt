@@ -4,18 +4,8 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 set(CPP-NETLIB_CLIENT_TESTS
-  client_options_test
-  request_options_test
-  byte_source_test
-  response_test
-  request_test
-  normal_connection_test
-  client_test
+  async_resolver_test
   )
-
-if (OPENSSL_FOUND)
-  list(APPEND CPP-NETLIB_CLIENT_TESTS ssl_connection_test)
-endif()
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})
   if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
@@ -29,7 +19,6 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
     network-http-constants-v2
     network-http-client-v2
     ${Boost_LIBRARIES}
-    ${GTEST_BOTH_LIBRARIES}
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     )
@@ -39,7 +28,3 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
     ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-v2-${test})
 
 endforeach(test)
-
-if (OPENSSL_FOUND)
-  target_link_libraries(cpp-netlib-http-v2-ssl_connection_test ${OPENSSL_LIBRARIES})
-endif()

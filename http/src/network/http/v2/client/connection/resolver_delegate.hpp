@@ -24,6 +24,7 @@ namespace network {
 
 	typedef boost::asio::ip::tcp::resolver resolver;
 	typedef resolver::iterator resolver_iterator;
+	typedef boost::iterator_range<resolver_iterator> resolver_iterator_range;
 	typedef std::function<void (const boost::system::error_code &,
 				    boost::iterator_range<resolver_iterator>)> on_resolved_fn;
 

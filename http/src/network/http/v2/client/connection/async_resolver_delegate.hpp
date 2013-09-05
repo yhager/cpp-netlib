@@ -64,17 +64,12 @@ namespace network {
               resolver_strand_->wrap(
 	          [=](const boost::system::error_code &ec,
 		      resolver_iterator endpoint_iterator) {
+
+		    auto resolvers = std::make_pair(endpoint_iterator, resolver_iterator());
 		    if (!ec && cache_resolved_) {
-		      endpoint_cache::iterator cache_it;
-		      bool inserted = false;
-		      std::tie(cache_it, inserted) = endpoint_cache_.insert(
-			  std::make_pair(host,
-			      std::make_pair(endpoint_iterator, resolver_iterator())));
-		      on_resolved(ec, cache_it->second);
+		      endpoint_cache_.insert(std::make_pair(host, resolvers));
 		    }
-		    else {
-		      on_resolved(ec, std::make_pair(endpoint_iterator, resolver_iterator()));
-		    }
+		    on_resolved(ec, resolvers);
 		  }));
 	}
 
@@ -88,8 +83,7 @@ namespace network {
       private:
 
 	typedef boost::asio::io_service::strand strand;
-	typedef std::unordered_map<
-	  std::string, boost::iterator_range<resolver_iterator>> endpoint_cache;
+	typedef std::unordered_map<std::string, resolver_iterator_range> endpoint_cache;
 
 	resolver resolver_;
 	std::unique_ptr<strand> resolver_strand_;
