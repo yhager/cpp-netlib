@@ -12,7 +12,8 @@ namespace http = network::http::v2;
 Describe(http_client) {
 
   It(gets_a_response) {
-    auto response = client_.get(http::request(network::uri("http://127.0.0.1/")));
+    http::request request(network::uri("http://127.0.0.1/"));
+    auto response = client_.get(request);
   }
 
   http::client client_;

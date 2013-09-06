@@ -22,6 +22,8 @@ namespace network {
 
       public:
 
+	typedef std::shared_ptr<connection> connection_ptr;
+
 	connection_manager() = default;
 
 	connection_manager(const connection_manager &) = delete;
@@ -30,9 +32,9 @@ namespace network {
 
 	virtual connection_manager() noexcept = 0;
 
-	virtual std::shared_ptr<connection> get_connection(boost::asio::io_service &io_service,
-							   const request &req,
-							   const client_options &options) = 0;
+	virtual connection_ptr get_connection(boost::asio::io_service &io_service,
+					      const request &req,
+					      const client_options &options) = 0;
 
 	virtual void clear_resolved_cache() = 0;
 

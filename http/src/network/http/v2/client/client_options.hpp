@@ -12,6 +12,7 @@
 #include <vector>
 #include <chrono>
 #include <boost/asio/io_service.hpp>
+#include <boost/optional.hpp>
 
 namespace network {
   namespace http {
@@ -22,7 +23,8 @@ namespace network {
 
 	// default timeout is 30 seconds
 	client_options()
-	  : follow_redirects_(false)
+	  : io_service_(boost::none)
+	  , follow_redirects_(false)
 	  , cache_resolved_(false)
 	  , use_proxy_(false)
 	  , timeout_(30000) { }
@@ -36,12 +38,21 @@ namespace network {
 	}
 
 	void swap(client_options &other) noexcept {
+	  std::swap(io_service_, other.io_service_);
 	  std::swap(follow_redirects_, other.follow_redirects_);
 	  std::swap(cache_resolved_, other.cache_resolved_);
 	  std::swap(use_proxy_, other.use_proxy_);
 	  std::swap(timeout_, other.timeout_);
 	  std::swap(openssl_certificate_paths_, other.openssl_certificate_paths_);
 	  std::swap(openssl_verify_paths_, other.openssl_verify_paths_);
+	}
+
+	client_options &io_service(boost::asio::io_service &io_service) {
+	  io_service_ = io_service;
+	}
+
+	boost::optional<boost::asio::io_service &> io_service() const {
+	  return io_service_;
 	}
 
 	client_options &follow_redirects(bool follow_redirects) noexcept {
@@ -100,6 +111,7 @@ namespace network {
 
       private:
 
+	boost::optional<boost::asio::io_service &> io_service_;
 	bool follow_redirects_;
 	bool cache_resolved_;
 	bool use_proxy_;
