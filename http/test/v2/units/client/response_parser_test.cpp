@@ -4,10 +4,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
-#include "network/http/v2/client/response.hpp"
+#include "network/http/v2/client/response_parser.hpp"
 
-namespace http = network::http::v2;
+// state
+// parse_until
 
-TEST(response_test, constructor) {
-  http::response response;
-}

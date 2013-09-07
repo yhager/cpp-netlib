@@ -19,6 +19,10 @@ namespace network {
       class request;
       class request_options;
 
+      /**
+       * \class connection network/http/v2/client/connection.hpp connection.hpp
+       * \brief A base class for HTTP connections.
+       */
       class connection {
 
       public:

@@ -7,7 +7,7 @@
 #define __NETWORK_HTTP_V2_CLIENT_CONNECTION_SSL_CONNECTION_DELEGATE_INC__
 
 #include "network/http/v2/client/connection/connection_delegate.hpp"
-#include "network/http/v2/client/client_options.hpp"
+#include "network/http/v2/client/client.hpp"
 #include <memory>
 #include <vector>
 #include <boost/asio/ip/tcp.hpp>

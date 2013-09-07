@@ -6,12 +6,22 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_CLIENT_ERRORS_INC__
 #define __NETWORK_HTTP_V2_CLIENT_CLIENT_ERRORS_INC__
 
+/**
+ * \file
+ * \brief Contains a set of error classes and exceptions for HTTP
+ *        clients.
+ */
+
 #include <network/config.hpp>
 #include <system_error>
 
 namespace network {
   namespace http {
     namespace v2 {
+      /**
+       * \enum client_error client_errors.hpp network/http/v2/client/client_errors.hpp
+       * \brief An enumeration of all types of client error.
+       */
       enum class client_error {
 	// url
 	invalid_url,
@@ -24,51 +34,73 @@ namespace network {
 	https_not_supported,
       };
 
-      class client_category_impl : public std::error_category {
-
-      public:
-
-	client_category_impl() = default;
-
-	virtual ~client_category_impl() noexcept;
-
-	virtual const char *name() const noexcept;
-
-	virtual std::string message(int ev) const;
-
-      };
-
+      /**
+       * \brief Gets the error category for HTTP client errors.
+       */
       const std::error_category &client_category();
 
+      /**
+       * \brief Makes an error code object from a client_error enum.
+       */
       std::error_code make_error_code(client_error e);
 
+      /**
+       * \class invalid_url network/http/v2/client/client_errors.hpp
+       * \brief An exception thrown if the URL provides is invalid.
+       */
       class invalid_url : public std::system_error {
 
       public:
 
+	/**
+	 * \brief Constructor.
+	 */
 	explicit invalid_url();
 
+	/**
+	 * \brief Destructor.
+	 */
 	virtual ~invalid_url() noexcept;
 
       };
 
-
+      /**
+       * \class resolver_error network/http/v2/client/client_errors.hpp
+       * \brief An exception thrown when there is a resolver error.
+       */
       class resolver_error : std::system_error {
 
       public:
 
+	/**
+	 * \brief Constructor.
+	 */
 	explicit resolver_error();
 
+	/**
+	 * \brief Destructor.
+	 */
 	virtual ~resolver_error() noexcept;
 
       };
 
+      /**
+       * \class connection_error network/http/v2/client/client_errors.hpp
+       * \brief An exception thrown when there is a connection error.
+       */
       class connection_error : public std::system_error {
 
       public:
 
+	/**
+	 * \brief Constructor.
+	 * \param The client_error code.
+	 */
 	explicit connection_error(client_error error);
 
+	/**
+	 * \brief Destructor.
+	 */
 	virtual ~connection_error() noexcept;
 
       };

@@ -18,6 +18,10 @@ namespace network {
       class client_connection;
       class client_options;
 
+      /**
+       * \class connection_manager network/http/v2/client/connection_manager.hpp connection_manager.hpp
+       * \brief A class that maintains client connections.
+       */
       class connection_manager {
 
       public:

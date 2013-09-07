@@ -7,8 +7,9 @@ set(CPP-NETLIB_CLIENT_TESTS
   client_options_test
   request_options_test
   byte_source_test
-  response_test
   request_test
+  response_test
+  response_parser_test
   )
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})

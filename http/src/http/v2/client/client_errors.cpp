@@ -8,6 +8,21 @@
 namespace network {
   namespace http {
     namespace v2 {
+
+      class client_category_impl : public std::error_category {
+
+      public:
+
+	client_category_impl() = default;
+
+	virtual ~client_category_impl() noexcept;
+
+	virtual const char *name() const noexcept;
+
+	virtual std::string message(int ev) const;
+
+      };
+
       client_category_impl::~client_category_impl() noexcept {
 
       }

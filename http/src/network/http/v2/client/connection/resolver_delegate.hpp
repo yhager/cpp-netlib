@@ -15,6 +15,10 @@
 namespace network {
   namespace http {
     namespace v2 {
+      /**
+       * \class resolver_delegate network/http/v2/client/connection/resolver_delegate.hpp
+       * \brief Resolver delegate.
+       */
       class resolver_delegate {
 
 	resolver_delegate(const resolver_delegate &) = delete;
