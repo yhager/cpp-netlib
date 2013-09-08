@@ -22,15 +22,12 @@ Describe(async_resolver) {
     // An HTTP server must be running on 127.0.0.1:80
     // maybe execute a script
 
-    resolver_->resolve("127.0.0.1", 80,
-		       [] (const boost::system::error_code &ec,
-			   const http::async_resolver_delegate::resolver_iterator_range &endpoints) {
-			 for (auto endpoint : endpoints) {
-			   Assert::That(endpoint.endpoint().address().to_string(), Equals("127.0.0.1"));
-			   Assert::That(endpoint.endpoint().port(), Equals(80));
-			 }
-		       });
+    auto endpoints = resolver_->resolve("127.0.0.1", 80);
     io_service_->run_one();
+    for (auto endpoint : endpoints.get()) {
+      Assert::That(endpoint.endpoint().address().to_string(), Equals("127.0.0.1"));
+      Assert::That(endpoint.endpoint().port(), Equals(80));
+    }
   }
 
   std::unique_ptr<boost::asio::io_service> io_service_;

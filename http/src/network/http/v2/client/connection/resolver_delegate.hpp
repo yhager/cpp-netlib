@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <string>
 #include <functional>
+#include <utility>
+#include <future>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/range/iterator_range.hpp>
 
@@ -27,6 +29,7 @@ namespace network {
       public:
 
 	typedef boost::asio::ip::tcp::resolver resolver;
+	typedef boost::asio::ip::tcp::endpoint endpoint;
 	typedef resolver::iterator resolver_iterator;
 	typedef boost::iterator_range<resolver_iterator> resolver_iterator_range;
 	typedef std::function<void (const boost::system::error_code &,
@@ -36,7 +39,8 @@ namespace network {
 
 	virtual ~resolver_delegate() noexcept { }
 
-	virtual void resolve(const std::string &host, std::uint16_t port, on_resolved_fn on_resolved) = 0;
+	virtual std::future<resolver_iterator_range>
+	resolve(const std::string &host, std::uint16_t port) = 0;
 
 	virtual void clear_resolved_cache() = 0;
 

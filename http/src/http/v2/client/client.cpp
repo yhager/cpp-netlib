@@ -46,17 +46,7 @@ namespace network {
 	request_.set_method(method_);
 
 	std::future<response> response;
-	resolver_.resolve(request_.host(), request_.port(),
-	    [&response] (const boost::system::error_code &ec,
-			 boost::iterator_range<async_resolver_delegate::resolver_iterator> resolvers) {
-			    if (ec) {
-			      return;
-			    }
-
-			    // make TCP connection
-			  });
-
-
+	auto endpoints = resolver_.resolve(request_.host(), request_.port());
 	return response;
       }
 
