@@ -11,6 +11,7 @@
 #include <future>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/streambuf.hpp>
+#include <boost/asio/buffer.hpp>
 
 namespace network {
   namespace http {
@@ -30,11 +31,11 @@ namespace network {
 	connect(boost::asio::ip::tcp::endpoint &endpoint,
 		const std::string &host) = 0;
 
-	virtual void write(boost::asio::streambuf &command_streambuf,
-			   std::function<void (const boost::system::error_code &, size_t)> handler) = 0;
+	virtual std::future<std::pair<boost::system::error_code, std::size_t>>
+	write(boost::asio::streambuf &command_streambuf) = 0;
 
-	virtual void read_some(const boost::asio::mutable_buffers_1 &read_buffer,
-			       std::function<void (const boost::system::error_code &, size_t)> handler) = 0;
+	virtual std::future<std::pair<boost::system::error_code, std::size_t>>
+	read_some(const boost::asio::mutable_buffers_1 &read_buffer) = 0;
 
       };
     } // namespace v2

@@ -6,17 +6,17 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
 #define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
 
-#include "network/http/v2/client/connection/resolver_delegate.hpp"
+#include <stdexcept>
+#include <cstdint>
+#include <string>
+#include <unordered_map>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/exception/all.hpp>
-#include <stdexcept>
-#include <cstdint>
-#include <string>
-#include <unordered_map>
+#include <network/http/v2/client/connection/resolver_delegate.hpp>
 
 namespace network {
   namespace http {

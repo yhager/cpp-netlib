@@ -10,6 +10,7 @@
 #include "network/http/v2/client/connection/async_resolver_delegate.hpp"
 
 using namespace igloo;
+using boost::asio::ip::tcp;
 namespace http = network::http::v2;
 
 Describe(async_resolver) {
@@ -28,8 +29,9 @@ Describe(async_resolver) {
     auto result = endpoints.get();
     Assert::That(result.first, Equals(boost::system::error_code()));
     for (auto endpoint : result.second) {
-      Assert::That(endpoint.endpoint().address().to_string(), Equals("127.0.0.1"));
-      Assert::That(endpoint.endpoint().port(), Equals(80));
+      tcp::endpoint endpoint_ = endpoint;
+      Assert::That(endpoint_.address().to_string(), Equals("127.0.0.1"));
+      Assert::That(endpoint_.port(), Equals(80));
     }
   }
 

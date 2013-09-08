@@ -79,6 +79,7 @@ namespace network {
 
 	client_options &io_service(boost::asio::io_service &io_service) {
 	  io_service_ = io_service;
+	  return *this;
 	}
 
 	boost::optional<boost::asio::io_service &> io_service() const {

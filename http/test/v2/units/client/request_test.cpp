@@ -43,7 +43,7 @@ TEST(request_test, stream) {
   std::ostringstream oss;
   oss << instance;
   ASSERT_EQ("GET / HTTP/1.1\r\n"
-	    "Host: http://www.example.com\r\n"
+	    "Host: www.example.com\r\n"
 	    "Connection: close\r\n"
 	    "User-Agent: request_test\r\n\r\n", oss.str());
 }
@@ -57,7 +57,7 @@ TEST(request_test, stream_2) {
   std::ostringstream oss;
   oss << instance;
   ASSERT_EQ("GET /path/to/resource/index.html HTTP/1.1\r\n"
-	    "Host: http://www.example.com\r\n"
+	    "Host: www.example.com\r\n"
 	    "Connection: close\r\n"
 	    "User-Agent: request_test\r\n\r\n", oss.str());
 }

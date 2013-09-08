@@ -376,10 +376,7 @@ namespace network {
 
 	friend std::ostream &operator << (std::ostream &os, const request &req) {
 	  os << req.method_ << " " << *req.destination_.path() << " HTTP/" << req.version_ << "\r\n";
-	  os << "Host: ";
-	  os << *req.destination_.scheme();
-	  os << "://";
-	  os << *req.destination_.authority();
+	  os << "Host: " << *req.destination_.host();
 	  os << "\r\n";
 	  for (auto header : req.headers_) {
 	    os << header.first << ": " << header.second << "\r\n";
