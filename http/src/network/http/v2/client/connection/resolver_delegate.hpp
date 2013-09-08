@@ -29,17 +29,15 @@ namespace network {
       public:
 
 	typedef boost::asio::ip::tcp::resolver resolver;
-	typedef boost::asio::ip::tcp::endpoint endpoint;
 	typedef resolver::iterator resolver_iterator;
 	typedef boost::iterator_range<resolver_iterator> resolver_iterator_range;
-	typedef std::function<void (const boost::system::error_code &,
-				    boost::iterator_range<resolver_iterator>)> on_resolved_fn;
 
 	resolver_delegate() = default;
 
 	virtual ~resolver_delegate() noexcept { }
 
-	virtual std::future<resolver_iterator_range>
+	virtual std::future<std::pair<boost::system::error_code,
+				      resolver_iterator_range>>
 	resolve(const std::string &host, std::uint16_t port) = 0;
 
 	virtual void clear_resolved_cache() = 0;

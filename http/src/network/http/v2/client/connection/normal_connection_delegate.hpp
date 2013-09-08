@@ -29,11 +29,19 @@ namespace network {
 
 	}
 
-	virtual void connect(boost::asio::ip::tcp::endpoint &endpoint,
-			     const std::string &host,
-			     std::function<void (const boost::system::error_code &)> handler) {
+	virtual std::future<boost::system::error_code>
+	connect(boost::asio::ip::tcp::endpoint &endpoint,
+		const std::string &host) {
 	  socket_.reset(new boost::asio::ip::tcp::socket(io_service_));
-	  socket_->async_connect(endpoint, handler);
+//	  socket_->async_connect(endpoint,
+//				 [this](const boost::system::error_code &ec) {
+//				   std::cout << "oh" << std::endl;
+//				   promise_.set_value(ec);
+//				 });
+	  boost::system::error_code ec;
+	  socket_->connect(endpoint, ec);
+	  promise_.set_value(ec);
+	  return promise_.get_future();
 	}
 
 	virtual void write(boost::asio::streambuf &command_streambuf,
@@ -50,6 +58,7 @@ namespace network {
 
 	boost::asio::io_service &io_service_;
 	std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
+	std::promise<boost::system::error_code> promise_;
 
       };
     } // namespace v2

@@ -8,6 +8,7 @@
 
 #include <functional>
 #include <string>
+#include <future>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/streambuf.hpp>
 
@@ -25,9 +26,9 @@ namespace network {
 
 	virtual ~connection_delegate() noexcept { }
 
-	virtual void connect(boost::asio::ip::tcp::endpoint &endpoint,
-			     const std::string &host,
-			     std::function<void (const boost::system::error_code &)> handler) = 0;
+	virtual std::future<boost::system::error_code>
+	connect(boost::asio::ip::tcp::endpoint &endpoint,
+		const std::string &host) = 0;
 
 	virtual void write(boost::asio::streambuf &command_streambuf,
 			   std::function<void (const boost::system::error_code &, size_t)> handler) = 0;

@@ -52,13 +52,14 @@ namespace network {
 	/**
 	 * \brief Resolves a host asynchronously.
 	 */
-	virtual std::future<resolver_iterator_range>
+	virtual std::future<std::pair<boost::system::error_code,
+				      resolver_iterator_range>>
 	resolve(const std::string &host, std::uint16_t port) {
 	  if (cache_resolved_) {
 	    endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
 	    if (it != endpoint_cache_.end()) {
-	      boost::system::error_code ignored;
-	      promise_.set_value(it->second);
+	      boost::system::error_code ec;
+	      promise_.set_value(std::make_pair(ec, it->second));
 	      return promise_.get_future();
 	    }
 	  }
@@ -69,14 +70,15 @@ namespace network {
 		  [&host, this](const boost::system::error_code &ec,
 				resolver_iterator endpoint_iterator) {
 		    if (ec) {
-		      promise_.set_value(std::make_pair(resolver_iterator(), resolver_iterator()));
+		      auto resolvers = std::make_pair(resolver_iterator(), resolver_iterator());
+		      promise_.set_value(std::make_pair(ec, resolvers));
 		    }
 		    else {
 		      auto resolvers = std::make_pair(endpoint_iterator, resolver_iterator());
 		      if (cache_resolved_) {
 			endpoint_cache_.insert(std::make_pair(host, resolvers));
 		      }
-		      promise_.set_value(resolvers);
+		      promise_.set_value(std::make_pair(ec, resolvers));
 		    }
 		  }));
 
@@ -94,7 +96,7 @@ namespace network {
 
 	typedef boost::asio::io_service::strand strand;
 	typedef std::unordered_map<std::string, resolver_iterator_range> endpoint_cache;
-	std::promise<resolver_iterator_range> promise_;
+	std::promise<std::pair<boost::system::error_code, resolver_iterator_range>> promise_;
 
 	resolver resolver_;
 	std::unique_ptr<strand> resolver_strand_;
