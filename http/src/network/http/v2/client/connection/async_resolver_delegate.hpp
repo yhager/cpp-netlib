@@ -52,37 +52,35 @@ namespace network {
 	/**
 	 * \brief Resolves a host asynchronously.
 	 */
-	virtual std::future<std::pair<boost::system::error_code,
-				      resolver_iterator_range>>
-	resolve(const std::string &host, std::uint16_t port) {
+
+	virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
 	  if (cache_resolved_) {
 	    endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
 	    if (it != endpoint_cache_.end()) {
 	      boost::system::error_code ec;
-	      promise_.set_value(std::make_pair(ec, it->second));
-	      return promise_.get_future();
+	      callback(ec, it->second);
+	      return;
 	    }
 	  }
 
 	  resolver::query query(host, std::to_string(port));
 	  resolver_.async_resolve(query,
               resolver_strand_->wrap(
-		  [&host, this](const boost::system::error_code &ec,
-				resolver_iterator endpoint_iterator) {
+		  [&host, &callback, this](const boost::system::error_code &ec,
+					   resolver_iterator endpoint_iterator) {
 		    if (ec) {
 		      auto resolvers = std::make_pair(resolver_iterator(), resolver_iterator());
-		      promise_.set_value(std::make_pair(ec, resolvers));
+		      callback(ec, resolvers);
 		    }
 		    else {
 		      auto resolvers = std::make_pair(endpoint_iterator, resolver_iterator());
 		      if (cache_resolved_) {
 			endpoint_cache_.insert(std::make_pair(host, resolvers));
 		      }
-		      promise_.set_value(std::make_pair(ec, resolvers));
+		      callback(ec, resolvers);
 		    }
 		  }));
 
-	  return promise_.get_future();
 	}
 
 	/**

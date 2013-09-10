@@ -5,8 +5,8 @@
 
 set(CPP-NETLIB_CLIENT_TESTS
   async_resolver_test
-  normal_connection_test
-  client_test
+  #normal_connection_test
+  #client_test
   )
 
 if (OPENSSL_FOUND)

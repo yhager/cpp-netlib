@@ -46,7 +46,7 @@ namespace network {
 	request_.set_method(method_);
 
 	std::future<response> response;
-	auto endpoints = resolver_.resolve(request_.host(), request_.port());
+	//auto endpoints = resolver_.resolve(request_.host(), request_.port());
 	return response;
       }
 
