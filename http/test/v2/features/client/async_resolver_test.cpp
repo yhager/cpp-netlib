@@ -6,7 +6,6 @@
 #include <iostream>
 #include <igloo/igloo_alt.h>
 #include <boost/asio.hpp>
-#include <boost/range/empty.hpp>
 #include "network/http/v2/client/connection/async_resolver_delegate.hpp"
 
 using namespace igloo;
@@ -25,15 +24,15 @@ Describe(async_resolver) {
     // maybe execute a script
 
     resolver_->resolve("127.0.0.1", 80,
-		       [] (const boost::system::error_code &ec,
-			   http::async_resolver_delegate::resolver_iterator_range endpoints) {
-			 Assert::That(ec, Equals(boost::system::error_code()));
-			 for (auto endpoint : endpoints) {
-			   tcp::endpoint endpoint_ = endpoint;
-			   Assert::That(endpoint_.address().to_string(), Equals("127.0.0.1"));
-			   Assert::That(endpoint_.port(), Equals(80));
-			 }
-		       });
+                       [&] (const boost::system::error_code &ec,
+                            http::async_resolver_delegate::resolver_iterator endpoint_iterator) {
+                         Assert::That(ec, Equals(boost::system::error_code()));
+                         if (endpoint_iterator != http::async_resolver_delegate::resolver_iterator()) {
+                           tcp::endpoint endpoint = *endpoint_iterator;
+                           Assert::That(endpoint.address().to_string(), Equals("127.0.0.1"));
+                           Assert::That(endpoint.port(), Equals(80));
+                         }
+                       });
     io_service_->run_one();
   }
 

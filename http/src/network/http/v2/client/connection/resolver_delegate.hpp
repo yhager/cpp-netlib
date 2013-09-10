@@ -12,7 +12,6 @@
 #include <utility>
 #include <future>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/range/iterator_range.hpp>
 
 namespace network {
   namespace http {
@@ -23,24 +22,23 @@ namespace network {
        */
       class resolver_delegate {
 
-	resolver_delegate(const resolver_delegate &) = delete;
-	resolver_delegate &operator = (const resolver_delegate &) = delete;
+        resolver_delegate(const resolver_delegate &) = delete;
+        resolver_delegate &operator = (const resolver_delegate &) = delete;
 
       public:
 
-	typedef boost::asio::ip::tcp::resolver resolver;
-	typedef resolver::iterator resolver_iterator;
-	typedef boost::iterator_range<resolver_iterator> resolver_iterator_range;
-	typedef std::function<void (const boost::system::error_code&,
-				    resolver_iterator_range)> callback_fn;
+        typedef boost::asio::ip::tcp::resolver resolver;
+        typedef resolver::iterator resolver_iterator;
+        typedef std::function<void (const boost::system::error_code&,
+                                    resolver_iterator)> callback_fn;
 
-	resolver_delegate() = default;
+        resolver_delegate() = default;
 
-	virtual ~resolver_delegate() noexcept { }
+        virtual ~resolver_delegate() noexcept { }
 
-	virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) = 0;
+        virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) = 0;
 
-	virtual void clear_resolved_cache() = 0;
+        virtual void clear_resolved_cache() = 0;
 
       };
     } // namespace v2

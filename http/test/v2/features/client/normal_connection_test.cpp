@@ -19,89 +19,120 @@ Describe(normal_http_connection) {
 
   void SetUp() {
     io_service_.reset(new boost::asio::io_service);
-    resolver_.reset(new http::async_resolver_delegate(*io_service_));
+    resolver_.reset(new tcp::resolver(*io_service_));
     connection_.reset(new http::normal_connection_delegate(*io_service_));
-
-    // resolve endpoints
-    auto endpoints = resolver_->resolve("127.0.0.1", 80);
-    io_service_->run_one();
-    endpoints_ = endpoints.get();
+    socket_.reset(new tcp::socket(*io_service_));
   }
 
   void TearDown() {
-
+    socket_->close();
   }
 
   It(connects_to_localhost) {
-    auto it = std::begin(endpoints_.second);
-    tcp::endpoint endpoint(it->endpoint().address(), 80);
-    auto connected = connection_->connect(endpoint, "127.0.0.1");
+    // Resolve the host.
+    boost::system::error_code ec;
+    tcp::resolver::query query("127.0.0.1", "80");
+    auto it = resolver_->resolve(query, ec);
+    Assert::That(ec, Equals(boost::system::error_code()));
+
+    // Make sure that the connection is successful.
+    tcp::endpoint endpoint(it->endpoint());
+    connection_->async_connect(endpoint, "127.0.0.1",
+                               [&ec] (const boost::system::error_code &ec_) {
+                                 ec = ec_;
+                               });
     io_service_->run_one();
-    auto connected_ = connected.get();
-    Assert::That(connected_, Equals(boost::system::error_code()));
+    Assert::That(ec, Equals(boost::system::error_code()));
   }
 
   It(writes_to_localhost) {
-    auto it = std::begin(endpoints_.second);
-    tcp::endpoint endpoint(it->endpoint().address(), 80);
-    auto connected = connection_->connect(endpoint, "127.0.0.1");
-    io_service_->run_one();
-    auto connected_ = connected.get();
-    Assert::That(connected_, Equals(boost::system::error_code()));
+    // Resolve the host.
+    boost::system::error_code ec;
+    tcp::resolver::query query("127.0.0.1", "80");
+    auto it = resolver_->resolve(query, ec);
+    Assert::That(ec, Equals(boost::system::error_code()));
 
+    // Make sure that the connection is successful.
+    tcp::endpoint endpoint(it->endpoint());
+    connection_->async_connect(endpoint, "127.0.0.1",
+                               [&ec] (const boost::system::error_code &ec_) {
+                                 Assert::That(ec_, Equals(boost::system::error_code()));
+                               });
+
+    // Create an HTTP request.
     http::request request{network::uri{"http://127.0.0.1/"}};
     request.set_method(http::method::GET);
     request.set_version("1.0");
     request.append_header("User-Agent", "normal_connection_test");
     request.append_header("Connection", "close");
 
+    // Write the HTTP request to the socket, sending it to the server.
     boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
     request_stream << request;
-    auto written = connection_->write(request_);
-    io_service_->run_one();
-    auto written_ = written.get();
-    Assert::That(written_.first, Equals(boost::system::error_code()));
+    std::size_t bytes_written = 0;
+    connection_->async_write(request_,
+                             [&bytes_written] (const boost::system::error_code &ec_,
+                                               std::size_t bytes_written_) {
+                               Assert::That(ec_, Equals(boost::system::error_code()));
+                               bytes_written = bytes_written_;
+                             });
+    io_service_->run();
+    Assert::That(bytes_written, IsGreaterThan(0));
   }
 
   It(reads_from_localhost) {
-    auto it = std::begin(endpoints_.second);
-    tcp::endpoint endpoint(it->endpoint().address(), 80);
-    auto connected = connection_->connect(endpoint, "127.0.0.1");
-    io_service_->run_one();
-    auto connected_ = connected.get();
-    Assert::That(connected_, Equals(boost::system::error_code()));
+    // Resolve the host.
+    boost::system::error_code ec;
+    tcp::resolver::query query("127.0.0.1", "80");
+    auto it = resolver_->resolve(query, ec);
+    Assert::That(ec, Equals(boost::system::error_code()));
 
+    // Make sure that the connection is successful.
+    tcp::endpoint endpoint(it->endpoint());
+    connection_->async_connect(endpoint, "127.0.0.1",
+                               [] (const boost::system::error_code &ec_) {
+                                 Assert::That(ec_, Equals(boost::system::error_code()));
+                               });
+
+    // Create an HTTP request.
     http::request request{network::uri{"http://127.0.0.1/"}};
     request.set_method(http::method::GET);
     request.set_version("1.0");
     request.append_header("User-Agent", "normal_connection_test");
     request.append_header("Connection", "close");
 
+    // Write the HTTP request to the socket, sending it to the server.
     boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
     request_stream << request;
-    auto written = connection_->write(request_);
-    //io_service_->run_one();
-    std::cout << 0 << std::endl;
-    //auto written_ = written.get();
-    std::cout << 1 << std::endl;
+    std::size_t bytes_written = 0;
+    connection_->async_write(request_,
+                             [&bytes_written] (const boost::system::error_code &ec_,
+                                                    std::size_t bytes_written_) {
+                               Assert::That(ec_, Equals(boost::system::error_code()));
+                               bytes_written = bytes_written_;
+                             });
 
+    // Read the HTTP response on the socket from the server.
     char output[8192];
     std::memset(output, 0, sizeof(output));
-    std::cout << "A" << std::endl;
-    auto read = connection_->read_some(boost::asio::mutable_buffers_1(output, sizeof(output)));
-    std::cout << "A" << std::endl;
-    //auto read_ = read.get();
+    std::size_t bytes_read = 0;
+    connection_->async_read_some(boost::asio::mutable_buffers_1(output, sizeof(output)),
+                                 [&bytes_read] (const boost::system::error_code &ec_,
+                                                std::size_t bytes_read_) {
+                                   Assert::That(ec_, Equals(boost::system::error_code()));
+                                   bytes_read = bytes_read_;
+                                 });
 
-    std::cout << output << std::endl;
+    io_service_->run();
+    Assert::That(bytes_read, IsGreaterThan(0));
   }
 
   std::unique_ptr<boost::asio::io_service> io_service_;
-  std::unique_ptr<http::async_resolver_delegate> resolver_;
-  std::pair<boost::system::error_code,
-	    http::async_resolver_delegate::resolver_iterator_range> endpoints_;
+  std::unique_ptr<tcp::resolver> resolver_;
   std::unique_ptr<http::connection_delegate> connection_;
+  std::unique_ptr<tcp::socket> socket_;
 
 };
 

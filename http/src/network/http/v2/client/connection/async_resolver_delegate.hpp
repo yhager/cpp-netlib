@@ -13,7 +13,6 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/range/iterator_range.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/exception/all.hpp>
 #include <network/http/v2/client/connection/resolver_delegate.hpp>
@@ -27,79 +26,76 @@ namespace network {
        */
       class async_resolver_delegate : public resolver_delegate {
 
-	async_resolver_delegate(const async_resolver_delegate &) = delete;
-	async_resolver_delegate &operator = (const async_resolver_delegate &) = delete;
+        async_resolver_delegate(const async_resolver_delegate &) = delete;
+        async_resolver_delegate &operator = (const async_resolver_delegate &) = delete;
 
       public:
 
-	/**
-	 * \brief Constructor.
-	 */
-	async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved = false)
-	  : resolver_(service)
-	  , resolver_strand_(new boost::asio::io_service::strand(service))
-	  , cache_resolved_(cache_resolved) {
+        /**
+         * \brief Constructor.
+         */
+        async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved = false)
+          : resolver_(service)
+          , resolver_strand_(new boost::asio::io_service::strand(service))
+          , cache_resolved_(cache_resolved) {
 
-	}
+        }
 
-	/**
-	 * \brief Destructor.
-	 */
-	virtual ~async_resolver_delegate() noexcept {
+        /**
+         * \brief Destructor.
+         */
+        virtual ~async_resolver_delegate() noexcept {
 
-	}
+        }
 
-	/**
-	 * \brief Resolves a host asynchronously.
-	 */
+        /**
+         * \brief Resolves a host asynchronously.
+         */
 
-	virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
-	  if (cache_resolved_) {
-	    endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
-	    if (it != endpoint_cache_.end()) {
-	      boost::system::error_code ec;
-	      callback(ec, it->second);
-	      return;
-	    }
-	  }
+        virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
+          if (cache_resolved_) {
+            endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
+            if (it != endpoint_cache_.end()) {
+              boost::system::error_code ec;
+              callback(ec, it->second);
+              return;
+            }
+          }
 
-	  resolver::query query(host, std::to_string(port));
-	  resolver_.async_resolve(query,
+
+          resolver::query query(host, std::to_string(port));
+          resolver_.async_resolve(query,
               resolver_strand_->wrap(
-		  [&host, &callback, this](const boost::system::error_code &ec,
-					   resolver_iterator endpoint_iterator) {
-		    if (ec) {
-		      auto resolvers = std::make_pair(resolver_iterator(), resolver_iterator());
-		      callback(ec, resolvers);
-		    }
-		    else {
-		      auto resolvers = std::make_pair(endpoint_iterator, resolver_iterator());
-		      if (cache_resolved_) {
-			endpoint_cache_.insert(std::make_pair(host, resolvers));
-		      }
-		      callback(ec, resolvers);
-		    }
-		  }));
+                  [&host, &callback, this](const boost::system::error_code &ec,
+                                           resolver_iterator endpoint_iterator) {
+                    if (ec) {
+                      callback(ec, resolver_iterator());
+                    }
+                    else {
+                      if (cache_resolved_) {
+                        endpoint_cache_.insert(std::make_pair(host, endpoint_iterator));
+                      }
+                      callback(ec, endpoint_iterator);
+                    }
+                  }));
+        }
 
-	}
-
-	/**
-	 * \brief Clears the cache of already resolved endpoints.
-	 */
-	void clear_resolved_cache() {
-	  endpoint_cache().swap(endpoint_cache_);
-	}
+        /**
+         * \brief Clears the cache of already resolved endpoints.
+         */
+        void clear_resolved_cache() {
+          endpoint_cache().swap(endpoint_cache_);
+        }
 
       private:
 
-	typedef boost::asio::io_service::strand strand;
-	typedef std::unordered_map<std::string, resolver_iterator_range> endpoint_cache;
-	std::promise<std::pair<boost::system::error_code, resolver_iterator_range>> promise_;
+        typedef boost::asio::io_service::strand strand;
+        typedef std::unordered_map<std::string, resolver_iterator> endpoint_cache;
 
-	resolver resolver_;
-	std::unique_ptr<strand> resolver_strand_;
-	bool cache_resolved_;
-	endpoint_cache endpoint_cache_;
+        resolver resolver_;
+        std::unique_ptr<strand> resolver_strand_;
+        bool cache_resolved_;
+        endpoint_cache endpoint_cache_;
 
       };
     } // namespace v2

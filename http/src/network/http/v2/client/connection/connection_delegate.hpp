@@ -8,7 +8,6 @@
 
 #include <functional>
 #include <string>
-#include <future>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/buffer.hpp>
@@ -18,24 +17,27 @@ namespace network {
     namespace v2 {
       class connection_delegate {
 
-	connection_delegate(const connection_delegate &) = delete;
-	connection_delegate &operator = (const connection_delegate &) = delete;
+        connection_delegate(const connection_delegate &) = delete;
+        connection_delegate &operator = (const connection_delegate &) = delete;
 
       public:
 
-	connection_delegate() = default;
+        typedef std::function<void (const boost::system::error_code &)> connect_callback;
+        typedef std::function<void (const boost::system::error_code &, std::size_t)> write_callback;
+        typedef std::function<void (const boost::system::error_code &, std::size_t)> read_callback;
 
-	virtual ~connection_delegate() noexcept { }
+        connection_delegate() = default;
 
-	virtual std::future<boost::system::error_code>
-	connect(boost::asio::ip::tcp::endpoint &endpoint,
-		const std::string &host) = 0;
+        virtual ~connection_delegate() noexcept { }
 
-	virtual std::future<std::pair<boost::system::error_code, std::size_t>>
-	write(boost::asio::streambuf &command_streambuf) = 0;
+        virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
+                                   const std::string &host, connect_callback callback) = 0;
 
-	virtual std::future<std::pair<boost::system::error_code, std::size_t>>
-	read_some(const boost::asio::mutable_buffers_1 &read_buffer) = 0;
+        virtual void async_write(boost::asio::streambuf &command_streambuf,
+                                 write_callback callback) = 0;
+
+        virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
+                                     read_callback callback) = 0;
 
       };
     } // namespace v2
