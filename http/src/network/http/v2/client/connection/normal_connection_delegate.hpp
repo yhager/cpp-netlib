@@ -46,11 +46,14 @@ namespace network {
           socket_->async_read_some(read_buffer, callback);
         }
 
+        virtual void cancel() {
+          socket_->cancel();
+        }
+
       private:
 
         boost::asio::io_service &io_service_;
         std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
-        std::promise<std::pair<boost::system::error_code, std::size_t>> read_promise_;
 
       };
     } // namespace v2

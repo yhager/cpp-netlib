@@ -36,9 +36,9 @@ namespace network {
 
 	}
 
-	virtual void connect(boost::asio::ip::tcp::endpoint &endpoint,
-			     const std::string &host,
-			     std::function<void (const boost::system::error_code &)> handler) {
+	virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
+                                   const std::string &host,
+                                   connect_callback callback) {
 	  context_.reset(new boost::asio::ssl::context(boost::asio::ssl::context::sslv23));
 	  std::vector<std::string> const& certificate_paths =
 	    options_.openssl_certificate_paths();
@@ -64,22 +64,22 @@ namespace network {
 
 	  using namespace std::placeholders;
 	  socket_->lowest_layer()
-	    .async_connect(endpoint,
-			   std::bind(&ssl_connection_delegate::handle_connected,
-				     ssl_connection_delegate::shared_from_this(),
-				     _1,
-				     handler));
+	    .async_connect(endpoint, callback);
+        }
+
+	virtual void async_write(boost::asio::streambuf &command_streambuf,
+                                 write_callback callback) {
+	  boost::asio::async_write(*socket_, command_streambuf, callback);
 	}
 
-	virtual void write(boost::asio::streambuf &command_streambuf,
-			   std::function<void (const boost::system::error_code &, size_t)> handler) {
-	  boost::asio::async_write(*socket_, command_streambuf, handler);
+	virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
+                                     read_callback callback) {
+	  socket_->async_read_some(read_buffer, callback);
 	}
 
-	virtual void read_some(const boost::asio::mutable_buffers_1 &read_buffer,
-			       std::function<void (const boost::system::error_code &, size_t)> handler) {
-	  socket_->async_read_some(read_buffer, handler);
-	}
+        virtual void cancel() {
+          socket_->cancel();
+        }
 
       private:
 
@@ -88,9 +88,6 @@ namespace network {
 	std::unique_ptr<boost::asio::ssl::context> context_;
 	std::unique_ptr<
 	  boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> socket_;
-
-	void handle_connected(boost::system::error_code const& ec,
-			      std::function<void(const boost::system::error_code &)> handler);
 
       };
     } // namespace v2

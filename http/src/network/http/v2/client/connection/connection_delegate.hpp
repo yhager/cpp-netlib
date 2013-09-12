@@ -39,6 +39,8 @@ namespace network {
         virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
                                      read_callback callback) = 0;
 
+        virtual void cancel() = 0;
+
       };
     } // namespace v2
   } // namespace http
