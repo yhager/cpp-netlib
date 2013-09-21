@@ -1,7 +1,8 @@
 // Copyright (C) 2013 by Glyn Matthews
-// Copyright Dean Michael Berris 2010.
-// Copyright 2011 Dean Michael Berris (dberris@google.com).
-// Copyright 2011 Google, Inc.
+// Copyright 2003-2008 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright 2009-2012 Dean Michael Berris <dberris@google.com>.
+// Copyright 2012 Google, Inc.
+// Copyright 2009 Tarroo, Inc.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -18,6 +19,10 @@ namespace network {
   namespace http {
     namespace v2 {
 
+      /**
+       * \ingroup http_client
+       * \class response_parser response_parser.hpp network/http/v2/client/response_parser.hpp
+       */
       struct response_parser {
 
         enum state_t {

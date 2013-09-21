@@ -15,7 +15,7 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
 
   add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
   target_link_libraries(cpp-netlib-http-v2-${test}
-    network-http-constants-v2
+    network-http-v2-constants
     ${GTEST_BOTH_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     )

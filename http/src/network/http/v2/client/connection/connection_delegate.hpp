@@ -15,6 +15,10 @@
 namespace network {
   namespace http {
     namespace v2 {
+      /**
+       * \class connection_delegate network/http/v2/client/connection/connection_delegate.hpp
+       * \brief Manages a connection through a socket.
+       */
       class connection_delegate {
 
         connection_delegate(const connection_delegate &) = delete;
@@ -22,8 +26,19 @@ namespace network {
 
       public:
 
+        /**
+         * \typedef connect_callback
+         */
         typedef std::function<void (const boost::system::error_code &)> connect_callback;
+
+        /**
+         * \typedef write_callback
+         */
         typedef std::function<void (const boost::system::error_code &, std::size_t)> write_callback;
+
+        /**
+         * \typedef read_callback
+         */
         typedef std::function<void (const boost::system::error_code &, std::size_t)> read_callback;
 
         connection_delegate() = default;

@@ -102,27 +102,27 @@ endif()
 #    )
 #endif()
 
-set(CPP-NETLIB_HTTP_CONSTANTS-V2_SRCS
+set(CPP-NETLIB_HTTP_V2_CONSTANTS_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/constants.cpp
   )
-add_library(network-http-constants-v2 ${CPP-NETLIB_HTTP_CONSTANTS-V2_SRCS})
-add_dependencies(network-http-constants-v2
+add_library(network-http-v2-constants ${CPP-NETLIB_HTTP_V2_CONSTANTS_SRCS})
+add_dependencies(network-http-v2-constants
   cppnetlib-uri
   )
-target_link_libraries(network-http-constants-v2
+target_link_libraries(network-http-v2-constants
   ${Boost_LIBRARIES}
   cppnetlib-uri
   )
 
-set(CPP-NETLIB_HTTP_CLIENT-V2_SRCS
+set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client_errors.cpp
   )
-add_library(network-http-client-v2 ${CPP-NETLIB_HTTP_CLIENT-V2_SRCS})
-add_dependencies(network-http-client-v2
+add_library(network-http-v2-client ${CPP-NETLIB_HTTP_V2_CLIENT_SRCS})
+add_dependencies(network-http-v2-client
   cppnetlib-uri
   )
-target_link_libraries(network-http-client-v2
+target_link_libraries(network-http-v2-client
   ${Boost_LIBRARIES}
   cppnetlib-uri
   )
@@ -135,7 +135,7 @@ prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
 #    CPP-NETLIB_CONSTANTS_SRCS
 #    CPP-NETLIB_HTTP_SERVER_SRCS
 #    CPP-NETLIB_HTTP_CLIENT_SRCS
-    CPP-NETLIB_HTTP_CLIENT-V2_SRCS )
+    CPP-NETLIB_HTTP_V2_CLIENT_SRCS )
 
 
 ## propagate sources to parent directory for one-lib-build
@@ -145,4 +145,4 @@ prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
 #set(CPP-NETLIB_HTTP_CLIENT_SRCS ${CPP-NETLIB_HTTP_CLIENT_SRCS} PARENT_SCOPE)
 #set(CPP-NETLIB_HTTP_SERVER_SRCS ${CPP-NETLIB_HTTP_SERVER_SRCS} PARENT_SCOPE)
 #set(CPP-NETLIB_CONSTANTS_SRCS ${CPP-NETLIB_CONSTANTS_SRCS} PARENT_SCOPE)
-set(CPP-NETLIB_HTTP_CLIENT-V2_SRCS ${CPP-NETLIB_HTTP_CLIENT-V2_SRCS} PARENT SCOPE)
+set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS ${CPP-NETLIB_HTTP_V2_CLIENT_SRCS} PARENT SCOPE)

@@ -1,4 +1,6 @@
 // Copyright (C) 2013 by Glyn Matthews
+// Copyright 2011 Dean Michael Berris <dberris@google.com>.
+// Copyright 2011 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -52,7 +54,7 @@ namespace network {
          * \brief Resolves a host asynchronously.
          */
 
-        virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
+        virtual void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
           if (cache_resolved_) {
             endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
             if (it != endpoint_cache_.end()) {

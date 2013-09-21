@@ -9,9 +9,9 @@ set(CPP-NETLIB_CLIENT_TESTS
   client_test
   )
 
-if (OPENSSL_FOUND)
-  list(APPEND CPP-NETLIB_CLIENT_TESTS ssl_connection_test)
-endif()
+#if (OPENSSL_FOUND)
+#  list(APPEND CPP-NETLIB_CLIENT_TESTS ssl_connection_test)
+#endif()
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})
   if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
@@ -22,8 +22,8 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
   add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
   target_link_libraries(cpp-netlib-http-v2-${test}
     cppnetlib-uri
-    network-http-constants-v2
-    network-http-client-v2
+    network-http-v2-constants
+    network-http-v2-client
     ${Boost_LIBRARIES}
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
@@ -35,6 +35,6 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
 
 endforeach(test)
 
-if (OPENSSL_FOUND)
-  target_link_libraries(cpp-netlib-http-v2-ssl_connection_test ${OPENSSL_LIBRARIES})
-endif()
+#if (OPENSSL_FOUND)
+#  target_link_libraries(cpp-netlib-http-v2-ssl_connection_test ${OPENSSL_LIBRARIES})
+#endif()

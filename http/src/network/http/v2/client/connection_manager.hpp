@@ -1,4 +1,6 @@
 // Copyright (C) 2013 by Glyn Matthews
+// Copyright 2011 Dean Michael Berris (dberris@google.com).
+// Copyright 2011 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -19,7 +21,8 @@ namespace network {
       class client_options;
 
       /**
-       * \class connection_manager network/http/v2/client/connection_manager.hpp connection_manager.hpp
+       * \ingroup http_client
+       * \class connection_manager network/http/v2/client/connection_manager.hpp
        * \brief A class that maintains client connections.
        */
       class connection_manager {

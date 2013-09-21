@@ -1,4 +1,6 @@
 // Copyright (C) 2013 by Glyn Matthews
+// Copyright 2011 Dean Michael Berris (dberris@google.com).
+// Copyright 2011 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -30,7 +32,8 @@ namespace network {
   namespace http {
     namespace v2 {
       /**
-       * \class request_options network/http/v2/client/request_options.hpp request_options.hpp
+       * \ingroup http_client
+       * \class request_options network/http/v2/client/request.hpp
        * \brief A class used to configure an HTTP request.
        */
       class request_options {
@@ -123,7 +126,8 @@ namespace network {
       };
 
       /**
-       * \class byte_source network/http/v2/client/request.hpp request.hpp
+       * \ingroup http_client
+       * \class byte_source network/http/v2/client/request.hpp
        * \brief An abstract class that allows a request object to read
        *        data from any source.
        */
@@ -157,8 +161,9 @@ namespace network {
       };
 
       /**
-       * \class string_byte_source network/http/v2/client/request.hpp request.hpp
-       * \brief
+       * \ingroup http_client
+       * \class string_byte_source network/http/v2/client/request.hpp
+       * \brief A class that wraps a string as a byte source.
        */
       class string_byte_source : public byte_source {
 
@@ -183,7 +188,8 @@ namespace network {
       };
 
       /**
-       * \class request source/network/http/v2/client/request.hpp request.hpp
+       * \ingroup http_client
+       * \class request network/http/v2/client/request.hpp
        * \brief A class that models an HTTP request.
        */
       class request {

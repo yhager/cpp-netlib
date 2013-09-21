@@ -19,7 +19,8 @@ namespace network {
   namespace http {
     namespace v2 {
       /**
-       * \enum client_error client_errors.hpp network/http/v2/client/client_errors.hpp
+       * \ingroup http_client
+       * \enum client_error network/http/v2/client/client_errors.hpp
        * \brief An enumeration of all types of client error.
        */
       enum class client_error {
@@ -45,6 +46,7 @@ namespace network {
       std::error_code make_error_code(client_error e);
 
       /**
+       * \ingroup http_client
        * \class invalid_url network/http/v2/client/client_errors.hpp
        * \brief An exception thrown if the URL provides is invalid.
        */
@@ -65,6 +67,7 @@ namespace network {
       };
 
       /**
+       * \ingroup http_client
        * \class resolver_error network/http/v2/client/client_errors.hpp
        * \brief An exception thrown when there is a resolver error.
        */
@@ -85,6 +88,7 @@ namespace network {
       };
 
       /**
+       * \ingroup http_client
        * \class connection_error network/http/v2/client/client_errors.hpp
        * \brief An exception thrown when there is a connection error.
        */

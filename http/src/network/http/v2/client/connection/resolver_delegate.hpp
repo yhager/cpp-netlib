@@ -27,16 +27,39 @@ namespace network {
 
       public:
 
+        /**
+         * \brief resolver
+         */
         typedef boost::asio::ip::tcp::resolver resolver;
+
+        /**
+         * \brief resolver_iterator
+         */
         typedef resolver::iterator resolver_iterator;
+
+        /**
+         * \brief callback_fn
+         */
         typedef std::function<void (const boost::system::error_code&,
                                     resolver_iterator)> callback_fn;
 
+        /**
+         * \brief Constructor.
+         */
         resolver_delegate() = default;
 
+        /**
+         * \brief Destructor.
+         */
         virtual ~resolver_delegate() noexcept { }
 
-        virtual void resolve(const std::string &host, std::uint16_t port, callback_fn callback) = 0;
+        /**
+         * \brief Resolves a host.
+         * \param host The host name.
+         * \param port The port number.
+         * \param callback Invoked after the host has been resolved.
+         */
+        virtual void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) = 0;
 
         virtual void clear_resolved_cache() = 0;
 

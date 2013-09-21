@@ -6,6 +6,10 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_INC__
 #define __NETWORK_HTTP_V2_CLIENT_INC__
 
+/**
+ * \defgroup http_client HTTP Client
+ */
+
 #include <network/http/v2/client/client.hpp>
 
 #endif // __NETWORK_HTTP_V2_CLIENT_INC__

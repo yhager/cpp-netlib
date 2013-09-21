@@ -78,7 +78,7 @@ namespace network {
 	}
 
         virtual void cancel() {
-          socket_->cancel();
+          //socket_->cancel();
         }
 
       private:

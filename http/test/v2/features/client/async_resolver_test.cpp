@@ -15,22 +15,23 @@ namespace http = network::http::v2;
 Describe(async_resolver) {
 
   void SetUp() {
+    // An HTTP server must be running on 127.0.0.1:80
+    // maybe execute a script
+
     io_service_.reset(new boost::asio::io_service);
     resolver_.reset(new http::async_resolver_delegate(*io_service_));
   }
 
   It(resolves_localhost) {
-    // An HTTP server must be running on 127.0.0.1:80
-    // maybe execute a script
-
-    resolver_->resolve("127.0.0.1", 80,
-                       [&] (const boost::system::error_code &ec,
-                            http::async_resolver_delegate::resolver_iterator endpoint_iterator) {
-                         Assert::That(ec, Equals(boost::system::error_code()));
-                         if (endpoint_iterator != http::async_resolver_delegate::resolver_iterator()) {
-                           tcp::endpoint endpoint = *endpoint_iterator;
-                           Assert::That(endpoint.address().to_string(), Equals("127.0.0.1"));
-                           Assert::That(endpoint.port(), Equals(80));
+    resolver_->async_resolve("127.0.0.1", 80,
+                             [&] (const boost::system::error_code &ec,
+                                  http::async_resolver_delegate::resolver_iterator endpoint_iterator) {
+                               Assert::That(ec, Equals(boost::system::error_code()));
+                               if (endpoint_iterator !=
+                                   http::async_resolver_delegate::resolver_iterator()) {
+                                 tcp::endpoint endpoint = *endpoint_iterator;
+                                 Assert::That(endpoint.address().to_string(), Equals("127.0.0.1"));
+                                 Assert::That(endpoint.port(), Equals(80));
                          }
                        });
     io_service_->run_one();
