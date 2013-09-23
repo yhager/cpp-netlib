@@ -228,7 +228,8 @@ namespace network {
       /**
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp
-       * \brief An HTTP client.
+       * \brief A class that encapsulates the operations and methods
+       *        for communicating with an HTTP servier.
        */
       class client {
 
