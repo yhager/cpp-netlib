@@ -55,42 +55,9 @@ namespace {
 
 TEST(response_parser_test, parse_version) {
   http::response_parser parser;
-  auto part = parser.parse_until(http::response_parser::http_version_minor, input);
+  auto part = parser.parse_until(http::response_parser::http_version_done, input);
   ASSERT_TRUE(std::get<0>(part));
   ASSERT_EQ("HTTP/1.0", trimmed_string(std::begin(std::get<1>(part)), std::end(std::get<1>(part))));
-}
-
-TEST(response_parser_test, parse_version_major) {
-  http::response_parser parser;
-  auto part_1 = parser.parse_until(http::response_parser::http_version_slash, input);
-  ASSERT_TRUE(std::get<0>(part_1));
-  auto part_2 = parser.parse_until(http::response_parser::http_version_major,
-                                     boost::make_iterator_range(std::end(std::get<1>(part_1)),
-                                                                std::end(input)));
-  ASSERT_TRUE(std::get<0>(part_2));
-  ASSERT_EQ("1", trimmed_string(std::begin(std::get<1>(part_2)), std::end(std::get<1>(part_2))));
-}
-
-TEST(response_parser_test, parse_version_major_minor) {
-  http::response_parser parser;
-  auto part_1 = parser.parse_until(http::response_parser::http_version_slash, input);
-  ASSERT_TRUE(std::get<0>(part_1));
-  auto part_2 = parser.parse_until(http::response_parser::http_version_minor,
-                                     boost::make_iterator_range(std::end(std::get<1>(part_1)),
-                                                                std::end(input)));
-  ASSERT_TRUE(std::get<0>(part_2));
-  ASSERT_EQ("1.0", trimmed_string(std::begin(std::get<1>(part_2)), std::end(std::get<1>(part_2))));
-}
-
-TEST(response_parser_test, parse_status_digit) {
-  http::response_parser parser;
-  auto part_1 = parser.parse_until(http::response_parser::http_version_done, input);
-  ASSERT_TRUE(std::get<0>(part_1));
-  auto part_2 = parser.parse_until(http::response_parser::http_status_digit,
-                                     boost::make_iterator_range(std::end(std::get<1>(part_1)),
-                                                                std::end(input)));
-  ASSERT_TRUE(std::get<0>(part_2));
-  ASSERT_EQ("2", trimmed_string(std::begin(std::get<1>(part_2)), std::end(std::get<1>(part_2))));
 }
 
 TEST(response_parser_test, parse_status_code) {

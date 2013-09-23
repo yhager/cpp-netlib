@@ -30,13 +30,13 @@ Describe(normal_http_connection) {
   It(connects_to_localhost) {
     // Resolve the host.
     boost::system::error_code ec;
-    tcp::resolver::query query("127.0.0.1", "80");
+    tcp::resolver::query query("www.boost.org", "80");
     auto it = resolver_->resolve(query, ec);
     Assert::That(ec, Equals(boost::system::error_code()));
 
     // Make sure that the connection is successful.
     tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "127.0.0.1",
+    connection_->async_connect(endpoint, "www.boost.org",
                                [&ec] (const boost::system::error_code &ec_) {
                                  ec = ec_;
                                });
@@ -47,19 +47,19 @@ Describe(normal_http_connection) {
   It(writes_to_localhost) {
     // Resolve the host.
     boost::system::error_code ec;
-    tcp::resolver::query query("127.0.0.1", "80");
+    tcp::resolver::query query("www.boost.org", "80");
     auto it = resolver_->resolve(query, ec);
     Assert::That(ec, Equals(boost::system::error_code()));
 
     // Make sure that the connection is successful.
     tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "127.0.0.1",
+    connection_->async_connect(endpoint, "www.boost.org",
                                [&ec] (const boost::system::error_code &ec_) {
                                  Assert::That(ec_, Equals(boost::system::error_code()));
                                });
 
     // Create an HTTP request.
-    http::request request{network::uri{"http://127.0.0.1/"}};
+    http::request request{network::uri{"http://www.boost.org/"}};
     request.set_method(http::method::GET);
     request.set_version("1.0");
     request.append_header("User-Agent", "normal_connection_test");
@@ -83,19 +83,19 @@ Describe(normal_http_connection) {
   It(reads_from_localhost) {
     // Resolve the host.
     boost::system::error_code ec;
-    tcp::resolver::query query("127.0.0.1", "80");
+    tcp::resolver::query query("www.boost.org", "80");
     auto it = resolver_->resolve(query, ec);
     Assert::That(ec, Equals(boost::system::error_code()));
 
     // Make sure that the connection is successful.
     tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "127.0.0.1",
+    connection_->async_connect(endpoint, "www.boost.org",
                                [] (const boost::system::error_code &ec_) {
                                  Assert::That(ec_, Equals(boost::system::error_code()));
                                });
 
     // Create an HTTP request.
-    http::request request{network::uri{"http://127.0.0.1/"}};
+    http::request request{network::uri{"http://www.boost.org/LICENSE_1_0.txt"}};
     request.set_method(http::method::GET);
     request.set_version("1.0");
     request.append_header("User-Agent", "normal_connection_test");
@@ -125,6 +125,7 @@ Describe(normal_http_connection) {
                                  });
 
     io_service_->run();
+    std::cout << output << std::endl;
     Assert::That(bytes_read, IsGreaterThan(0));
   }
 
