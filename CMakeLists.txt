@@ -15,7 +15,6 @@ option( CPP-NETLIB_ALWAYS_LOGGING "Allow cpp-netlib to log debug messages even i
 option( CPP-NETLIB_DISABLE_LOGGING "Disable logging definitely, no logging code will be generated or compiled." OFF )
 option( CPP-NETLIB_DISABLE_LIBCXX "Disable using libc++ when compiling with clang." OFF )
 
-
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package( ICU )
 
@@ -39,8 +38,6 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_definitions(-DNETWORK_DEBUG)
 endif()
 
-
-
 if (OPENSSL_FOUND)
   add_definitions(-DNETWORK_ENABLE_HTTPS)
 endif()
@@ -49,7 +46,7 @@ if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
   INCLUDE(CheckCXXCompilerFlag)
   CHECK_CXX_COMPILER_FLAG(-std=c++11 HAVE_STD11)
   if (HAVE_STD11)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
   else()
     message(FATAL_ERROR "No advanced standard C++ support (-std=c++11 not defined).")
   endif()
@@ -73,8 +70,8 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
   -DASIO_HAS_STD_ADDRESSOFF -DASIO_HAS_STD_FUNCTION -DASIO_HAS_STD_TYPE_TRAITS)
 endif()
 
-message("C++ Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message("C++ Flags: ${CMAKE_CXX_FLAGS} link flags: ${CMAKE_CXX_LINK_FLAGS}")
+message(STATUS "C++ Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS} link flags: ${CMAKE_CXX_LINK_FLAGS}")
 if (Boost_FOUND)
   if (MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
@@ -94,6 +91,17 @@ message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:    ${CPP-NETLIB_ALWAYS_LOGGING}\t(A
 message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:   ${CPP-NETLIB_DISABLE_LOGGING}\t(Disable logging definitely, no logging code will be generated or compiled: ON, OFF)")
 message(STATUS "  CPP-NETLIB_DISABLE_LIBCXX:    ${CPP-NETLIB_DISABLE_LIBCXX}\t(Disable using libc++ when building with clang: ON, OFF)")
 message(STATUS "CMake build options selected:")
+
+# Takes one or more lists as parameter and prepends the prefix to every element.
+function(prependToElements prefix)
+  foreach(list ${ARGN} ) # iterate over lists
+    set(newlist "")
+    foreach(ele ${${list}} ) # iterate over the elements
+      set(newlist ${newlist} "${prefix}${ele}")
+    endforeach(ele)
+    set(${list} ${newlist} PARENT_SCOPE) # replace the original list
+  endforeach(list)
+endfunction(prependToElements)
 
 ############################################################################
 #
@@ -130,11 +138,13 @@ endif()
 
 if(CPP-NETLIB_BUILD_SINGLE_LIB)
   include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/src
     ${CMAKE_CURRENT_SOURCE_DIR}/concurrency/src
     ${CMAKE_CURRENT_SOURCE_DIR}/http/src
     ${CMAKE_CURRENT_SOURCE_DIR}/logging/src
     ${CMAKE_CURRENT_SOURCE_DIR}/message/src
     ${CMAKE_CURRENT_SOURCE_DIR}/uri/src
+    ${CMAKE_CURRENT_SOURCE_DIR}
   )
 endif()
 
@@ -157,6 +167,7 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CPP-NETLIB_LOGGING_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_SRCS}
     ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS}
+    ${CPP-NETLIB_HTTP_SERVER_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_SRCS}
     ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS}
     ${CPP-NETLIB_CONSTANTS_SRCS}
