@@ -114,7 +114,7 @@ Describe(normal_http_connection) {
                              });
 
     // Read the HTTP response on the socket from the server.
-    char output[8192];
+    char output[1024];
     std::memset(output, 0, sizeof(output));
     std::size_t bytes_read = 0;
     connection_->async_read_some(boost::asio::mutable_buffers_1(output, sizeof(output)),

@@ -7,7 +7,7 @@
 
 /**
  * \file
- * \brief
+ * \brief This file contains a base class for all connections.
  */
 
 #ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_INC__
@@ -24,6 +24,10 @@ namespace network {
       class response;
       class request;
       class request_options;
+
+      enum {
+        NETWORK_BUFFER_CHUNK = 1024,
+      };
 
       /**
        * \ingroup http_client

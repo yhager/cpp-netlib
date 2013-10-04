@@ -5,7 +5,7 @@
 
 #include <network/http/v2/client/client.hpp>
 #include <network/http/v2/method.hpp>
-#include <network/http/v2/client/connection/async_resolver_delegate.hpp>
+#include <network/http/v2/client/connection/async_resolver.hpp>
 #include <thread>
 
 namespace network {
@@ -23,7 +23,7 @@ namespace network {
 	boost::asio::io_service io_service_;
 	std::unique_ptr<boost::asio::io_service::work> sentinel_;
 	std::thread lifetime_thread_;
-	async_resolver_delegate resolver_;
+	async_resolver resolver_;
 
       };
 

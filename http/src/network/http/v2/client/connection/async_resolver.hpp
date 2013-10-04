@@ -5,8 +5,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
+#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
+#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
 
 #include <stdexcept>
 #include <cstdint>
@@ -17,26 +17,41 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/exception/all.hpp>
-#include <network/http/v2/client/connection/resolver_delegate.hpp>
 
 namespace network {
   namespace http {
     namespace v2 {
       /**
-       * \class async_resolver_delegate network/http/v2/client/connection/async_resolver_delegate.hpp
+       * \class async_resolver network/http/v2/client/connection/async_resolver.hpp
        * \brief Resolves and maintains a cache of hosts.
        */
-      class async_resolver_delegate : public resolver_delegate {
+      class async_resolver {
 
-        async_resolver_delegate(const async_resolver_delegate &) = delete;
-        async_resolver_delegate &operator = (const async_resolver_delegate &) = delete;
+        async_resolver(const async_resolver &) = delete;
+        async_resolver &operator = (const async_resolver &) = delete;
 
       public:
 
         /**
+         * \brief resolver
+         */
+        typedef boost::asio::ip::tcp::resolver resolver;
+
+        /**
+         * \brief resolver_iterator
+         */
+        typedef resolver::iterator resolver_iterator;
+
+        /**
+         * \brief callback_fn
+         */
+        typedef std::function<void (const boost::system::error_code&,
+                                    resolver_iterator)> callback_fn;
+
+        /**
          * \brief Constructor.
          */
-        async_resolver_delegate(boost::asio::io_service &service, bool cache_resolved = false)
+        async_resolver(boost::asio::io_service &service, bool cache_resolved = false)
           : resolver_(service)
           , resolver_strand_(new boost::asio::io_service::strand(service))
           , cache_resolved_(cache_resolved) {
@@ -46,7 +61,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        virtual ~async_resolver_delegate() noexcept {
+        ~async_resolver() noexcept {
 
         }
 
@@ -54,7 +69,7 @@ namespace network {
          * \brief Resolves a host asynchronously.
          */
 
-        virtual void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
+        void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
           if (cache_resolved_) {
             endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
             if (it != endpoint_cache_.end()) {
@@ -104,4 +119,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_DELEGATE_INC__
+#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__

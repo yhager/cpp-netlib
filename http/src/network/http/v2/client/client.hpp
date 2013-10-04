@@ -225,6 +225,9 @@ namespace network {
 
       };
 
+      template <typename Handler, typename Signature>
+      struct handler_type { };
+
       /**
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp

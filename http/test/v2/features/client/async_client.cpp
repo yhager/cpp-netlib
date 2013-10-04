@@ -14,7 +14,7 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include "network/http/v2/client/connection/async_resolver_delegate.hpp"
+#include "network/http/v2/client/connection/async_resolver.hpp"
 
 using boost::asio::ip::tcp;
 
