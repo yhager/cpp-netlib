@@ -67,6 +67,9 @@ namespace network {
 
         /**
          * \brief Resolves a host asynchronously.
+         * \param host The hostname to resolve.
+         * \param port The port number.
+         * \param callback A callback handler.
          */
 
         void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) {

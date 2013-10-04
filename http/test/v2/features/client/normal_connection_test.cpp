@@ -7,7 +7,7 @@
 #include <thread>
 #include <igloo/igloo_alt.h>
 #include <boost/asio.hpp>
-#include "network/http/v2/client/connection/normal_connection_delegate.hpp"
+#include "network/http/v2/client/connection/normal_connection.hpp"
 #include "network/http/v2/client/request.hpp"
 
 using namespace igloo;
@@ -19,7 +19,7 @@ Describe(normal_http_connection) {
   void SetUp() {
     io_service_.reset(new boost::asio::io_service);
     resolver_.reset(new tcp::resolver(*io_service_));
-    connection_.reset(new http::normal_connection_delegate(*io_service_));
+    connection_.reset(new http::normal_connection(*io_service_));
     socket_.reset(new tcp::socket(*io_service_));
   }
 
@@ -131,7 +131,7 @@ Describe(normal_http_connection) {
 
   std::unique_ptr<boost::asio::io_service> io_service_;
   std::unique_ptr<tcp::resolver> resolver_;
-  std::unique_ptr<http::connection_delegate> connection_;
+  std::unique_ptr<http::connection> connection_;
   std::unique_ptr<tcp::socket> socket_;
 
 };

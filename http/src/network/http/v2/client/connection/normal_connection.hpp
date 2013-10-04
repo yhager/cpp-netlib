@@ -3,29 +3,29 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_DELEGATE_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_DELEGATE_INC__
+#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC__
+#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC__
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
-#include <network/http/v2/client/connection/connection_delegate.hpp>
+#include <network/http/v2/client/connection/connection.hpp>
 
 namespace network {
   namespace http {
     namespace v2 {
-      class normal_connection_delegate : public connection_delegate {
+      class normal_connection : public connection {
 
-        normal_connection_delegate(const normal_connection_delegate &) = delete;
-        normal_connection_delegate &operator = (const normal_connection_delegate &) = delete;
+        normal_connection(const normal_connection &) = delete;
+        normal_connection &operator = (const normal_connection &) = delete;
 
       public:
 
-        explicit normal_connection_delegate(boost::asio::io_service &io_service)
+        explicit normal_connection(boost::asio::io_service &io_service)
           : io_service_(io_service) {
 
         }
 
-        virtual ~normal_connection_delegate() noexcept {
+        virtual ~normal_connection() noexcept {
 
         }
 
@@ -60,4 +60,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_DELEGATE_INC__
+#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC__

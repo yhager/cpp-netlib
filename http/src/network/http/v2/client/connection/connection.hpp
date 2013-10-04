@@ -3,8 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_DELEGATE_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_DELEGATE_INC__
+#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC__
+#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC__
 
 #include <functional>
 #include <string>
@@ -16,13 +16,13 @@ namespace network {
   namespace http {
     namespace v2 {
       /**
-       * \class connection_delegate network/http/v2/client/connection/connection_delegate.hpp
+       * \class connection network/http/v2/client/connection/connection.hpp
        * \brief Manages a connection through a socket.
        */
-      class connection_delegate {
+      class connection {
 
-        connection_delegate(const connection_delegate &) = delete;
-        connection_delegate &operator = (const connection_delegate &) = delete;
+        connection(const connection &) = delete;
+        connection &operator = (const connection &) = delete;
 
       public:
 
@@ -41,19 +41,45 @@ namespace network {
          */
         typedef std::function<void (const boost::system::error_code &, std::size_t)> read_callback;
 
-        connection_delegate() = default;
+        /**
+         * \brief Constructor.
+         */
+        connection() = default;
 
-        virtual ~connection_delegate() noexcept { }
+        /**
+         * \brief Destructor.
+         */
+        virtual ~connection() noexcept { }
 
+        /**
+         * \brief Asynchronously creates a connection to an endpoint.
+         * \param endpoint The endpoint to which to connect.
+         * \param host The host name.
+         * \param callback A callback handler.
+         */
+         */
         virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
                                    const std::string &host, connect_callback callback) = 0;
 
+        /**
+         * \brief Asynchronously writes data across the connection.
+         * \param command_streambuf
+         * \param callback A callback handler.
+         */
         virtual void async_write(boost::asio::streambuf &command_streambuf,
                                  write_callback callback) = 0;
 
+        /**
+         * \brief Asynchronously reads some data from the connection.
+         * \param read_buffer The buffer in which to read the network data.
+         * \param callback A callback handler.
+         */
         virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
                                      read_callback callback) = 0;
 
+        /**
+         * \brief Cancels an operation on a connection.
+         */
         virtual void cancel() = 0;
 
       };
@@ -61,4 +87,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_DELEGATE_INC__
+#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC__
