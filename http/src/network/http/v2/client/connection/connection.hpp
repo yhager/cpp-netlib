@@ -57,7 +57,6 @@ namespace network {
          * \param host The host name.
          * \param callback A callback handler.
          */
-         */
         virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
                                    const std::string &host, connect_callback callback) = 0;
 

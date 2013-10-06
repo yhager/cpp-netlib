@@ -43,12 +43,6 @@ namespace network {
         typedef resolver::iterator resolver_iterator;
 
         /**
-         * \brief callback_fn
-         */
-        typedef std::function<void (const boost::system::error_code&,
-                                    resolver_iterator)> callback_fn;
-
-        /**
          * \brief Constructor.
          */
         async_resolver(boost::asio::io_service &service, bool cache_resolved = false)
@@ -71,13 +65,13 @@ namespace network {
          * \param port The port number.
          * \param callback A callback handler.
          */
-
-        void async_resolve(const std::string &host, std::uint16_t port, callback_fn callback) {
+        template <class Handler>
+        void async_resolve(const std::string &host, std::uint16_t port, Handler&& handler) {
           if (cache_resolved_) {
             endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
             if (it != endpoint_cache_.end()) {
               boost::system::error_code ec;
-              callback(ec, it->second);
+              handler(ec, it->second);
               return;
             }
           }
@@ -86,16 +80,16 @@ namespace network {
           resolver::query query(host, std::to_string(port));
           resolver_.async_resolve(query,
               resolver_strand_->wrap(
-                  [&host, &callback, this](const boost::system::error_code &ec,
+                  [&host, &handler, this](const boost::system::error_code &ec,
                                            resolver_iterator endpoint_iterator) {
                     if (ec) {
-                      callback(ec, resolver_iterator());
+                      handler(ec, resolver_iterator());
                     }
                     else {
                       if (cache_resolved_) {
                         endpoint_cache_.insert(std::make_pair(host, endpoint_iterator));
                       }
-                      callback(ec, endpoint_iterator);
+                      handler(ec, endpoint_iterator);
                     }
                   }));
         }
