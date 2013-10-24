@@ -27,9 +27,8 @@ Describe(normal_http_connection) {
     socket_->close();
   }
 
-  It(connects_to_localhost) {
+  void ConnectToLocalhost(boost::system::error_code &ec) {
     // Resolve the host.
-    boost::system::error_code ec;
     tcp::resolver::query query("www.boost.org", "80");
     auto it = resolver_->resolve(query, ec);
     Assert::That(ec, Equals(boost::system::error_code()));
@@ -40,23 +39,10 @@ Describe(normal_http_connection) {
                                [&ec] (const boost::system::error_code &ec_) {
                                  ec = ec_;
                                });
-    io_service_->run_one();
-    Assert::That(ec, Equals(boost::system::error_code()));
   }
 
-  It(writes_to_localhost) {
-    // Resolve the host.
-    boost::system::error_code ec;
-    tcp::resolver::query query("www.boost.org", "80");
-    auto it = resolver_->resolve(query, ec);
-    Assert::That(ec, Equals(boost::system::error_code()));
-
-    // Make sure that the connection is successful.
-    tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "www.boost.org",
-                               [&ec] (const boost::system::error_code &ec_) {
-                                 Assert::That(ec_, Equals(boost::system::error_code()));
-                               });
+  void WriteToLocalhost(boost::system::error_code &ec,
+                        std::size_t &bytes_written) {
 
     // Create an HTTP request.
     http::request request{network::uri{"http://www.boost.org/"}};
@@ -69,63 +55,50 @@ Describe(normal_http_connection) {
     boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
     request_stream << request;
-    std::size_t bytes_written = 0;
     connection_->async_write(request_,
                              [&bytes_written] (const boost::system::error_code &ec_,
                                                std::size_t bytes_written_) {
                                Assert::That(ec_, Equals(boost::system::error_code()));
                                bytes_written = bytes_written_;
                              });
-    io_service_->run();
-    Assert::That(bytes_written, IsGreaterThan(0));
   }
 
-  It(reads_from_localhost) {
-    // Resolve the host.
-    boost::system::error_code ec;
-    tcp::resolver::query query("www.boost.org", "80");
-    auto it = resolver_->resolve(query, ec);
-    Assert::That(ec, Equals(boost::system::error_code()));
-
-    // Make sure that the connection is successful.
-    tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "www.boost.org",
-                               [] (const boost::system::error_code &ec_) {
-                                 Assert::That(ec_, Equals(boost::system::error_code()));
-                               });
-
-    // Create an HTTP request.
-    http::request request{network::uri{"http://www.boost.org/LICENSE_1_0.txt"}};
-    request.set_method(http::method::GET);
-    request.set_version("1.0");
-    request.append_header("User-Agent", "normal_connection_test");
-    request.append_header("Connection", "close");
-
-    // Write the HTTP request to the socket, sending it to the server.
-    boost::asio::streambuf request_;
-    std::ostream request_stream(&request_);
-    request_stream << request;
-    std::size_t bytes_written = 0;
-    connection_->async_write(request_,
-                             [&bytes_written] (const boost::system::error_code &ec_,
-                                                    std::size_t bytes_written_) {
-                               Assert::That(ec_, Equals(boost::system::error_code()));
-                               bytes_written = bytes_written_;
-                             });
-
+  void ReadFromLocalhost(boost::system::error_code &ec,
+                         std::size_t &bytes_read) {
     // Read the HTTP response on the socket from the server.
     char output[1024];
     std::memset(output, 0, sizeof(output));
-    std::size_t bytes_read = 0;
     connection_->async_read_some(boost::asio::mutable_buffers_1(output, sizeof(output)),
                                  [&bytes_read] (const boost::system::error_code &ec_,
                                                 std::size_t bytes_read_) {
                                    Assert::That(ec_, Equals(boost::system::error_code()));
                                    bytes_read = bytes_read_;
                                  });
+  }
 
+  It(connects_to_localhost) {
+    boost::system::error_code ec;
+    ConnectToLocalhost(ec);
+    io_service_->run_one();
+    Assert::That(ec, Equals(boost::system::error_code()));
+  }
+
+  It(writes_to_localhost) {
+    boost::system::error_code ec;
+    std::size_t bytes_written = 0;
+    ConnectToLocalhost(ec);
+    WriteToLocalhost(ec, bytes_written);
     io_service_->run();
-    std::cout << output << std::endl;
+    Assert::That(bytes_written, IsGreaterThan(0));
+  }
+
+  It(reads_from_localhost) {
+    boost::system::error_code ec;
+    std::size_t bytes_written = 0, bytes_read = 0;;
+    ConnectToLocalhost(ec);
+    WriteToLocalhost(ec, bytes_written);
+    ReadFromLocalhost(ec, bytes_read);
+    io_service_->run();
     Assert::That(bytes_read, IsGreaterThan(0));
   }
 
