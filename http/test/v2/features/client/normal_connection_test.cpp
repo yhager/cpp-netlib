@@ -27,7 +27,7 @@ Describe(normal_http_connection) {
     socket_->close();
   }
 
-  void ConnectToLocalhost(boost::system::error_code &ec) {
+  void ConnectToBoost(boost::system::error_code &ec) {
     // Resolve the host.
     tcp::resolver::query query("www.boost.org", "80");
     auto it = resolver_->resolve(query, ec);
@@ -41,9 +41,8 @@ Describe(normal_http_connection) {
                                });
   }
 
-  void WriteToLocalhost(boost::system::error_code &ec,
-                        std::size_t &bytes_written) {
-
+  void WriteToBoost(boost::system::error_code &ec,
+                    std::size_t &bytes_written) {
     // Create an HTTP request.
     http::request request{network::uri{"http://www.boost.org/"}};
     request.set_method(http::method::GET);
@@ -63,8 +62,8 @@ Describe(normal_http_connection) {
                              });
   }
 
-  void ReadFromLocalhost(boost::system::error_code &ec,
-                         std::size_t &bytes_read) {
+  void ReadFromBoost(boost::system::error_code &ec,
+                     std::size_t &bytes_read) {
     // Read the HTTP response on the socket from the server.
     char output[1024];
     std::memset(output, 0, sizeof(output));
@@ -76,28 +75,34 @@ Describe(normal_http_connection) {
                                  });
   }
 
-  It(connects_to_localhost) {
+  It(connects_to_boost) {
     boost::system::error_code ec;
-    ConnectToLocalhost(ec);
+
+    ConnectToBoost(ec);
+
     io_service_->run_one();
     Assert::That(ec, Equals(boost::system::error_code()));
   }
 
-  It(writes_to_localhost) {
+  It(writes_to_boost) {
     boost::system::error_code ec;
     std::size_t bytes_written = 0;
-    ConnectToLocalhost(ec);
-    WriteToLocalhost(ec, bytes_written);
+
+    ConnectToBoost(ec);
+    WriteToBoost(ec, bytes_written);
+
     io_service_->run();
     Assert::That(bytes_written, IsGreaterThan(0));
   }
 
-  It(reads_from_localhost) {
+  It(reads_from_boost) {
     boost::system::error_code ec;
     std::size_t bytes_written = 0, bytes_read = 0;;
-    ConnectToLocalhost(ec);
-    WriteToLocalhost(ec, bytes_written);
-    ReadFromLocalhost(ec, bytes_read);
+
+    ConnectToBoost(ec);
+    WriteToBoost(ec, bytes_written);
+    ReadFromBoost(ec, bytes_read);
+
     io_service_->run();
     Assert::That(bytes_read, IsGreaterThan(0));
   }
