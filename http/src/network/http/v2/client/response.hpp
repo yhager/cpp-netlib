@@ -63,7 +63,6 @@ namespace network {
 	response(const response &other)
 	  : status_(other.status_)
 	  , version_(other.version_)
-	  , status_message_(other.status_message_)
 	  , headers_(other.headers_) {
 
 	}
@@ -75,7 +74,6 @@ namespace network {
 	response(response &&other) noexcept
 	  : status_(std::move(other.status_))
 	  , version_(std::move(other.version_))
-	  , status_message_(std::move(other.status_message_))
 	  , headers_(std::move(other.headers_)) {
 
 	}
@@ -96,7 +94,6 @@ namespace network {
 	void swap(response &other) noexcept {
 	  std::swap(status_, other.status_);
 	  std::swap(version_, other.version_);
-	  std::swap(status_message_, other.status_message_);
 	  std::swap(headers_, other.headers_);
 	}
 
@@ -104,7 +101,7 @@ namespace network {
          * \brief Returns the HTTP response status.
          * \returns The status code.
          */
-	std::uint16_t status() const {
+        constants::status::code status() const {
 	  return status_;
 	}
 
@@ -113,7 +110,7 @@ namespace network {
          * \returns The status message.
          */
 	string_type status_message() const {
-	  return status_message_;
+	  return constants::status::message(status_);
 	}
 
         /**
@@ -143,7 +140,7 @@ namespace network {
 
       private:
 
-	std::uint16_t status_;
+        constants::status::code status_;
 	string_type version_, status_message_;
 	headers_type headers_;
 

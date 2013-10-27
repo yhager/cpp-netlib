@@ -102,17 +102,6 @@ endif()
 #    )
 #endif()
 
-set(CPP-NETLIB_HTTP_V2_CONSTANTS_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/constants.cpp
-  )
-add_library(network-http-v2-constants ${CPP-NETLIB_HTTP_V2_CONSTANTS_SRCS})
-add_dependencies(network-http-v2-constants
-  cppnetlib-uri
-  )
-target_link_libraries(network-http-v2-constants
-  ${Boost_LIBRARIES}
-  cppnetlib-uri
-  )
 
 set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client.cpp

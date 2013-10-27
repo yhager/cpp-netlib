@@ -3,27 +3,27 @@
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
-set(CPP-NETLIB_CLIENT_TESTS
-  constants_test
-  )
-
-foreach(test ${CPP-NETLIB_CLIENT_TESTS})
-  #if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-  #  set_source_files_properties(${test}.cpp
-  #    PROPERTIES COMPILE_FLAGS "-Wall")
-  #endif()
-
-  add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
-  target_link_libraries(cpp-netlib-http-v2-${test}
-    network-http-v2-constants
-    ${GTEST_BOTH_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
-    )
-  set_target_properties(cpp-netlib-http-v2-${test}
-    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
-  add_test(cpp-netlib-http-v2-${test}
-    ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-v2-${test})
-
-endforeach(test)
+#set(CPP-NETLIB_CLIENT_TESTS
+#  constants_test
+#  )
+#
+#foreach(test ${CPP-NETLIB_CLIENT_TESTS})
+#  #if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
+#  #  set_source_files_properties(${test}.cpp
+#  #    PROPERTIES COMPILE_FLAGS "-Wall")
+#  #endif()
+#
+#  add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
+#  target_link_libraries(cpp-netlib-http-v2-${test}
+#    network-http-v2-constants
+#    ${GTEST_BOTH_LIBRARIES}
+#    ${CMAKE_THREAD_LIBS_INIT}
+#    )
+#  set_target_properties(cpp-netlib-http-v2-${test}
+#    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
+#  add_test(cpp-netlib-http-v2-${test}
+#    ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-http-v2-${test})
+#
+#endforeach(test)
 
 add_subdirectory(client)
