@@ -43,7 +43,7 @@ namespace network {
       std::future<response> client::impl::do_request(method method_,
 						     request request_,
 						     request_options options) {
-	request_.set_method(method_);
+	request_.method(method_);
 
 	std::future<response> response;
 	//auto endpoints = resolver_.resolve(request_.host(), request_.port());

@@ -13,7 +13,7 @@
 #include <utility>
 #include <string>
 #include <future>
-#include <network/http/v2/constants.hpp>
+#include <network/http/v2/status.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <network/uri.hpp>
 
@@ -101,7 +101,7 @@ namespace network {
          * \brief Returns the HTTP response status.
          * \returns The status code.
          */
-        constants::status::code status() const {
+        network::http::v2::status::code status() const {
 	  return status_;
 	}
 
@@ -110,7 +110,7 @@ namespace network {
          * \returns The status message.
          */
 	string_type status_message() const {
-	  return constants::status::message(status_);
+	  return network::http::v2::status::message(status_);
 	}
 
         /**
@@ -140,7 +140,7 @@ namespace network {
 
       private:
 
-        constants::status::code status_;
+        network::http::v2::status::code status_;
 	string_type version_, status_message_;
 	headers_type headers_;
 

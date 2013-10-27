@@ -36,10 +36,11 @@ TEST(request_test, constructor_uri_no_scheme) {
 
 TEST(request_test, stream) {
   http::request instance{network::uri{"http://www.example.com/"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
   std::ostringstream oss;
   oss << instance;
   ASSERT_EQ("GET / HTTP/1.1\r\n"
@@ -50,10 +51,11 @@ TEST(request_test, stream) {
 
 TEST(request_test, stream_2) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
   std::ostringstream oss;
   oss << instance;
   ASSERT_EQ("GET /path/to/resource/index.html HTTP/1.1\r\n"
@@ -62,15 +64,50 @@ TEST(request_test, stream_2) {
 	    "User-Agent: request_test\r\n\r\n", oss.str());
 }
 
-TEST(request_test, read_headers) {
+TEST(request_test, read_path) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
+  ASSERT_EQ("/path/to/resource/index.html", instance.path());
+}
+
+TEST(request_test, read_full_request) {
+  http::request instance;
+  instance
+    .method(http::method::GET)
+    .path("/path/to/resource/index.html")
+    .version("1.1")
+    .append_header("Host", "www.example.com")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
+
+  ASSERT_EQ(http::method::GET, instance.method());
+  ASSERT_EQ("/path/to/resource/index.html", instance.path());
+  ASSERT_EQ("1.1", instance.version());
 
   auto headers = instance.headers();
   auto headers_it = std::begin(headers);
+  ASSERT_EQ("Host", headers_it->first);
+  ASSERT_EQ("www.example.com", headers_it->second);
+  ++headers_it;
+  ASSERT_EQ("Connection", headers_it->first);
+  ASSERT_EQ("close", headers_it->second);
+  ++headers_it;
+  ASSERT_EQ("User-Agent", headers_it->first);
+  ASSERT_EQ("request_test", headers_it->second);
+}
+
+TEST(request_test, read_headers) {
+  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
+
+  auto headers = instance.headers();
+  auto headers_it = std::begin(headers);
+  ASSERT_EQ("Host", headers_it->first);
+  ASSERT_EQ("www.example.com", headers_it->second);
+  ++headers_it;
   ASSERT_EQ("Connection", headers_it->first);
   ASSERT_EQ("close", headers_it->second);
   ++headers_it;
@@ -80,10 +117,11 @@ TEST(request_test, read_headers) {
 
 TEST(request_test, clear_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
   instance.clear_headers();
   auto headers = instance.headers();
   ASSERT_TRUE(std::begin(headers) == std::end(headers));
@@ -91,15 +129,19 @@ TEST(request_test, clear_headers) {
 
 TEST(request_test, remove_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test");
   instance.remove_header("User-Agent");
 
   auto headers = instance.headers();
   auto headers_it = std::begin(headers);
 
+  ASSERT_EQ("Host", headers_it->first);
+  ASSERT_EQ("www.example.com", headers_it->second);
+  ++headers_it;
   ASSERT_EQ("Connection", headers_it->first);
   ASSERT_EQ("close", headers_it->second);
   ++headers_it;
@@ -108,33 +150,22 @@ TEST(request_test, remove_headers) {
 
 TEST(request_test, remove_duplicate_headers) {
   http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  instance.set_version("1.1");
-  instance.set_method(http::method::GET);
-  instance.append_header("Connection", "close");
-  instance.append_header("User-Agent", "request_test");
-  instance.append_header("User-Agent", "request_test_2");
-  instance.remove_header("User-Agent");
+  instance
+    .method(http::method::GET)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test")
+    .append_header("User-Agent", "request_test_2")
+    .remove_header("User-Agent");
 
   auto headers = instance.headers();
   auto headers_it = std::begin(headers);
 
+  ASSERT_EQ("Host", headers_it->first);
+  ASSERT_EQ("www.example.com", headers_it->second);
+  ++headers_it;
   ASSERT_EQ("Connection", headers_it->first);
   ASSERT_EQ("close", headers_it->second);
   ++headers_it;
   ASSERT_TRUE(headers_it == std::end(headers));
-}
-
-TEST(request_test, port) {
-  http::request instance{network::uri{"http://www.example.com:8000/path/to/resource/index.html"}};
-  ASSERT_EQ(8000, instance.port());
-}
-
-TEST(request_test, http_default_port) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
-  ASSERT_EQ(80, instance.port());
-}
-
-TEST(request_test, https_default_port) {
-  http::request instance{network::uri{"https://www.example.com/path/to/resource/index.html"}};
-  ASSERT_EQ(443, instance.port());
 }

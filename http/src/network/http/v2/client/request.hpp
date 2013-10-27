@@ -20,10 +20,11 @@
 #include <utility>
 #include <cstdint>
 #include <algorithm>
+#include <sstream>
+#include <iterator>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/as_literal.hpp>
-#include "network/http/v2/constants.hpp"
 #include "network/http/v2/method.hpp"
 #include "network/http/v2/client/client_errors.hpp"
 #include "network/uri.hpp"
@@ -226,13 +227,24 @@ namespace network {
 	/**
 	 * \brief Constructor.
 	 */
-	explicit request(uri destination, std::shared_ptr<byte_source> source = nullptr)
-	  : destination_(destination), byte_source_(source) {
-	  if (auto scheme = destination.scheme()) {
+	explicit request(uri url) {
+	  if (auto scheme = url.scheme()) {
 	    if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
 		(!boost::equal(*scheme, boost::as_literal("https")))) {
 	      throw invalid_url();
 	    }
+
+            path_.assign(std::begin(*url.path()), std::end(*url.path()));
+
+            std::ostringstream oss;
+            std::copy(std::begin(*url.host()), std::end(*url.host()),
+                      std::ostream_iterator<char>(oss));
+            if (url.port()) {
+              oss << ":";
+              std::copy(std::begin(*url.port()), std::end(*url.port()),
+                        std::ostream_iterator<char>(oss));
+            }
+            append_header("Host", oss.str());
 	  }
 	  else {
 	    throw invalid_url();
@@ -243,8 +255,8 @@ namespace network {
 	 * \brief Copy constructor.
 	 */
 	request(const request &other)
-	  : destination_(other.destination_)
-	  , method_(other.method_)
+	  : method_(other.method_)
+          , path_(other.path_)
 	  , version_(other.version_)
 	  , headers_(other.headers_)
 	  , byte_source_(other.byte_source_) { }
@@ -253,8 +265,8 @@ namespace network {
 	 * \brief Move constructor.
 	 */
 	request(request &&other) noexcept
-	  : destination_(std::move(other.destination_))
-	  , method_(std::move(other.method_))
+          : method_(std::move(other.method_))
+          , path_(std::move(other.path_))
 	  , version_(std::move(other.version_))
 	  , headers_(std::move(other.headers_))
 	  , byte_source_(std::move(other.byte_source_)) { }
@@ -278,112 +290,112 @@ namespace network {
 	 * \brief Swap.
 	 */
 	void swap(request &other) noexcept {
-	  std::swap(destination_, other.destination_);
 	  std::swap(method_, other.method_);
+	  std::swap(path_, other.path_);
 	  std::swap(version_, other.version_);
 	  std::swap(headers_, other.headers_);
 	  std::swap(byte_source_, other.byte_source_);
 	}
 
-	/**
-	 * \brief Sets the request destination.
-	 * \param destination The destination.
-	 */
-	void set_destination(uri destination) {
-	  destination_ = std::move(destination);
-	}
-
-	/**
-	 * \brief Gets the request destination host.
-	 * \return The destination host.
-	 * \pre destination_.scheme() != boost::none
-	 * \pre destination_.host() != boost::none
-	 */
-	string_type host() const {
-	  assert(destination_.host());
-	  return string_type(std::begin(*destination_.host()), std::end(*destination_.host()));
-	}
-
-	/**
-	 * \brief Gets the request destination port.
-	 * \return The destination port.
-	 * \pre destination_.scheme() != boost::none
-	 * \pre *destination_.scheme() == "http"
-	 * \pre *destination_.scheme() == "https"
-	 */
-	std::uint16_t port() const {
-	  assert(destination_.scheme());
-	  assert((string_type(*destination_.scheme()) == "http") ||
-		 (string_type(*destination_.scheme()) == "https"));
-	  if (!destination_.port()) {
-	    if (string_type(*destination_.scheme()) == "http") {
-	      return 80;
-	    }
-	    else if (string_type(*destination_.scheme()) == "https") {
-	      return 443;
-	    }
-	  }
-	  return *destination_.port<std::uint16_t>();
-	}
-
-	void set_body(std::shared_ptr<byte_source> byte_source) {
-	  byte_source_ = byte_source;
-	}
-
-	void append_header(string_type key, string_type value) {
-	  headers_.emplace_back(std::make_pair(key, value));
-	}
-
-	boost::iterator_range<const_headers_iterator> headers() const {
-	  return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
-	}
-
-	void remove_header(string_type key) {
-	  bool found_all = false;
-	  while (!found_all) {
-	    auto it = std::find_if(std::begin(headers_), std::end(headers_),
-				   [&key] (const std::pair<string_type, string_type> &header) {
-				     return header.first == key;
-				   });
-	    found_all = (it == std::end(headers_));
-	    if (!found_all) {
-	      headers_.erase(it);
-	    }
-	  }
-	}
-
-	void clear_headers() {
-	  headers_type().swap(headers_);
-	}
-
-	void set_method(network::http::v2::method method) {
+        /**
+         * \brief Sets the HTTP request method.
+         * \param method THe HTTP request method.
+         */
+	request &method(network::http::v2::method method) {
 	  method_ = method;
+          return *this;
 	}
 
+        /**
+         * \brief Gets the HTTP request method.
+         * \returns The HTTP request method.
+         */
 	network::http::v2::method method() const {
 	  return method_;
 	}
 
-	void set_version(string_type version) {
+        request &path(std::string path) {
+          path_ = path;
+          return *this;
+        }
+
+        string_type path() const {
+          return path_;
+        }
+
+        /**
+         * \brief Sets the HTTP request version.
+         * \param version 1.0 or 1.1.
+         */
+	request &version(string_type version) {
 	  version_ = std::move(version);
+          return *this;
 	}
 
+        /**
+         * \brief Gets the HTTP request version.
+         * \returns The HTTP request version.
+         */
 	string_type version() const {
 	  return version_;
 	}
 
+	request &body(std::shared_ptr<byte_source> byte_source) {
+	  byte_source_ = byte_source;
+	}
+
+        /**
+         * \brief Appends a header to the request.
+         * \param name The header name.
+         * \param value The header value.
+         *
+         * Duplicates are allowed.
+         */
+	request &append_header(string_type name, string_type value) {
+	  headers_.emplace_back(std::make_pair(name, value));
+          return *this;
+	}
+
+        /**
+         * \brief Returns the headers range.
+         * \returns An iterator range covering all headers.
+         */
+	boost::iterator_range<const_headers_iterator> headers() const {
+	  return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
+	}
+
+        /**
+         * \brief Removes a header from the request.
+         * \param name The name of the header to be removed.
+         *
+         * If the header name can not be found, nothing happens. If
+         * the header is duplicated, then both entries are removed.
+         */
+	void remove_header(string_type name) {
+          auto it = std::remove_if(std::begin(headers_), std::end(headers_),
+                                   [&name] (const std::pair<string_type, string_type> &header) {
+                                     return header.first == name;
+                                   });
+          headers_.erase(it, std::end(headers_));
+	}
+
+        /**
+         * \brief Clears all HTTP request headers.
+         */
+	void clear_headers() {
+	  headers_type().swap(headers_);
+	}
+
       private:
 
-	uri destination_;
 	network::http::v2::method method_;
+        string_type path_;
 	string_type version_;
 	headers_type headers_;
 	std::shared_ptr<byte_source> byte_source_;
 
 	friend std::ostream &operator << (std::ostream &os, const request &req) {
-	  os << req.method_ << " " << *req.destination_.path() << " HTTP/" << req.version_ << "\r\n";
-	  os << "Host: " << *req.destination_.host();
-	  os << "\r\n";
+	  os << req.method_ << " " << req.path_ << " HTTP/" << req.version_ << "\r\n";
 	  for (auto header : req.headers_) {
 	    os << header.first << ": " << header.second << "\r\n";
 	  }

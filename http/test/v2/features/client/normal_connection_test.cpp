@@ -45,10 +45,11 @@ Describe(normal_http_connection) {
                     std::size_t &bytes_written) {
     // Create an HTTP request.
     http::request request{network::uri{"http://www.boost.org/"}};
-    request.set_method(http::method::GET);
-    request.set_version("1.0");
-    request.append_header("User-Agent", "normal_connection_test");
-    request.append_header("Connection", "close");
+    request
+      .method(http::method::GET)
+      .version("1.0")
+      .append_header("User-Agent", "normal_connection_test")
+      .append_header("Connection", "close");
 
     // Write the HTTP request to the socket, sending it to the server.
     boost::asio::streambuf request_;

@@ -6,6 +6,11 @@
 #ifndef __NETWORK_HTTP_V2_METHOD_INC__
 #define __NETWORK_HTTP_V2_METHOD_INC__
 
+/**
+ * \file
+ * \brief HTTP request methods.
+ */
+
 #include <string>
 #include <ostream>
 
