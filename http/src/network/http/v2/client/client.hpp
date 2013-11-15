@@ -76,13 +76,14 @@ namespace network {
          * \brief Swap.
          */
         void swap(client_options &other) noexcept {
+          using std::swap;
           std::swap(io_service_, other.io_service_);
-          std::swap(follow_redirects_, other.follow_redirects_);
-          std::swap(cache_resolved_, other.cache_resolved_);
-          std::swap(use_proxy_, other.use_proxy_);
-          std::swap(timeout_, other.timeout_);
-          std::swap(openssl_certificate_paths_, other.openssl_certificate_paths_);
-          std::swap(openssl_verify_paths_, other.openssl_verify_paths_);
+          swap(follow_redirects_, other.follow_redirects_);
+          swap(cache_resolved_, other.cache_resolved_);
+          swap(use_proxy_, other.use_proxy_);
+          swap(timeout_, other.timeout_);
+          swap(openssl_certificate_paths_, other.openssl_certificate_paths_);
+          swap(openssl_verify_paths_, other.openssl_verify_paths_);
         }
 
         /**
@@ -224,6 +225,11 @@ namespace network {
         std::vector<std::string> openssl_verify_paths_;
 
       };
+
+      inline
+      void swap(client_options &lhs, client_options &rhs) noexcept {
+        lhs.swap(rhs);
+      }
 
       template <typename Handler, typename Signature>
       struct handler_type { };

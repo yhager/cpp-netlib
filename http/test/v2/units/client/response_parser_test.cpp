@@ -6,6 +6,7 @@
 #include <iterator>
 #include <gtest/gtest.h>
 #include <boost/algorithm/string/trim.hpp>
+#include "network/http/v2/client/response.hpp"
 #include "network/http/v2/client/response_parser.hpp"
 
 namespace http = network::http::v2;

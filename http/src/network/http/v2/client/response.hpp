@@ -61,8 +61,9 @@ namespace network {
          * \param other The other response object.
          */
 	response(const response &other)
-	  : status_(other.status_)
-	  , version_(other.version_)
+	  : version_(other.version_)
+	  , status_(other.status_)
+	  , status_message_(other.status_message_)
 	  , headers_(other.headers_) {
 
 	}
@@ -72,8 +73,9 @@ namespace network {
          * \param other The other response object.
          */
 	response(response &&other) noexcept
-	  : status_(std::move(other.status_))
-	  , version_(std::move(other.version_))
+          : version_(std::move(other.version_))
+          , status_(std::move(other.status_))
+          , status_message_(std::move(other.status_message_))
 	  , headers_(std::move(other.headers_)) {
 
 	}
@@ -92,9 +94,11 @@ namespace network {
          * \param other The other response object.
          */
 	void swap(response &other) noexcept {
-	  std::swap(status_, other.status_);
-	  std::swap(version_, other.version_);
-	  std::swap(headers_, other.headers_);
+          using std::swap;
+	  swap(version_, other.version_);
+	  swap(status_, other.status_);
+	  swap(status_message_, other.status_message_);
+	  swap(headers_, other.headers_);
 	}
 
         /**
@@ -110,7 +114,7 @@ namespace network {
          * \returns The status message.
          */
 	string_type status_message() const {
-	  return network::http::v2::status::message(status_);
+	  return status_message_;
 	}
 
         /**
@@ -122,10 +126,10 @@ namespace network {
 
 	std::future<string_type> read_body(std::size_t length) const;
 
-	// destination
-	// source
+        // set_version
+        // set_status
+        // set_status_message
 	// add_header
-	// remove_header
 	// set_body
 	// append_body
 	// get_body
@@ -140,11 +144,17 @@ namespace network {
 
       private:
 
+        string_type version_;
         network::http::v2::status::code status_;
-	string_type version_, status_message_;
+	string_type status_message_;
 	headers_type headers_;
 
       };
+
+      inline
+      void swap(response &lhs, response &rhs) noexcept {
+        lhs.swap(rhs);
+      }
     } // namespace v2
   } // namespace http
 } // namespace network
