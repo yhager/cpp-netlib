@@ -33,6 +33,12 @@ namespace network {
 	// connection
 	connection_timeout,
 	https_not_supported,
+
+        // response
+        invalid_version,
+        invalid_status,
+        invalid_status_message,
+        invalid_header,
       };
 
       /**
@@ -109,6 +115,26 @@ namespace network {
 
       };
 
+      /**
+       * \ingroup http_client
+       * \class response_error network/http/v2/client/client_errors.hpp
+       */
+      class response_error : public std::system_error {
+
+      public:
+
+	/**
+	 * \brief Constructor.
+	 * \param The client_error code.
+	 */
+        explicit response_error(client_error error);
+
+	/**
+	 * \brief Destructor.
+	 */
+        virtual ~response_error() noexcept;
+
+      };
     } // namespace v2
   } // namespace http
 } // namespace network
