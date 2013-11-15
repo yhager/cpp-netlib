@@ -44,10 +44,12 @@ Describe(normal_http_connection) {
   void WriteToBoost(boost::system::error_code &ec,
                     std::size_t &bytes_written) {
     // Create an HTTP request.
-    http::request request{network::uri{"http://www.boost.org/"}};
+    http::request request;
     request
       .method(http::method::GET)
+      .path("/")
       .version("1.0")
+      .append_header("Host", "www.boost.org")
       .append_header("User-Agent", "normal_connection_test")
       .append_header("Connection", "close");
 
