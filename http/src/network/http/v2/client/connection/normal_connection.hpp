@@ -41,9 +41,10 @@ namespace network {
           boost::asio::async_write(*socket_, command_streambuf, callback);
         }
 
-        virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
-                                     read_callback callback) {
-          socket_->async_read_some(read_buffer, callback);
+        virtual void async_read_until(boost::asio::streambuf &command_streambuf,
+                                      const std::string &delim,
+                                      read_callback callback) {
+          boost::asio::async_read_until(*socket_, command_streambuf, delim, callback);
         }
 
         virtual void cancel() {

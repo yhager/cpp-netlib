@@ -21,6 +21,7 @@ Describe(normal_http_connection) {
     resolver_.reset(new tcp::resolver(*io_service_));
     connection_.reset(new http::normal_connection(*io_service_));
     socket_.reset(new tcp::socket(*io_service_));
+    //std::memset(response_, 0, sizeof(response_));
   }
 
   void TearDown() {
@@ -47,14 +48,13 @@ Describe(normal_http_connection) {
     http::request request;
     request
       .method(http::method::GET)
-      .path("/")
+      .path("/LICENSE_1_0.txt")
       .version("1.0")
       .append_header("Host", "www.boost.org")
       .append_header("User-Agent", "normal_connection_test")
       .append_header("Connection", "close");
 
     // Write the HTTP request to the socket, sending it to the server.
-    boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
     request_stream << request;
     connection_->async_write(request_,
@@ -68,13 +68,10 @@ Describe(normal_http_connection) {
   void ReadFromBoost(boost::system::error_code &ec,
                      std::size_t &bytes_read) {
     // Read the HTTP response on the socket from the server.
-    char output[1024];
-    std::memset(output, 0, sizeof(output));
-    connection_->async_read_some(boost::asio::mutable_buffers_1(output, sizeof(output)),
-                                 [&bytes_read] (const boost::system::error_code &ec_,
-                                                std::size_t bytes_read_) {
-                                   Assert::That(ec_, Equals(boost::system::error_code()));
-                                   bytes_read = bytes_read_;
+    connection_->async_read_until(response_,
+                                  "\r\n",
+                                  [] (const boost::system::error_code &ec_, std::size_t) {
+                                    Assert::That(ec_, Equals(boost::system::error_code()));
                                  });
   }
 
@@ -100,20 +97,27 @@ Describe(normal_http_connection) {
 
   It(reads_from_boost) {
     boost::system::error_code ec;
-    std::size_t bytes_written = 0, bytes_read = 0;;
+    std::size_t bytes_written = 0, bytes_read = 0;
 
     ConnectToBoost(ec);
     WriteToBoost(ec, bytes_written);
     ReadFromBoost(ec, bytes_read);
 
     io_service_->run();
-    Assert::That(bytes_read, IsGreaterThan(0));
+    std::istream is(&response_);
+    std::string status;
+    std::getline(is, status);
+    // getline delimits the new line, but not the carriage return
+    Assert::That(status, Equals("HTTP/1.1 200 OK\r"));
   }
 
   std::unique_ptr<boost::asio::io_service> io_service_;
   std::unique_ptr<tcp::resolver> resolver_;
   std::unique_ptr<http::connection> connection_;
   std::unique_ptr<tcp::socket> socket_;
+
+  boost::asio::streambuf request_;
+  boost::asio::streambuf response_;
 
 };
 

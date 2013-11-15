@@ -73,8 +73,10 @@ namespace network {
          * \param read_buffer The buffer in which to read the network data.
          * \param callback A callback handler.
          */
-        virtual void async_read_some(const boost::asio::mutable_buffers_1 &read_buffer,
-                                     read_callback callback) = 0;
+        virtual void async_read_until(boost::asio::streambuf &command_streambuf,
+                                      const std::string &delim,
+                                      read_callback callback) = 0;
+
 
         /**
          * \brief Cancels an operation on a connection.
