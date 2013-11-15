@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <iterator>
 #include <gtest/gtest.h>
 #include <boost/algorithm/string/trim.hpp>
 #include "network/http/v2/client/response_parser.hpp"
@@ -46,38 +47,105 @@ namespace {
     "DEALINGS IN THE SOFTWARE.\n"
     ;
 
+  template <typename Iterator>
   inline
-  std::string trimmed_string(std::string::const_iterator first,
-                             std::string::const_iterator last) {
-    return boost::trim_right_copy(std::string(first, last));
+  std::string trimmed_string(Iterator first, Iterator last) {
+    return boost::trim_copy(std::string(first, last));
+  }
+
+  template <class Rng>
+  inline
+  std::string trimmed_string(const Rng &rng) {
+    return trimmed_string(std::begin(rng), std::end(rng));
   }
 } // namespace
 
 TEST(response_parser_test, parse_version) {
   http::response_parser parser;
-  auto part = parser.parse_until(http::response_parser::http_version_done, input);
-  ASSERT_TRUE(std::get<0>(part));
-  ASSERT_EQ("HTTP/1.0", trimmed_string(std::begin(std::get<1>(part)), std::end(std::get<1>(part))));
+
+  boost::logic::tribool parsed_ok = false;
+  boost::iterator_range<std::string::const_iterator> version;
+  std::tie(parsed_ok, version) = parser.parse_until(http::response_parser::http_version_done, input);
+
+  ASSERT_TRUE(parsed_ok);
+  ASSERT_EQ(http::response_parser::http_version_done, parser.state());
+  ASSERT_EQ("HTTP/1.0", trimmed_string(version));
 }
 
 TEST(response_parser_test, parse_status_code) {
   http::response_parser parser;
-  auto part_1 = parser.parse_until(http::response_parser::http_version_done, input);
-  ASSERT_TRUE(std::get<0>(part_1));
-  auto part_2 = parser.parse_until(http::response_parser::http_status_done,
-                                     boost::make_iterator_range(std::end(std::get<1>(part_1)),
-                                                                std::end(input)));
-  ASSERT_TRUE(std::get<0>(part_2));
-  ASSERT_EQ("200", trimmed_string(std::begin(std::get<1>(part_2)), std::end(std::get<1>(part_2))));
+
+  boost::logic::tribool parsed_ok = false;
+  boost::iterator_range<std::string::const_iterator> status;
+  std::tie(parsed_ok, status) = parser.parse_until(http::response_parser::http_version_done, input);
+  ASSERT_TRUE(parsed_ok);
+
+  std::tie(parsed_ok, status) = parser.parse_until(http::response_parser::http_status_done,
+                                                   boost::make_iterator_range(std::end(status),
+                                                                              std::end(input)));
+  ASSERT_TRUE(parsed_ok);
+  ASSERT_EQ(http::response_parser::http_status_done, parser.state());
+  ASSERT_EQ("200", trimmed_string(status));
 }
 
 TEST(response_parser_test, parse_status_message) {
   http::response_parser parser;
-  auto part_1 = parser.parse_until(http::response_parser::http_status_done, input);
-  ASSERT_TRUE(std::get<0>(part_1));
-  auto part_2 = parser.parse_until(http::response_parser::http_status_message_done,
-                                     boost::make_iterator_range(std::end(std::get<1>(part_1)),
-                                                                std::end(input)));
-  ASSERT_TRUE(std::get<0>(part_2));
-  ASSERT_EQ("OK", trimmed_string(std::begin(std::get<1>(part_2)), std::end(std::get<1>(part_2))));
+
+  boost::logic::tribool parsed_ok = false;
+  boost::iterator_range<std::string::const_iterator> status;
+  std::tie(parsed_ok, status) = parser.parse_until(http::response_parser::http_status_done, input);
+  ASSERT_TRUE(parsed_ok);
+
+  std::tie(parsed_ok, status) = parser.parse_until(http::response_parser::http_status_message_done,
+                                                   boost::make_iterator_range(std::end(status),
+                                                                              std::end(input)));
+  ASSERT_TRUE(parsed_ok);
+  ASSERT_EQ(http::response_parser::http_status_message_done, parser.state());
+  ASSERT_EQ("OK", trimmed_string(status));
+}
+
+TEST(response_parser_test, parse_first_header) {
+  http::response_parser parser;
+
+  boost::logic::tribool parsed_ok = false;
+  boost::iterator_range<std::string::const_iterator> header;
+  std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_status_message_done, input);
+  ASSERT_TRUE(parsed_ok);
+
+  std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_header_colon,
+                                                   boost::make_iterator_range(std::end(header),
+                                                                              std::end(input)));
+  ASSERT_TRUE(parsed_ok);
+  ASSERT_EQ(http::response_parser::http_header_colon, parser.state());
+  ASSERT_EQ("Date:", trimmed_string(header));
+
+  std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_header_line_done,
+                                                   boost::make_iterator_range(std::end(header),
+                                                                              std::end(input)));
+  ASSERT_TRUE(parsed_ok);
+  ASSERT_EQ(http::response_parser::http_header_line_done, parser.state());
+  ASSERT_EQ("Wed, 11 Sep 2013 05:50:12 GMT", trimmed_string(header));
+}
+
+TEST(response_parser_test, parse_headers) {
+  http::response_parser parser;
+
+  boost::logic::tribool parsed_ok = false;
+  boost::iterator_range<std::string::const_iterator> header;
+  std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_status_message_done, input);
+  ASSERT_TRUE(parsed_ok);
+
+  while (!header) {
+    std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_header_colon,
+                                                     boost::make_iterator_range(std::end(header),
+                                                                                std::end(input)));
+    ASSERT_TRUE(parsed_ok);
+    ASSERT_EQ(http::response_parser::http_header_colon, parser.state());
+
+    std::tie(parsed_ok, header) = parser.parse_until(http::response_parser::http_header_colon,
+                                                     boost::make_iterator_range(std::end(header),
+                                                                                std::end(input)));
+    ASSERT_TRUE(parsed_ok);
+    ASSERT_EQ(http::response_parser::http_header_line_done, parser.state());
+  }
 }
