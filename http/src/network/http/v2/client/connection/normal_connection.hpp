@@ -10,6 +10,7 @@
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
+#include <network/config.hpp>
 #include <network/http/v2/client/connection/connection.hpp>
 
 namespace network {
@@ -27,7 +28,7 @@ namespace network {
 
         }
 
-        virtual ~normal_connection() noexcept {
+        virtual ~normal_connection() NETWORK_NOEXCEPT {
 
         }
 

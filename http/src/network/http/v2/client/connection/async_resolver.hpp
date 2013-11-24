@@ -17,6 +17,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/exception/all.hpp>
+#include <network/config.hpp>
 
 namespace network {
   namespace http {
@@ -55,7 +56,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        ~async_resolver() noexcept {
+        ~async_resolver() NETWORK_NOEXCEPT {
 
         }
 

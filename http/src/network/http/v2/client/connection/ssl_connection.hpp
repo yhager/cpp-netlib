@@ -6,14 +6,15 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_SSL_CONNECTION_INC__
 #define __NETWORK_HTTP_V2_CLIENT_CONNECTION_SSL_CONNECTION_INC__
 
-#include <network/http/v2/client/connection/connection.hpp>
-#include <network/http/v2/client/client.hpp>
 #include <memory>
 #include <vector>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/placeholders.hpp>
+#include <network/config.hpp>
+#include <network/http/v2/client/connection/connection.hpp>
+#include <network/http/v2/client/client.hpp>
 
 namespace network {
   namespace http {
@@ -32,7 +33,7 @@ namespace network {
 
 	}
 
-	virtual ~ssl_connection() noexcept {
+	virtual ~ssl_connection() NETWORK_NOEXCEPT {
 
 	}
 

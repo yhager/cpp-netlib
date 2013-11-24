@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <network/config.hpp>
 #include <network/http/v2/client/client_errors.hpp>
 
 namespace network {
@@ -15,19 +16,19 @@ namespace network {
 
 	client_category_impl() = default;
 
-	virtual ~client_category_impl() noexcept;
+	virtual ~client_category_impl() NETWORK_NOEXCEPT;
 
-	virtual const char *name() const noexcept;
+	virtual const char *name() const NETWORK_NOEXCEPT;
 
 	virtual std::string message(int ev) const;
 
       };
 
-      client_category_impl::~client_category_impl() noexcept {
+      client_category_impl::~client_category_impl() NETWORK_NOEXCEPT {
 
       }
 
-      const char *client_category_impl::name() const noexcept {
+      const char *client_category_impl::name() const NETWORK_NOEXCEPT {
 	static const char name[] = "client_error";
 	return name;
       }
@@ -62,7 +63,7 @@ namespace network {
 
       }
 
-      invalid_url::~invalid_url() noexcept {
+      invalid_url::~invalid_url() NETWORK_NOEXCEPT {
 
       }
 

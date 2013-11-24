@@ -11,6 +11,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/buffer.hpp>
+#include <network/config.hpp>
 
 namespace network {
   namespace http {
@@ -49,7 +50,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        virtual ~connection() noexcept { }
+        virtual ~connection() NETWORK_NOEXCEPT { }
 
         /**
          * \brief Asynchronously creates a connection to an endpoint.

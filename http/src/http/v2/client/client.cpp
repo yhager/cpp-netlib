@@ -4,6 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <future>
+#include <network/config.hpp>
 #include <network/http/v2/client/client.hpp>
 #include <network/http/v2/method.hpp>
 #include <network/http/v2/client/request.hpp>
@@ -32,7 +33,7 @@ namespace network {
 
 	explicit impl(client_options options);
 
-	~impl() noexcept;
+	~impl() NETWORK_NOEXCEPT;
 
         void connect(const boost::system::error_code &ec);
 
@@ -69,7 +70,7 @@ namespace network {
 
       }
 
-      client::impl::~impl() noexcept {
+      client::impl::~impl() NETWORK_NOEXCEPT {
 	sentinel_.reset();
 	lifetime_thread_.join();
       }
@@ -142,7 +143,7 @@ namespace network {
 
       }
 
-      client::~client() noexcept {
+      client::~client() NETWORK_NOEXCEPT {
 	delete pimpl_;
       }
 
