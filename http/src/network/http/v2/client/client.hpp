@@ -109,7 +109,7 @@ namespace network {
          *        follow redirects, if \c false it doesn't.
          * \returns \c *this
          */
-        client_options &follow_redirects(bool follow_redirects) noexcept {
+        client_options &follow_redirects(bool follow_redirects) {
           follow_redirects_ = follow_redirects;
           return *this;
         }
@@ -119,7 +119,7 @@ namespace network {
          * \returns \c true if the client follows redirects, \c false
          *          otherwise.
          */
-        bool follow_redirects() const noexcept {
+        bool follow_redirects() const {
           return follow_redirects_;
         }
 
@@ -130,7 +130,7 @@ namespace network {
          *        doesn't.
          * \returns \c *this
          */
-        client_options &cache_resolved(bool cache_resolved) noexcept {
+        client_options &cache_resolved(bool cache_resolved) {
           cache_resolved_ = cache_resolved;
           return *this;
         }
@@ -140,7 +140,7 @@ namespace network {
          * \returns \c true if the client caches resolved connections,
          *          \c false otherwise.
          */
-        bool cache_resolved() const noexcept {
+        bool cache_resolved() const {
           return cache_resolved_;
         }
 
@@ -149,7 +149,7 @@ namespace network {
          * \param use_proxy If \c true, then the client must use a
          *        proxy, if \c false it doesn't.
          */
-        client_options &use_proxy(bool use_proxy) noexcept {
+        client_options &use_proxy(bool use_proxy) {
           use_proxy_ = use_proxy;
           return *this;
         }
@@ -159,7 +159,7 @@ namespace network {
          * \returns \c true if the client uses a proxy, \c false
          *          otherwise.
          */
-        bool use_proxy() const noexcept {
+        bool use_proxy() const {
           return use_proxy_;
         }
 
@@ -167,7 +167,7 @@ namespace network {
          * \brief Sets the client timeout in milliseconds.
          * \param timeout The timeout value in milliseconds.
          */
-        client_options &timeout(std::chrono::milliseconds timeout) noexcept {
+        client_options &timeout(std::chrono::milliseconds timeout) {
           timeout_ = timeout;
           return *this;
         }
@@ -176,7 +176,7 @@ namespace network {
          * \brief Gets the current timeout value.
          * \returns The timeout value in milliseconds.
          */
-        std::chrono::milliseconds timeout() const noexcept {
+        std::chrono::milliseconds timeout() const {
           return timeout_;
         }
 
@@ -231,9 +231,6 @@ namespace network {
         lhs.swap(rhs);
       }
 
-      template <typename Handler, typename Signature>
-      struct handler_type { };
-
       /**
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp
@@ -265,45 +262,45 @@ namespace network {
 
         /**
          * \brief Makes an HTTP GET request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> get(request request_, request_options options = request_options());
+        std::future<response> get(request req, request_options options = request_options());
 
         /**
          * \brief Makes an HTTP POST request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> post(request request_, request_options options = request_options());
+        std::future<response> post(request req, request_options options = request_options());
 
         /**
          * \brief Makes an HTTP PUT request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> put(request request_, request_options options = request_options());
+        std::future<response> put(request req, request_options options = request_options());
 
         /**
          * \brief Makes an HTTP DELETE request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> delete_(request request_, request_options options = request_options());
+        std::future<response> delete_(request req, request_options options = request_options());
 
         /**
          * \brief Makes an HTTP HEAD request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> head(request request_, request_options options = request_options());
+        std::future<response> head(request req, request_options options = request_options());
 
         /**
          * \brief Makes an HTTP OPTIONS request.
-         * \param request_ The request object.
+         * \param req The request object.
          * \param options The request options.
          */
-        std::future<response> options(request request_, request_options options = request_options());
+        std::future<response> options(request req, request_options options = request_options());
 
       private:
 

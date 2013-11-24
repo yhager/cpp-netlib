@@ -82,39 +82,39 @@ namespace network {
           swap(total_timeout_, other.total_timeout_);
         }
 
-        request_options &resolve_timeout(std::uint64_t resolve_timeout) noexcept {
+        request_options &resolve_timeout(std::uint64_t resolve_timeout) {
           resolve_timeout_ = resolve_timeout;
           return *this;
         }
 
-        std::uint64_t resolve_timeout() const noexcept {
+        std::uint64_t resolve_timeout() const {
           return resolve_timeout_;
         }
 
-        request_options &read_timeout(std::uint64_t read_timeout) noexcept {
+        request_options &read_timeout(std::uint64_t read_timeout) {
           read_timeout_ = read_timeout;
           return *this;
         }
 
-        std::uint64_t read_timeout() const noexcept {
+        std::uint64_t read_timeout() const {
           return read_timeout_;
         }
 
-        request_options &total_timeout(std::uint64_t total_timeout) noexcept {
+        request_options &total_timeout(std::uint64_t total_timeout) {
           total_timeout_ = total_timeout;
           return *this;
         }
 
-        std::uint64_t total_timeout() const noexcept {
+        std::uint64_t total_timeout() const {
           return total_timeout_;
         }
 
-        request_options &max_redirects(int max_redirects) noexcept {
+        request_options &max_redirects(int max_redirects) {
           max_redirects_ = max_redirects;
           return *this;
         }
 
-        int max_redirects() const noexcept {
+        int max_redirects() const {
           return max_redirects_;
         }
 

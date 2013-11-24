@@ -66,7 +66,7 @@ namespace network {
          * \param callback A callback handler.
          */
         template <class Handler>
-        void async_resolve(const std::string &host, std::uint16_t port, Handler&& handler) {
+        void async_resolve(const std::string &host, std::uint16_t port, Handler &&handler) {
           if (cache_resolved_) {
             endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
             if (it != endpoint_cache_.end()) {

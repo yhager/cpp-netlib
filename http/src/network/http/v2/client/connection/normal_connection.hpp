@@ -6,6 +6,8 @@
 #ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC__
 #define __NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC__
 
+#include <boost/asio/write.hpp>
+#include <boost/asio/read_until.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
 #include <network/http/v2/client/connection/connection.hpp>
