@@ -5,8 +5,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
+#ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
+#define NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
 
 #include <stdexcept>
 #include <cstdint>
@@ -117,4 +117,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // __NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC__
+#endif // NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC

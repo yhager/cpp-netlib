@@ -10,8 +10,8 @@
  * \brief An HTTP client and configuration options.
  */
 
-#ifndef __NETWORK_HTTP_V2_CLIENT_CLIENT_INC__
-#define __NETWORK_HTTP_V2_CLIENT_CLIENT_INC__
+#ifndef NETWORK_HTTP_V2_CLIENT_CLIENT_INC
+#define NETWORK_HTTP_V2_CLIENT_CLIENT_INC
 
 #include <future>
 #include <memory>
@@ -313,4 +313,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // __NETWORK_HTTP_V2_CLIENT_CLIENT_INC__
+#endif // NETWORK_HTTP_V2_CLIENT_CLIENT_INC

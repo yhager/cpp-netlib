@@ -17,15 +17,32 @@ namespace network {
     namespace v2 {
       using boost::asio::ip::tcp;
 
+      //struct request_helper {
+      //
+      //  request_helper() {
+      //
+      //  }
+      //
+      //  client::string_type host_;
+      //  boost::asio::streambuf request_;
+      //  std::promise<response> response_promise_;
+      //  boost::asio::streambuf response_;
+      //
+      //};
+
+      struct resolve_helper {
+
+      };
+
+      struct connect_helper {
+
+      };
+
       struct request_helper {
 
-        request_helper(boost::asio::io_service &io_service) {
+      };
 
-        }
-
-        boost::asio::streambuf request_;
-        std::promise<response> response_promise_;
-        boost::asio::streambuf response_;
+      struct response_helper {
 
       };
 
@@ -35,13 +52,17 @@ namespace network {
 
 	~impl() NETWORK_NOEXCEPT;
 
-        void connect(const boost::system::error_code &ec);
+        void connect(client::string_type host,
+                     const boost::system::error_code &ec,
+                     tcp::resolver::iterator endpoint_iterator);
 
-        void write_request(const boost::system::error_code &ec, std::size_t bytes_written);
+        void write_request(const boost::system::error_code &ec);
 
-        void read_response_status(const boost::system::error_code &ec, std::size_t bytes_written);
+        void read_response_status(const boost::system::error_code &ec,
+                                  std::size_t bytes_written);
 
-        void read_response_headers(const boost::system::error_code &ec, std::size_t bytes_written);
+        void read_response_headers(const boost::system::error_code &ec,
+                                   std::size_t bytes_read);
 
 	std::future<response> do_request(method method_, request request_, request_options options);
 
@@ -75,19 +96,25 @@ namespace network {
 	lifetime_thread_.join();
       }
 
-      void client::impl::connect(const boost::system::error_code &ec) {
+      void client::impl::connect(client::string_type host,
+                                 const boost::system::error_code &ec,
+                                 tcp::resolver::iterator endpoint_iterator) {
         if (ec) {
           return;
         }
 
-        // endpoint!
-        // host!
+        if (endpoint_iterator == tcp::resolver::iterator()) {
+          return;
+        }
 
-        //connection_.async_connect(endpoint, reques
+        tcp::endpoint endpoint(*endpoint_iterator);
+        connection_.async_connect(endpoint, host,
+                                  [=] (const boost::system::error_code &ec) {
+                                    write_request(ec);
+                                  });
       }
 
-      void client::impl::write_request(const boost::system::error_code &ec,
-                                       std::size_t bytes_written) {
+      void client::impl::write_request(const boost::system::error_code &ec) {
         if (ec) {
           return;
         }
@@ -96,7 +123,7 @@ namespace network {
       }
 
       void client::impl::read_response_status(const boost::system::error_code &ec,
-                                              std::size_t bytes_read) {
+                                              std::size_t) {
         if (ec) {
           return;
         }
@@ -105,7 +132,7 @@ namespace network {
       }
 
       void client::impl::read_response_headers(const boost::system::error_code &ec,
-                                               std::size_t bytes_read) {
+                                               std::size_t) {
         if (ec) {
           return;
         }
@@ -123,17 +150,17 @@ namespace network {
         request_stream << req;
         if (!request_stream) {
           // set error
+          //response_promise_.set_value(response());
           return response;
         }
 
-	//auto endpoints = resolver_.async_resolve(req.host(), req.port(),
-        //                                         [=](const boost::system::error_code &ec) {
-        //                                           if (ec) {
-        //                                             // promise set error
-        //                                             return;
-        //                                           }
-        //                                           this->connect(ec);
-        //                                         });
+        //
+
+	auto endpoints = resolver_.async_resolve(req.host(), req.port(),
+                                                 [=](const boost::system::error_code &ec,
+                                                     tcp::resolver::iterator endpoint_iterator) {
+                                                   this->connect(ec, endpoint_iterator);
+                                                 });
 
 	return response;
       }
