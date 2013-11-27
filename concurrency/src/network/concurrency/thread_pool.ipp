@@ -1,6 +1,6 @@
 // Copyright 2011 Dean Michael Berris <dberris@google.com>.
 // Copyright 2011 Google, Inc.
-// Copyright (c) Glyn Matthews 2012.
+// Copyright (c) Glyn Matthews 2012, 2013.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -16,8 +16,8 @@
 namespace network {
   namespace concurrency {
 
-    struct thread_pool::pimpl {
-      pimpl(std::size_t threads = 1,
+    struct thread_pool::impl {
+      impl(std::size_t threads = 1,
 	    io_service_ptr io_service = io_service_ptr(),
 	    std::vector<std::thread> worker_threads = std::vector<std::thread>())
 	: threads_(threads),
@@ -58,7 +58,7 @@ namespace network {
 	commit = true;
       }
 
-      ~pimpl() {
+      ~impl() {
 	sentinel_.reset();
 	try {
 	  for (auto& thread : worker_threads_)
@@ -82,7 +82,7 @@ namespace network {
 			   io_service_ptr io_service,
 			   std::vector<std::thread> worker_threads)
     : pimpl_(new (std::nothrow)
-	     pimpl(threads, io_service, std::move(worker_threads))) {
+	     impl(threads, io_service, std::move(worker_threads))) {
 
   }
 

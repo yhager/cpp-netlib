@@ -1,6 +1,6 @@
 // Copyright 2010 Dean Michael Berris.
 // Copyright 2012 Google, Inc.
-// Copyright (c) Glyn Matthews 2012.
+// Copyright (c) Glyn Matthews 2012, 2013.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -39,8 +39,8 @@ namespace network {
 
     private:
 
-      struct pimpl;
-      pimpl* pimpl_;
+      struct impl;
+      impl* pimpl_;
 
     };
 
