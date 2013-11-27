@@ -73,7 +73,7 @@ namespace network {
          * \brief Move constructor.
          * \param other The other response object.
          */
-	response(response &&other) NETWORK_NOEXCEPT
+	response(response &&other) noexcept
           : version_(std::move(other.version_))
           , status_(std::move(other.status_))
           , status_message_(std::move(other.status_message_))
@@ -94,7 +94,7 @@ namespace network {
          * \brief Swap function.
          * \param other The other response object.
          */
-	void swap(response &other) NETWORK_NOEXCEPT {
+	void swap(response &other) noexcept {
           using std::swap;
 	  swap(version_, other.version_);
 	  swap(status_, other.status_);
@@ -153,7 +153,7 @@ namespace network {
       };
 
       inline
-      void swap(response &lhs, response &rhs) NETWORK_NOEXCEPT {
+      void swap(response &lhs, response &rhs) noexcept {
         lhs.swap(rhs);
       }
     } // namespace v2

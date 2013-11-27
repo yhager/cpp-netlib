@@ -50,7 +50,7 @@ namespace network {
 
 	explicit impl(client_options options);
 
-	~impl() NETWORK_NOEXCEPT;
+	~impl() noexcept;
 
         void connect(client::string_type host,
                      const boost::system::error_code &ec,
@@ -91,7 +91,7 @@ namespace network {
 
       }
 
-      client::impl::~impl() NETWORK_NOEXCEPT {
+      client::impl::~impl() noexcept {
 	sentinel_.reset();
 	lifetime_thread_.join();
       }
@@ -170,7 +170,7 @@ namespace network {
 
       }
 
-      client::~client() NETWORK_NOEXCEPT {
+      client::~client() noexcept {
 	delete pimpl_;
       }
 

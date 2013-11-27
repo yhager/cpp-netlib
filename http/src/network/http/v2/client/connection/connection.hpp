@@ -50,7 +50,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        virtual ~connection() NETWORK_NOEXCEPT { }
+        virtual ~connection() noexcept { }
 
         /**
          * \brief Asynchronously creates a connection to an endpoint.

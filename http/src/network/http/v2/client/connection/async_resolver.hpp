@@ -56,7 +56,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        ~async_resolver() NETWORK_NOEXCEPT {
+        ~async_resolver() noexcept {
 
         }
 

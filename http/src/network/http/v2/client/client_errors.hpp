@@ -68,7 +68,7 @@ namespace network {
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~invalid_url() NETWORK_NOEXCEPT;
+	virtual ~invalid_url() noexcept;
 
       };
 
@@ -89,7 +89,7 @@ namespace network {
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~resolver_error() NETWORK_NOEXCEPT;
+	virtual ~resolver_error() noexcept;
 
       };
 
@@ -111,7 +111,7 @@ namespace network {
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~connection_error() NETWORK_NOEXCEPT;
+	virtual ~connection_error() noexcept;
 
       };
 
@@ -132,7 +132,7 @@ namespace network {
 	/**
 	 * \brief Destructor.
 	 */
-        virtual ~response_error() NETWORK_NOEXCEPT;
+        virtual ~response_error() noexcept;
 
       };
     } // namespace v2

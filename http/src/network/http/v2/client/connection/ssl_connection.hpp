@@ -33,7 +33,7 @@ namespace network {
 
 	}
 
-	virtual ~ssl_connection() NETWORK_NOEXCEPT {
+	virtual ~ssl_connection() noexcept {
 
 	}
 

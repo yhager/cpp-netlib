@@ -72,11 +72,11 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        ~request_options() NETWORK_NOEXCEPT {
+        ~request_options() noexcept {
 
         }
 
-        void swap(request_options &other) NETWORK_NOEXCEPT {
+        void swap(request_options &other) noexcept {
           using std::swap;
           swap(resolve_timeout_, other.resolve_timeout_);
           swap(read_timeout_, other.read_timeout_);
@@ -129,7 +129,7 @@ namespace network {
       };
 
       inline
-      void swap(request_options &lhs, request_options &rhs) NETWORK_NOEXCEPT {
+      void swap(request_options &lhs, request_options &rhs) noexcept {
         lhs.swap(rhs);
       }
 
@@ -158,7 +158,7 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        virtual ~byte_source() NETWORK_NOEXCEPT {}
+        virtual ~byte_source() noexcept {}
 
         /**
          * \brief Allows the request to read the data into a local
@@ -271,7 +271,7 @@ namespace network {
         /**
          * \brief Move constructor.
          */
-        request(request &&other) NETWORK_NOEXCEPT
+        request(request &&other) noexcept
           : method_(std::move(other.method_))
           , path_(std::move(other.path_))
           , version_(std::move(other.version_))
@@ -289,14 +289,14 @@ namespace network {
         /**
          * \brief Destructor.
          */
-        ~request() NETWORK_NOEXCEPT {
+        ~request() noexcept {
 
         }
 
         /**
          * \brief Swap.
          */
-        void swap(request &other) NETWORK_NOEXCEPT {
+        void swap(request &other) noexcept {
           using std::swap;
           swap(method_, other.method_);
           swap(path_, other.path_);
@@ -412,7 +412,7 @@ namespace network {
       };
 
       inline
-      void swap(request &lhs, request &rhs) NETWORK_NOEXCEPT {
+      void swap(request &lhs, request &rhs) noexcept {
         lhs.swap(rhs);
       }
     } // namespace v2
