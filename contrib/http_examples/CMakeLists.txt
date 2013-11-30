@@ -58,8 +58,8 @@ else()
 endif()
 target_link_libraries(simple_wget
     ${BOOST_CLIENT_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${simple_wget_linklibs})
+    ${simple_wget_linklibs}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 if(CPP-NETLIB_BUILD_SINGLE_LIB)
   set(atom_reader_linklibs cppnetlib)
@@ -78,8 +78,8 @@ else()
 endif()
 target_link_libraries(atom_reader
     ${BOOST_CLIENT_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${atom_reader_linklibs})
+    ${atom_reader_linklibs}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 if(CPP-NETLIB_BUILD_SINGLE_LIB)
   set(rss_reader_linklibs cppnetlib)
@@ -97,8 +97,8 @@ else()
 endif()
 target_link_libraries(rss_reader
     ${BOOST_CLIENT_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${rss_reader_linklibs})
+    ${rss_reader_linklibs}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 #target_link_libraries(twitter_search
 #    ${BOOST_CLIENT_LIBS}
@@ -138,8 +138,8 @@ else()
 endif()
 target_link_libraries(hello_world_client
     ${BOOST_CLIENT_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${hello_world_client_linklibs})
+    ${hello_world_client_linklibs}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 if (OPENSSL_FOUND)
   target_link_libraries(simple_wget ${OPENSSL_LIBRARIES})
