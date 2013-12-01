@@ -9,6 +9,9 @@
 /**
  * \file
  * \brief Constants for the HTTP error status.
+ *
+ * http://tools.ietf.org/html/rfc6585
+ * http://httpstatus.es/
  */
 
 #include <string>
@@ -61,6 +64,9 @@ namespace network {
           UNSUPPORTED_MEDIA_TYPE = 415,
           REQUEST_RANGE_NOT_SATISFIABLE = 416,
           EXPECTATION_FAILED = 417,
+          PRECONDITION_REQUIRED = 428,
+          TOO_MANY_REQUESTS = 429,
+          REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
 
           // server error
           INTERNAL_ERROR = 500,
@@ -69,6 +75,7 @@ namespace network {
           SERVICE_UNAVAILABLE = 503,
           GATEWAY_TIMEOUT = 504,
           HTTP_VERSION_NOT_SUPPORTED = 505,
+          NETWORK_AUTHENTICATION_REQUIRED = 511,
         };
       } // namespace status
     } // namespace v2
@@ -126,12 +133,16 @@ namespace network {
             {code::UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type"},
             {code::REQUEST_RANGE_NOT_SATISFIABLE, "Request Range Not Satisfiable"},
             {code::EXPECTATION_FAILED, "Expectation Failed"},
+            {code::PRECONDITION_REQUIRED, "Precondition Required"},
+            {code::TOO_MANY_REQUESTS, "Too Many Requests"},
+            {code::REQUEST_HEADER_FIELDS_TOO_LARGE, "Request Header Fields Too Large"},
             {code::INTERNAL_ERROR, "Internal Error"},
             {code::NOT_IMPLEMENTED, "Not Implemented"},
             {code::BAD_GATEWAY, "Bad Gateway"},
             {code::SERVICE_UNAVAILABLE, "Service Unavailable"},
             {code::GATEWAY_TIMEOUT, "Gateway Timeout"},
             {code::HTTP_VERSION_NOT_SUPPORTED, "HTTP Version Not Supported"},
+            {code::NETWORK_AUTHENTICATION_REQUIRED, "Network Authentication Required"},
           };
 
           auto it = status_messages.find(status_code);
