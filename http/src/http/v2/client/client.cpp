@@ -4,6 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <future>
+#include <network/uri.hpp>
 #include <network/config.hpp>
 #include <network/http/v2/client/client.hpp>
 #include <network/http/v2/method.hpp>
@@ -23,6 +24,18 @@ namespace network {
       //
       //  }
       //
+      //  void connect(client::string_type host,
+      //               const boost::system::error_code &ec,
+      //               tcp::resolver::iterator endpoint_iterator);
+      //
+      //  void write_request(const boost::system::error_code &ec);
+      //
+      //  void read_response_status(const boost::system::error_code &ec,
+      //                            std::size_t bytes_written);
+      //
+      //  void read_response_headers(const boost::system::error_code &ec,
+      //                             std::size_t bytes_read);
+      //
       //  client::string_type host_;
       //  boost::asio::streambuf request_;
       //  std::promise<response> response_promise_;
@@ -30,30 +43,13 @@ namespace network {
       //
       //};
 
-      struct resolve_helper {
-
-      };
-
-      struct connect_helper {
-
-      };
-
-      struct request_helper {
-
-      };
-
-      struct response_helper {
-
-      };
-
       struct client::impl {
 
 	explicit impl(client_options options);
 
 	~impl() noexcept;
 
-        void connect(client::string_type host,
-                     const boost::system::error_code &ec,
+        void connect(const boost::system::error_code &ec,
                      tcp::resolver::iterator endpoint_iterator);
 
         void write_request(const boost::system::error_code &ec);
@@ -68,10 +64,10 @@ namespace network {
 
 	client_options options_;
 	boost::asio::io_service io_service_;
-	std::unique_ptr<boost::asio::io_service::work> sentinel_;
-	std::thread lifetime_thread_;
 	async_resolver resolver_;
         normal_connection connection_;
+	std::unique_ptr<boost::asio::io_service::work> sentinel_;
+	std::thread lifetime_thread_;
 
         boost::asio::streambuf request_;
         std::promise<response> response_promise_;
@@ -84,10 +80,10 @@ namespace network {
 
       client::impl::impl(client_options options)
 	: options_(options)
-	, sentinel_(new boost::asio::io_service::work(io_service_))
-	, lifetime_thread_([=] () { io_service_.run(); })
 	, resolver_(io_service_, options.cache_resolved())
-        , connection_(io_service_) {
+        , connection_(io_service_)
+	, sentinel_(new boost::asio::io_service::work(io_service_))
+	, lifetime_thread_([=] () { io_service_.run(); }) {
 
       }
 
@@ -96,22 +92,20 @@ namespace network {
 	lifetime_thread_.join();
       }
 
-      void client::impl::connect(client::string_type host,
-                                 const boost::system::error_code &ec,
+      void client::impl::connect(const boost::system::error_code &ec,
                                  tcp::resolver::iterator endpoint_iterator) {
-        if (ec) {
-          return;
-        }
-
-        if (endpoint_iterator == tcp::resolver::iterator()) {
-          return;
-        }
-
         tcp::endpoint endpoint(*endpoint_iterator);
-        connection_.async_connect(endpoint, host,
-                                  [=] (const boost::system::error_code &ec) {
-                                    write_request(ec);
-                                  });
+        std::cout << "Resolved " << endpoint << std::endl;
+        //connection_.async_connect(endpoint,
+        //                          [=] (const boost::system::error_code &ec) {
+        //                            if (ec) {
+        //                              return;
+        //                            }
+        //
+        //                            std::cout << "Oh." << std::endl;
+        //                            //response_promise_.set_value(v2::response());
+        //                            //write_request(ec);
+        //                          });
       }
 
       void client::impl::write_request(const boost::system::error_code &ec) {
@@ -119,7 +113,11 @@ namespace network {
           return;
         }
 
-        // request!
+        connection_.async_write(request_,
+                                [=] (const boost::system::error_code &ec,
+                                     std::size_t bytes_written) {
+                                  read_response_status(ec, bytes_written);
+                                });
       }
 
       void client::impl::read_response_status(const boost::system::error_code &ec,
@@ -128,7 +126,13 @@ namespace network {
           return;
         }
 
-        // response
+        connection_.async_read_until(response_,
+                                     "\r\n",
+                                     [=] (const boost::system::error_code &ec,
+                                          std::size_t bytes_read) {
+                                       // fill headers
+                                       read_response_headers(ec, bytes_read);
+                                     });
       }
 
       void client::impl::read_response_headers(const boost::system::error_code &ec,
@@ -137,8 +141,13 @@ namespace network {
           return;
         }
 
-        // response
-      }
+        connection_.async_read_until(response_,
+                                     "\r\n\r\n",
+                                     [=] (const boost::system::error_code &ec,
+                                          std::size_t bytes_read) {
+                                       // um...
+                                     });
+        }
 
       std::future<response> client::impl::do_request(method met,
 						     request req,
@@ -154,13 +163,33 @@ namespace network {
           return response;
         }
 
-        //
+        uri_builder builder;
+        for (auto header : req.headers()) {
+          // boost::iequals(header.first, "host")
+          if ((header.first == "Host") || (header.first == "host")) {
+            builder
+              .authority(header.second)
+              ;
+            break;
+          }
+        }
+        auto auth = builder.uri();
+        auto host = auth.host()?
+          uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
+        auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
 
-	auto endpoints = resolver_.async_resolve(req.host(), req.port(),
-                                                 [=](const boost::system::error_code &ec,
-                                                     tcp::resolver::iterator endpoint_iterator) {
-                                                   this->connect(ec, endpoint_iterator);
-                                                 });
+	resolver_.async_resolve(host, port,
+                                [=](const boost::system::error_code &ec,
+                                    tcp::resolver::iterator endpoint_iterator) {
+                                  if (ec) {
+                                    if (endpoint_iterator == tcp::resolver::iterator()) {
+                                      return;
+                                    }
+                                    return;
+                                  }
+
+                                  connect(ec, endpoint_iterator);
+                                });
 
 	return response;
       }

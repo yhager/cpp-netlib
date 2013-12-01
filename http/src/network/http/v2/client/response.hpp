@@ -103,6 +103,14 @@ namespace network {
 	}
 
         /**
+         * \brief Returns the HTTP version.
+         * \returns The HTTP version.
+         */
+	string_type version() const {
+	  return version_;
+	}
+
+        /**
          * \brief Returns the HTTP response status.
          * \returns The status code.
          */
@@ -134,14 +142,6 @@ namespace network {
 	// set_body
 	// append_body
 	// get_body
-
-        /**
-         * \brief Returns the HTTP version.
-         * \returns The HTTP version.
-         */
-	string_type version() const {
-	  return version_;
-	}
 
       private:
 

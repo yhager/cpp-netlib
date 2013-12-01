@@ -17,7 +17,7 @@ namespace http = network::http::v2;
 Describe(normal_http_connection) {
 
   void SetUp() {
-    io_service_.reset(new boost::asio::io_service);
+    io_service_.reset(new boost::asio::io_service{});
     resolver_.reset(new tcp::resolver(*io_service_));
     connection_.reset(new http::normal_connection(*io_service_));
   }
@@ -34,7 +34,7 @@ Describe(normal_http_connection) {
 
     // Make sure that the connection is successful.
     tcp::endpoint endpoint(it->endpoint());
-    connection_->async_connect(endpoint, "www.boost.org",
+    connection_->async_connect(endpoint,
                                [&ec] (const boost::system::error_code &ec_) {
                                  ec = ec_;
                                });
@@ -49,7 +49,7 @@ Describe(normal_http_connection) {
       .path("/LICENSE_1_0.txt")
       .version("1.0")
       .append_header("Host", "www.boost.org")
-      .append_header("User-Agent", "normal_connection_test")
+      .append_header("User-Agent", "cpp-netlib normal_connection_test")
       .append_header("Connection", "close");
 
     // Write the HTTP request to the socket, sending it to the server.

@@ -55,11 +55,10 @@ namespace network {
         /**
          * \brief Asynchronously creates a connection to an endpoint.
          * \param endpoint The endpoint to which to connect.
-         * \param host The host name.
          * \param callback A callback handler.
          */
-        virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
-                                   const std::string &host, connect_callback callback) = 0;
+        virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
+                                   connect_callback callback) = 0;
 
         /**
          * \brief Asynchronously writes data across the connection.

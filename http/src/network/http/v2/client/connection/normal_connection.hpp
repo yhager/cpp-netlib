@@ -32,11 +32,14 @@ namespace network {
 
         }
 
-        virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
-                                   const std::string &host,
+        virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
                                    connect_callback callback) {
-          socket_.reset(new boost::asio::ip::tcp::socket(io_service_));
+          using boost::asio::ip::tcp;
+          std::cout << "Oh 1." << std::endl;
+          socket_.reset(new tcp::socket{io_service_});
+          std::cout << "Oh 2." << std::endl;
           socket_->async_connect(endpoint, callback);
+          std::cout << "Oh 3." << std::endl;
         }
 
         virtual void async_write(boost::asio::streambuf &command_streambuf,

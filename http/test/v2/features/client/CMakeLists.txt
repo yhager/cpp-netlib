@@ -14,10 +14,11 @@ set(CPP-NETLIB_CLIENT_TESTS
 #endif()
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})
-  #if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
-  #  set_source_files_properties(${test}.cpp
+  if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
+    set_source_files_properties(${test}.cpp
+      PROPERTIES COMPILE_FLAGS "-g")
   #    PROPERTIES COMPILE_FLAGS "-Wall")
-  #endif()
+  endif()
 
   add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
   target_link_libraries(cpp-netlib-http-v2-${test}

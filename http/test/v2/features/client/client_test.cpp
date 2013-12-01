@@ -11,12 +11,32 @@ namespace http = network::http::v2;
 
 Describe(http_client) {
 
-  It(gets_a_response) {
-    http::request request(network::uri("http://127.0.0.1/"));
-    auto response = client_.get(request);
+  void SetUp() {
+    client_.reset(new http::client{});
   }
 
-  http::client client_;
+  void TearDown() {
+
+  }
+
+  It(gets_a_response) {
+    http::request request;
+    request
+      .method(http::method::GET)
+      .path("/LICENSE_1_0.txt")
+      .version("1.0")
+      .append_header("Host", "www.boost.org")
+      .append_header("User-Agent", "cpp-netlib client_test")
+      .append_header("Connection", "close");
+    auto future_response = client_->get(request);
+    auto response = future_response.get();
+
+    Assert::That(response.version(), Equals("1.1"));
+    Assert::That(response.status(), Equals(http::status::code::OK));
+    Assert::That(response.status_message(), Equals("OK"));
+  }
+
+  std::unique_ptr<http::client> client_;
 
 };
 

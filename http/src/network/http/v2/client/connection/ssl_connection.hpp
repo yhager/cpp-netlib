@@ -37,8 +37,7 @@ namespace network {
 
 	}
 
-	virtual void async_connect(boost::asio::ip::tcp::endpoint &endpoint,
-                                   const std::string &host,
+	virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
                                    connect_callback callback) {
 	  context_.reset(new boost::asio::ssl::context(boost::asio::ssl::context::sslv23));
 	  std::vector<std::string> const& certificate_paths =
@@ -54,7 +53,7 @@ namespace network {
 	      context_->add_verify_path(path);
 	    }
 	    context_->set_verify_mode(boost::asio::ssl::context::verify_peer);
-	    context_->set_verify_callback(boost::asio::ssl::rfc2818_verification(host));
+	    //context_->set_verify_callback(boost::asio::ssl::rfc2818_verification(host));
 	  }
 	  else {
 	    context_->set_default_verify_paths();
