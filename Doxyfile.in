@@ -648,8 +648,9 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/http/src/network/http/v2/ \
-                         @CMAKE_CURRENT_SOURCE_DIR@/uri/src/network/
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/error/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/uri/src/network/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/http/src/network/http/v2/
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is

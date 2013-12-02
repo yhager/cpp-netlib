@@ -7,6 +7,8 @@
 #define NETWORK_ERROR_INC
 
 /**
+ * \defgroup error Generic Error Handling
+ *
  * \file
  * \brief Contains a set of error classes and exceptions for
  *        network connections.
@@ -16,7 +18,14 @@
 
 namespace network {
   /**
+   * \ingroup error
    * \brief Gets the error category for network errors.
+   *
+   * e.g.
+   *
+   * \code
+   * throw std::system_error(EPIPE, network::network_category());
+   * \endcode
    */
   const std::error_category &network_category();
 } // namespace network
