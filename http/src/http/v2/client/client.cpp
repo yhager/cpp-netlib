@@ -4,6 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <future>
+#include <boost/algorithm/string/predicate.hpp>
 #include <network/uri.hpp>
 #include <network/config.hpp>
 #include <network/http/v2/client/client.hpp>
@@ -110,6 +111,8 @@ namespace network {
 
       void client::impl::write_request(const boost::system::error_code &ec) {
         if (ec) {
+          response_promise_.set_exception(std::make_exception_ptr(
+                                              boost::system::system_error(ec)));
           return;
         }
 
@@ -123,6 +126,8 @@ namespace network {
       void client::impl::read_response_status(const boost::system::error_code &ec,
                                               std::size_t) {
         if (ec) {
+          response_promise_.set_exception(std::make_exception_ptr(
+                                              boost::system::system_error(ec)));
           return;
         }
 
@@ -138,6 +143,8 @@ namespace network {
       void client::impl::read_response_headers(const boost::system::error_code &ec,
                                                std::size_t) {
         if (ec) {
+          response_promise_.set_exception(std::make_exception_ptr(
+                                              boost::system::system_error(ec)));
           return;
         }
 
@@ -152,27 +159,32 @@ namespace network {
       std::future<response> client::impl::do_request(method met,
 						     request req,
 						     request_options options) {
-        std::future<response> response = response_promise_.get_future();
+        std::future<response> res = response_promise_.get_future();
 
 	req.method(met);
         std::ostream request_stream(&request_);
         request_stream << req;
         if (!request_stream) {
           // set error
-          //response_promise_.set_value(response());
-          return response;
+          response_promise_.set_value(response());
+          return res;
+        }
+
+        auto it = std::find_if(std::begin(req.headers()), std::end(req.headers()),
+                               [] (const std::pair<uri::string_type, uri::string_type> &header) {
+                                 return (boost::iequals(header.first, "host"));
+                               });
+        if (it == std::end(req.headers())) {
+          // set error
+          response_promise_.set_value(response());
+          return res;
         }
 
         uri_builder builder;
-        for (auto header : req.headers()) {
-          // boost::iequals(header.first, "host")
-          if ((header.first == "Host") || (header.first == "host")) {
-            builder
-              .authority(header.second)
-              ;
-            break;
-          }
-        }
+        builder
+          .authority(it->second)
+          ;
+
         auto auth = builder.uri();
         auto host = auth.host()?
           uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
@@ -183,15 +195,22 @@ namespace network {
                                     tcp::resolver::iterator endpoint_iterator) {
                                   if (ec) {
                                     if (endpoint_iterator == tcp::resolver::iterator()) {
+                                      response_promise_.set_exception(
+                                          std::make_exception_ptr(
+                                              connection_error(client_error::host_not_found)));
                                       return;
                                     }
+
+                                    response_promise_.set_exception(
+                                        std::make_exception_ptr(
+                                            boost::system::system_error(ec)));
                                     return;
                                   }
 
                                   connect(ec, endpoint_iterator);
                                 });
 
-	return response;
+	return res;
       }
 
       client::client(client_options options)

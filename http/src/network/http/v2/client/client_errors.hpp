@@ -24,15 +24,16 @@ namespace network {
        * \brief An enumeration of all types of client error.
        */
       enum class client_error {
-	// url
-	invalid_url,
+        // url
+        invalid_url,
 
-	// resolution
-	resolver_error,
+        // resolution
+        resolver_error,
 
-	// connection
-	connection_timeout,
-	https_not_supported,
+        // connection
+        host_not_found,
+        connection_timeout,
+        https_not_supported,
 
         // response
         invalid_version,
@@ -60,15 +61,15 @@ namespace network {
 
       public:
 
-	/**
-	 * \brief Constructor.
-	 */
-	explicit invalid_url();
+        /**
+         * \brief Constructor.
+         */
+        explicit invalid_url();
 
-	/**
-	 * \brief Destructor.
-	 */
-	virtual ~invalid_url() noexcept;
+        /**
+         * \brief Destructor.
+         */
+        virtual ~invalid_url() noexcept;
 
       };
 
@@ -81,15 +82,15 @@ namespace network {
 
       public:
 
-	/**
-	 * \brief Constructor.
-	 */
-	explicit resolver_error();
+        /**
+         * \brief Constructor.
+         */
+        explicit resolver_error();
 
-	/**
-	 * \brief Destructor.
-	 */
-	virtual ~resolver_error() noexcept;
+        /**
+         * \brief Destructor.
+         */
+        virtual ~resolver_error() noexcept;
 
       };
 
@@ -102,16 +103,16 @@ namespace network {
 
       public:
 
-	/**
-	 * \brief Constructor.
-	 * \param The client_error code.
-	 */
-	explicit connection_error(client_error error);
+        /**
+         * \brief Constructor.
+         * \param The client_error code.
+         */
+        explicit connection_error(client_error error);
 
-	/**
-	 * \brief Destructor.
-	 */
-	virtual ~connection_error() noexcept;
+        /**
+         * \brief Destructor.
+         */
+        virtual ~connection_error() noexcept;
 
       };
 
@@ -123,15 +124,15 @@ namespace network {
 
       public:
 
-	/**
-	 * \brief Constructor.
-	 * \param The client_error code.
-	 */
+        /**
+         * \brief Constructor.
+         * \param The client_error code.
+         */
         explicit response_error(client_error error);
 
-	/**
-	 * \brief Destructor.
-	 */
+        /**
+         * \brief Destructor.
+         */
         virtual ~response_error() noexcept;
 
       };
