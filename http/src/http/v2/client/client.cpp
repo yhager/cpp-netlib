@@ -107,6 +107,7 @@ namespace network {
         //                            //response_promise_.set_value(v2::response());
         //                            //write_request(ec);
         //                          });
+        response_promise_.set_value(response());
       }
 
       void client::impl::write_request(const boost::system::error_code &ec) {
@@ -166,49 +167,50 @@ namespace network {
         request_stream << req;
         if (!request_stream) {
           // set error
-          response_promise_.set_value(response());
-          return res;
         }
 
-        auto it = std::find_if(std::begin(req.headers()), std::end(req.headers()),
-                               [] (const std::pair<uri::string_type, uri::string_type> &header) {
-                                 return (boost::iequals(header.first, "host"));
-                               });
-        if (it == std::end(req.headers())) {
-          // set error
-          response_promise_.set_value(response());
-          return res;
-        }
+        response_promise_.set_value(response());
 
-        uri_builder builder;
-        builder
-          .authority(it->second)
-          ;
 
-        auto auth = builder.uri();
-        auto host = auth.host()?
-          uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
-        auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
-
-	resolver_.async_resolve(host, port,
-                                [=](const boost::system::error_code &ec,
-                                    tcp::resolver::iterator endpoint_iterator) {
-                                  if (ec) {
-                                    if (endpoint_iterator == tcp::resolver::iterator()) {
-                                      response_promise_.set_exception(
-                                          std::make_exception_ptr(
-                                              connection_error(client_error::host_not_found)));
-                                      return;
-                                    }
-
-                                    response_promise_.set_exception(
-                                        std::make_exception_ptr(
-                                            boost::system::system_error(ec)));
-                                    return;
-                                  }
-
-                                  connect(ec, endpoint_iterator);
-                                });
+        //auto it = std::find_if(std::begin(req.headers()), std::end(req.headers()),
+        //                       [] (const std::pair<uri::string_type, uri::string_type> &header) {
+        //                         return (boost::iequals(header.first, "host"));
+        //                       });
+        //if (it == std::end(req.headers())) {
+        //  // set error
+        //  response_promise_.set_value(response());
+        //  return res;
+        //}
+        //
+        //uri_builder builder;
+        //builder
+        //  .authority(it->second)
+        //  ;
+        //
+        //auto auth = builder.uri();
+        //auto host = auth.host()?
+        //  uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
+        //auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
+        //
+	//resolver_.async_resolve(host, port,
+        //                        [=](const boost::system::error_code &ec,
+        //                            tcp::resolver::iterator endpoint_iterator) {
+        //                          if (ec) {
+        //                            if (endpoint_iterator == tcp::resolver::iterator()) {
+        //                              response_promise_.set_exception(
+        //                                  std::make_exception_ptr(
+        //                                      connection_error(client_error::host_not_found)));
+        //                              return;
+        //                            }
+        //
+        //                            response_promise_.set_exception(
+        //                                std::make_exception_ptr(
+        //                                    boost::system::system_error(ec)));
+        //                            return;
+        //                          }
+        //
+        //                          connect(ec, endpoint_iterator);
+        //                        });
 
 	return res;
       }
