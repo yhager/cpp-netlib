@@ -24,7 +24,7 @@ Describe(http_client) {
     request
       .method(http::method::GET)
       .path("/LICENSE_1_0.txt")
-      .version("1.0")
+      .version("1.1")
       .append_header("Host", "www.boost.org")
       .append_header("User-Agent", "cpp-netlib client_test")
       .append_header("Connection", "close");

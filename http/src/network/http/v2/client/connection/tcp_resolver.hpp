@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <string>
 #include <boost/asio/io_service.hpp>
-#include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/exception/all.hpp>
 #include <network/config.hpp>
@@ -42,7 +41,6 @@ namespace network {
          */
         tcp_resolver(boost::asio::io_service &service, bool cache_resolved = false)
           : resolver_(service)
-          , resolver_strand_(new boost::asio::io_service::strand(service))
           , cache_resolved_(cache_resolved) {
 
         }
@@ -54,7 +52,8 @@ namespace network {
 
         }
 
-        virtual void async_resolve(const std::string &host, std::uint16_t port, resolve_callback handler) {
+        virtual void async_resolve(const std::string &host, std::uint16_t port,
+                                   resolve_callback handler) {
           if (cache_resolved_) {
             auto it = endpoint_cache_.find(host);
             if (it != endpoint_cache_.end()) {
@@ -66,19 +65,18 @@ namespace network {
 
           resolver::query query(host, std::to_string(port));
           resolver_.async_resolve(query,
-              resolver_strand_->wrap(
-                  [&host, &handler, this](const boost::system::error_code &ec,
-                                           resolver_iterator endpoint_iterator) {
-                    if (ec) {
-                      handler(ec, resolver_iterator());
-                    }
-                    else {
-                      if (cache_resolved_) {
-                        endpoint_cache_.insert(host, endpoint_iterator);
-                      }
-                      handler(ec, endpoint_iterator);
-                    }
-                  }));
+                                  [host, handler, this](const boost::system::error_code &ec,
+                                                        resolver_iterator endpoint_iterator) {
+                                    if (ec) {
+                                      handler(ec, resolver_iterator());
+                                    }
+                                    else {
+                                      if (cache_resolved_) {
+                                        endpoint_cache_.insert(host, endpoint_iterator);
+                                      }
+                                      handler(ec, endpoint_iterator);
+                                    }
+                                  });
         }
 
         virtual void clear_resolved_cache() {
@@ -87,10 +85,7 @@ namespace network {
 
       private:
 
-        typedef boost::asio::io_service::strand strand;
-
         resolver resolver_;
-        std::unique_ptr<strand> resolver_strand_;
         bool cache_resolved_;
         endpoint_cache endpoint_cache_;
 

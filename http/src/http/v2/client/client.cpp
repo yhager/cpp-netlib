@@ -70,16 +70,23 @@ namespace network {
 
       void client::impl::connect(const boost::system::error_code &ec,
                                  tcp::resolver::iterator endpoint_iterator) {
+        if (ec) {
+          if (endpoint_iterator == tcp::resolver::iterator()) {
+            response_promise_.set_exception(std::make_exception_ptr(
+                                              connection_error(client_error::host_not_found)));
+            return;
+          }
+
+          response_promise_.set_exception(std::make_exception_ptr(
+                                            boost::system::system_error(ec)));
+          return;
+        }
+
         tcp::endpoint endpoint(*endpoint_iterator);
-        //connection_.async_connect(endpoint,
-        //                          [=] (const boost::system::error_code &ec) {
-        //                            if (ec) {
-        //                              return;
-        //                            }
-        //
-        //                            //response_promise_.set_value(v2::response());
-        //                            //write_request(ec);
-        //                          });
+        connection_->async_connect(endpoint,
+                                   [=] (const boost::system::error_code &ec) {
+                                     write_request(ec);
+                                   });
       }
 
       void client::impl::write_request(const boost::system::error_code &ec) {
@@ -117,7 +124,7 @@ namespace network {
                                                std::size_t) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
-                                              boost::system::system_error(ec)));
+                                            boost::system::system_error(ec)));
           return;
         }
 
@@ -126,6 +133,7 @@ namespace network {
                                       [=] (const boost::system::error_code &ec,
                                            std::size_t bytes_read) {
                                         // um...
+                                        response_promise_.set_value(response());
                                       });
         }
 
@@ -162,30 +170,12 @@ namespace network {
           uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
         auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
 
-	//resolver_->async_resolve(host, port,
-        //                         [=](const boost::system::error_code &ec,
-        //                             tcp::resolver::iterator endpoint_iterator) {
-        //                           std::cout << "!!!" << std::endl;
-        //                           if (ec) {
-        //                             if (endpoint_iterator == tcp::resolver::iterator()) {
-        //                               response_promise_.set_exception(
-        //                                  std::make_exception_ptr(
-        //                                      connection_error(client_error::host_not_found)));
-        //                               return;
-        //                             }
-        //
-        //                             std::cout << "!!!" << std::endl;
-        //                             //response_promise_.set_exception(
-        //                             //    std::make_exception_ptr(
-        //                             //        boost::system::system_error(ec)));
-        //                             return;
-        //                           }
-        //
-        //                           connect(ec, endpoint_iterator);
-        //                         });
+	resolver_->async_resolve(host, port,
+                                 [=](const boost::system::error_code &ec,
+                                     tcp::resolver::iterator endpoint_iterator) {
+                                   connect(ec, endpoint_iterator);
+                                 });
 
-        response_promise_.set_exception(std::make_exception_ptr(
-                                            connection_error(client_error::host_not_found)));
 	return res;
       }
 
