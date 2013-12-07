@@ -9,6 +9,9 @@
 /**
  * \defgroup error Generic Error Handling
  *
+ * This module contains a simple function that is used in generic
+ * error handling inside cpp-netlib.
+ *
  * \file
  * \brief Contains a set of error classes and exceptions for
  *        network connections.
@@ -28,6 +31,31 @@ namespace network {
    * \endcode
    */
   const std::error_category &network_category();
+
+  /**
+   * \ingroup error
+   * \class network_exception network/error.hpp
+   * \brief An exception thrown in the event of a network error.
+   */
+  class network_exception : public std::system_error {
+
+  public:
+
+    /**
+     * \brief Constructor.
+     * \param error_code The system error code.
+     */
+    explicit network_exception(int error_code)
+      : std::system_error(error_code, network_category()) {
+
+    }
+
+    /**
+     * \brief Destructor.
+     */
+    virtual ~network_exception() noexcept;
+
+  };
 } // namespace network
 
 #endif // NETWORK_ERROR_INC
