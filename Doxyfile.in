@@ -128,7 +128,9 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the
 # path to strip.
 
-STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@/http/src/
+STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@/error/src/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/uri/src/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/http/src/
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of
 # the path mentioned in the documentation of a class, which tells
@@ -845,8 +847,9 @@ COLS_IN_ALPHA_INDEX    = 5
 # The IGNORE_PREFIX tag can be used to specify one or more prefixes that
 # should be ignored while generating the index headers.
 
-IGNORE_PREFIX          = @CMAKE_CURRENT_SOURCE_DIR@/http/src/ \
-                         @CMAKE_CURRENT_SOURCE_DIR@/uri/src/
+IGNORE_PREFIX          = @CMAKE_CURRENT_SOURCE_DIR@/error/src/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/uri/src/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/http/src/
 
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
