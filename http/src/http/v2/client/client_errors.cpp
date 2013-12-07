@@ -39,10 +39,6 @@ namespace network {
 	  return "Requires HTTP or HTTPS URL.";
 	case client_error::resolver_error:
 	  return "Unable to resolve host";
-	case client_error::connection_timeout:
-	  return "Connection timeout.";
-	case client_error::https_not_supported:
-	  return "HTTPS is not supported.";
 	default:
 	  break;
 	}

@@ -30,6 +30,9 @@ namespace network {
 
         void write_request(const boost::system::error_code &ec);
 
+        void read_response(const boost::system::error_code &ec,
+                           std::size_t bytes_written);
+
         void read_response_status(const boost::system::error_code &ec,
                                   std::size_t bytes_written);
 
@@ -78,7 +81,7 @@ namespace network {
           }
 
           response_promise_.set_exception(std::make_exception_ptr(
-                                            boost::system::system_error(ec)));
+                                            std::system_error(ec.value(), std::system_category())));
           return;
         }
 
@@ -92,22 +95,21 @@ namespace network {
       void client::impl::write_request(const boost::system::error_code &ec) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
-                                              boost::system::system_error(ec)));
+                                              std::system_error(ec.value(), std::system_category())));
           return;
         }
 
         connection_->async_write(request_,
                                  [=] (const boost::system::error_code &ec,
                                       std::size_t bytes_written) {
-                                   read_response_status(ec, bytes_written);
+                                   read_response(ec, bytes_written);
                                  });
       }
 
-      void client::impl::read_response_status(const boost::system::error_code &ec,
-                                              std::size_t) {
+      void client::impl::read_response(const boost::system::error_code &ec, std::size_t) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
-                                              boost::system::system_error(ec)));
+                                            std::system_error(ec.value(), std::system_category())));
           return;
         }
 
@@ -115,7 +117,26 @@ namespace network {
                                       "\r\n",
                                       [=] (const boost::system::error_code &ec,
                                            std::size_t bytes_read) {
-                                        // fill headers
+                                        read_response_status(ec, bytes_read);
+                                      });
+      }
+
+      void client::impl::read_response_status(const boost::system::error_code &ec,
+                                              std::size_t) {
+        if (ec) {
+          response_promise_.set_exception(std::make_exception_ptr(
+                                            std::system_error(ec.value(), std::system_category())));
+          return;
+        }
+
+        std::istream is(&response_);
+        std::string status;
+        std::getline(is, status);
+
+        connection_->async_read_until(response_,
+                                      "\r\n",
+                                      [=] (const boost::system::error_code &ec,
+                                           std::size_t bytes_read) {
                                         read_response_headers(ec, bytes_read);
                                       });
       }
@@ -124,10 +145,11 @@ namespace network {
                                                std::size_t) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
-                                            boost::system::system_error(ec)));
+                                            std::system_error(ec.value(), std::system_category())));
           return;
         }
 
+        // fill headers
         connection_->async_read_until(response_,
                                       "\r\n\r\n",
                                       [=] (const boost::system::error_code &ec,

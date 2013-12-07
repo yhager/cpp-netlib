@@ -32,14 +32,9 @@ namespace network {
 
         // connection
         host_not_found,
-        connection_timeout,
-        https_not_supported,
 
         // response
-        invalid_version,
-        invalid_status,
-        invalid_status_message,
-        invalid_header,
+        invalid_response,
       };
 
       /**

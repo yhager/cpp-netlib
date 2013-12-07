@@ -82,6 +82,7 @@ namespace network {
   } // namespace http
 } // namespace network
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 namespace std {
   template <>
   struct hash<network::http::v2::status::code> {
@@ -91,6 +92,7 @@ namespace std {
     }
   };
 } // namespace std
+#endif // !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 namespace network {
   namespace http {

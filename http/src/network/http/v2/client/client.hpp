@@ -236,7 +236,7 @@ namespace network {
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp
        * \brief A class that encapsulates the operations and methods
-       *        for communicating with an HTTP servier.
+       *        for communicating with an HTTP server.
        */
       class client {
 
