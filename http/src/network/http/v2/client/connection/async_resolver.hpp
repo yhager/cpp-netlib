@@ -8,15 +8,8 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
 
-#include <stdexcept>
-#include <cstdint>
-#include <string>
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/strand.hpp>
+#include <functional>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/exception/all.hpp>
-#include <network/config.hpp>
-#include <network/http/v2/client/connection/endpoint_cache.hpp>
 
 namespace network {
   namespace http {
@@ -51,17 +44,14 @@ namespace network {
         /**
          * \brief Constructor.
          */
-        async_resolver(boost::asio::io_service &service, bool cache_resolved = false)
-          : resolver_(service)
-          , resolver_strand_(new boost::asio::io_service::strand(service))
-          , cache_resolved_(cache_resolved) {
+        async_resolver() {
 
         }
 
         /**
          * \brief Destructor.
          */
-        ~async_resolver() noexcept {
+        virtual ~async_resolver() noexcept {
 
         }
 
@@ -71,48 +61,13 @@ namespace network {
          * \param port The port number.
          * \param callback A callback handler.
          */
-        void async_resolve(const std::string &host, std::uint16_t port, resolve_callback handler) {
-          if (cache_resolved_) {
-            auto it = endpoint_cache_.find(host);
-            if (it != endpoint_cache_.end()) {
-              boost::system::error_code ec;
-              handler(ec, it->second);
-              return;
-            }
-          }
-
-          resolver::query query(host, std::to_string(port));
-          resolver_.async_resolve(query,
-              resolver_strand_->wrap(
-                  [&host, &handler, this](const boost::system::error_code &ec,
-                                           resolver_iterator endpoint_iterator) {
-                    if (ec) {
-                      handler(ec, resolver_iterator());
-                    }
-                    else {
-                      if (cache_resolved_) {
-                        endpoint_cache_.insert(host, endpoint_iterator);
-                      }
-                      handler(ec, endpoint_iterator);
-                    }
-                  }));
-        }
+        virtual void async_resolve(const std::string &host, std::uint16_t port,
+                                   resolve_callback handler) = 0;
 
         /**
          * \brief Clears the cache of already resolved endpoints.
          */
-        void clear_resolved_cache() {
-          endpoint_cache_.clear();
-        }
-
-      private:
-
-        typedef boost::asio::io_service::strand strand;
-
-        resolver resolver_;
-        std::unique_ptr<strand> resolver_strand_;
-        bool cache_resolved_;
-        endpoint_cache endpoint_cache_;
+        virtual void clear_resolved_cache() = 0;
 
       };
     } // namespace v2

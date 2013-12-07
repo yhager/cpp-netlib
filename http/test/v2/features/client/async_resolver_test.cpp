@@ -6,7 +6,7 @@
 #include <iostream>
 #include <igloo/igloo_alt.h>
 #include <boost/asio.hpp>
-#include "network/http/v2/client/connection/async_resolver.hpp"
+#include "network/http/v2/client/connection/tcp_resolver.hpp"
 
 using namespace igloo;
 using boost::asio::ip::tcp;
@@ -19,7 +19,7 @@ Describe(async_resolver) {
     // maybe execute a script
 
     io_service_.reset(new boost::asio::io_service);
-    resolver_.reset(new http::async_resolver(*io_service_));
+    resolver_.reset(new http::tcp_resolver(*io_service_));
   }
 
   It(resolves_localhost) {
