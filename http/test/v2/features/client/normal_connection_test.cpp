@@ -111,7 +111,7 @@ Describe(normal_http_connection) {
 
   std::unique_ptr<boost::asio::io_service> io_service_;
   std::unique_ptr<tcp::resolver> resolver_;
-  std::unique_ptr<http::connection> connection_;
+  std::unique_ptr<http::async_connection> connection_;
 
   boost::asio::streambuf request_;
   boost::asio::streambuf response_;

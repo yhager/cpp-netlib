@@ -11,12 +11,12 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
 #include <network/config.hpp>
-#include <network/http/v2/client/connection/connection.hpp>
+#include <network/http/v2/client/connection/async_connection.hpp>
 
 namespace network {
   namespace http {
     namespace v2 {
-      class normal_connection : public connection {
+      class normal_connection : public async_connection {
 
         normal_connection(const normal_connection &) = delete;
         normal_connection &operator = (const normal_connection &) = delete;
@@ -35,11 +35,8 @@ namespace network {
         virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
                                    connect_callback callback) {
           using boost::asio::ip::tcp;
-          std::cout << "Oh 1." << std::endl;
           socket_.reset(new tcp::socket{io_service_});
-          std::cout << "Oh 2." << std::endl;
           socket_->async_connect(endpoint, callback);
-          std::cout << "Oh 3." << std::endl;
         }
 
         virtual void async_write(boost::asio::streambuf &command_streambuf,

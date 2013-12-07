@@ -3,8 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC
-#define NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC
+#ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_CONNECTION_INC
+#define NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_CONNECTION_INC
 
 #include <functional>
 #include <string>
@@ -17,13 +17,13 @@ namespace network {
   namespace http {
     namespace v2 {
       /**
-       * \class connection network/http/v2/client/connection/connection.hpp
+       * \class async_connection network/http/v2/client/connection/async_connection.hpp
        * \brief Manages a connection through a socket.
        */
-      class connection {
+      class async_connection {
 
-        connection(const connection &) = delete;
-        connection &operator = (const connection &) = delete;
+        async_connection(const async_connection &) = delete;
+        async_connection &operator = (const async_connection &) = delete;
 
       public:
 
@@ -45,12 +45,12 @@ namespace network {
         /**
          * \brief Constructor.
          */
-        connection() = default;
+        async_connection() = default;
 
         /**
          * \brief Destructor.
          */
-        virtual ~connection() noexcept { }
+        virtual ~async_connection() noexcept { }
 
         /**
          * \brief Asynchronously creates a connection to an endpoint.
@@ -88,4 +88,4 @@ namespace network {
   } // namespace http
 } // namespace network
 
-#endif // NETWORK_HTTP_V2_CLIENT_CONNECTION_CONNECTION_INC
+#endif // NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_CONNECTION_INC
