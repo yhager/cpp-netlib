@@ -11,13 +11,12 @@
 #include <stdexcept>
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/exception/all.hpp>
 #include <network/config.hpp>
+#include <network/http/v2/client/connection/endpoint_cache.hpp>
 
 namespace network {
   namespace http {
@@ -74,14 +73,13 @@ namespace network {
          */
         void async_resolve(const std::string &host, std::uint16_t port, resolve_callback handler) {
           if (cache_resolved_) {
-            endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
+            auto it = endpoint_cache_.find(host);
             if (it != endpoint_cache_.end()) {
               boost::system::error_code ec;
               handler(ec, it->second);
               return;
             }
           }
-
 
           resolver::query query(host, std::to_string(port));
           resolver_.async_resolve(query,
@@ -93,7 +91,7 @@ namespace network {
                     }
                     else {
                       if (cache_resolved_) {
-                        endpoint_cache_.insert(std::make_pair(host, endpoint_iterator));
+                        endpoint_cache_.insert(host, endpoint_iterator);
                       }
                       handler(ec, endpoint_iterator);
                     }
@@ -104,13 +102,12 @@ namespace network {
          * \brief Clears the cache of already resolved endpoints.
          */
         void clear_resolved_cache() {
-          endpoint_cache().swap(endpoint_cache_);
+          endpoint_cache_.clear();
         }
 
       private:
 
         typedef boost::asio::io_service::strand strand;
-        typedef std::unordered_map<std::string, resolver_iterator> endpoint_cache;
 
         resolver resolver_;
         std::unique_ptr<strand> resolver_strand_;
