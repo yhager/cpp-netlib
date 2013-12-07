@@ -44,6 +44,12 @@ namespace network {
         typedef resolver::iterator resolver_iterator;
 
         /**
+         * \typedef resolve_callback
+         */
+        typedef std::function<void (const boost::system::error_code &,
+                                    resolver_iterator)> resolve_callback;
+
+        /**
          * \brief Constructor.
          */
         async_resolver(boost::asio::io_service &service, bool cache_resolved = false)
@@ -66,8 +72,7 @@ namespace network {
          * \param port The port number.
          * \param callback A callback handler.
          */
-        template <class Handler>
-        void async_resolve(const std::string &host, std::uint16_t port, Handler &&handler) {
+        void async_resolve(const std::string &host, std::uint16_t port, resolve_callback handler) {
           if (cache_resolved_) {
             endpoint_cache::iterator it = endpoint_cache_.find(boost::to_lower_copy(host));
             if (it != endpoint_cache_.end()) {
