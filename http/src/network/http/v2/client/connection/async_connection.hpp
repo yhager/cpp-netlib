@@ -77,6 +77,8 @@ namespace network {
                                       const std::string &delim,
                                       read_callback callback) = 0;
 
+        virtual void async_read(boost::asio::streambuf &command_streambuf,
+                                read_callback callback) = 0;
 
         /**
          * \brief Cancels an operation on a connection.

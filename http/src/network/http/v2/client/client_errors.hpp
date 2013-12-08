@@ -20,15 +20,15 @@ namespace network {
     namespace v2 {
       /**
        * \ingroup http_client
-       * \enum client_error network/http/v2/client/client_errors.hpp
+       * \enum client_error network/http/v2/client/client_errors.hpp network/http/v2/client.hpp
        * \brief An enumeration of all types of client error.
        */
       enum class client_error {
         // url
         invalid_url,
 
-        // resolution
-        resolver_error,
+        // request
+        invalid_request,
 
         // connection
         host_not_found,
@@ -49,7 +49,7 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class invalid_url network/http/v2/client/client_errors.hpp
+       * \class invalid_url network/http/v2/client/client_errors.hpp network/http/v2/client.hpp
        * \brief An exception thrown if the URL provides is invalid.
        */
       class invalid_url : public std::system_error {
@@ -70,67 +70,25 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class resolver_error network/http/v2/client/client_errors.hpp
-       * \brief An exception thrown when there is a resolver error.
+       * \class client_exception network/http/v2/client/client_errors.hpp network/http/v2/client.hpp
+       * \brief An exception thrown when there is a client error.
        */
-      class resolver_error : std::system_error {
+      class client_exception : public std::system_error {
 
       public:
 
         /**
          * \brief Constructor.
          */
-        explicit resolver_error();
+        explicit client_exception(client_error error);
 
         /**
          * \brief Destructor.
          */
-        virtual ~resolver_error() noexcept;
+        virtual ~client_exception() noexcept;
 
       };
 
-      /**
-       * \ingroup http_client
-       * \class connection_error network/http/v2/client/client_errors.hpp
-       * \brief An exception thrown when there is a connection error.
-       */
-      class connection_error : public std::system_error {
-
-      public:
-
-        /**
-         * \brief Constructor.
-         * \param The client_error code.
-         */
-        explicit connection_error(client_error error);
-
-        /**
-         * \brief Destructor.
-         */
-        virtual ~connection_error() noexcept;
-
-      };
-
-      /**
-       * \ingroup http_client
-       * \class response_error network/http/v2/client/client_errors.hpp
-       */
-      class response_error : public std::system_error {
-
-      public:
-
-        /**
-         * \brief Constructor.
-         * \param The client_error code.
-         */
-        explicit response_error(client_error error);
-
-        /**
-         * \brief Destructor.
-         */
-        virtual ~response_error() noexcept;
-
-      };
     } // namespace v2
   } // namespace http
 } // namespace network

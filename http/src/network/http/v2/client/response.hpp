@@ -67,7 +67,8 @@ namespace network {
 	  : version_(other.version_)
 	  , status_(other.status_)
 	  , status_message_(other.status_message_)
-	  , headers_(other.headers_) {
+	  , headers_(other.headers_)
+          , body_(other.body_) {
 
 	}
 
@@ -79,7 +80,8 @@ namespace network {
           : version_(std::move(other.version_))
           , status_(std::move(other.status_))
           , status_message_(std::move(other.status_message_))
-	  , headers_(std::move(other.headers_)) {
+          , headers_(std::move(other.headers_))
+          , body_(std::move(other.body_)) {
 
 	}
 
@@ -102,13 +104,14 @@ namespace network {
 	  swap(status_, other.status_);
 	  swap(status_message_, other.status_message_);
 	  swap(headers_, other.headers_);
+          swap(body_, other.body_);
 	}
 
         /**
          * \brief Sets the HTTP version.
          * \param version The HTTP version (1.0 or 1.1).
          */
-        void set_version(const string_type &version) {
+        void set_version(string_type version) {
           version_ = version;
         }
 
@@ -140,7 +143,7 @@ namespace network {
          * \brief Sets the HTTP response status message.
          * \param status The HTTP response status message.
          */
-        void set_status_message(const string_type &status_message) {
+        void set_status_message(string_type status_message) {
           status_message_ = status_message;
         }
 
@@ -163,12 +166,18 @@ namespace network {
 	  return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
 	}
 
-	std::future<string_type> read_body(std::size_t length) const;
+        void append_body(const char *body, std::size_t length) {
+          body_.reserve(body_.size() + length);
+          body_.append(body);
+        }
 
-	// add_header
-	// set_body
-	// append_body
-	// get_body
+        void append_body(string_type body) {
+          body_.append(body);
+        }
+
+        string_type body() const {
+          return body_;
+        }
 
       private:
 
@@ -176,6 +185,7 @@ namespace network {
         network::http::v2::status::code status_;
 	string_type status_message_;
 	headers_type headers_;
+        string_type body_;
 
       };
 

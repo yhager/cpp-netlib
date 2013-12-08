@@ -7,6 +7,7 @@
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC
 
 #include <boost/asio/write.hpp>
+#include <boost/asio/read.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/io_service.hpp>
@@ -48,6 +49,12 @@ namespace network {
                                       const std::string &delim,
                                       read_callback callback) {
           boost::asio::async_read_until(*socket_, command_streambuf, delim, callback);
+        }
+
+        virtual void async_read(boost::asio::streambuf &command_streambuf,
+                                read_callback callback) {
+          boost::asio::async_read(*socket_, command_streambuf,
+                                  boost::asio::transfer_at_least(1), callback);
         }
 
         virtual void cancel() {

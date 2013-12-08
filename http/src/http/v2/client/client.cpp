@@ -44,6 +44,10 @@ namespace network {
                                    std::size_t bytes_read,
                                    std::shared_ptr<response> res);
 
+        void read_response_body(const boost::system::error_code &ec,
+                                std::size_t bytes_read,
+                                std::shared_ptr<response> res);
+
 	std::future<response> do_request(method method_, request request_, request_options options);
 
 	client_options options_;
@@ -83,7 +87,7 @@ namespace network {
         if (ec) {
           if (endpoint_iterator == tcp::resolver::iterator()) {
             response_promise_.set_exception(std::make_exception_ptr(
-                                              connection_error(client_error::host_not_found)));
+                                              client_exception(client_error::host_not_found)));
             return;
           }
 
@@ -142,11 +146,11 @@ namespace network {
         }
 
         std::istream is(&response_);
-        std::string version;
+        string_type version;
         is >> version;
         unsigned int status;
         is >> status;
-        std::string message;
+        string_type message;
         std::getline(is, message);
 
         res->set_version(version);
@@ -154,7 +158,7 @@ namespace network {
         res->set_status_message(boost::trim_copy(message));
 
         connection_->async_read_until(response_,
-                                      "\r\n",
+                                      "\r\n\r\n",
                                       strand_.wrap(
                                         [=] (const boost::system::error_code &ec,
                                              std::size_t bytes_read) {
@@ -173,22 +177,64 @@ namespace network {
 
         // fill headers
         std::istream is(&response_);
-        std::string header;
-        while ((header != "\r") && std::getline(is, header)) {
+        string_type header;
+        while (std::getline(is, header) && (header != "\r")) {
           std::vector<string_type> kvp;
           boost::split(kvp, header, boost::is_any_of(":"));
           res->add_header(kvp[0], boost::trim_copy(kvp[1]));
         }
 
-        connection_->async_read_until(response_,
-                                      "\r\n\r\n",
-                                      strand_.wrap(
-                                        [=] (const boost::system::error_code &ec,
-                                             std::size_t bytes_read) {
-                                          // um...
-                                          response_promise_.set_value(*res);
-                                        }));
+        connection_->async_read(response_,
+                                strand_.wrap(
+                                  [=] (const boost::system::error_code &ec,
+                                       std::size_t bytes_read) {
+                                    read_response_body(ec, bytes_read, res);
+                                  }));
+      }
+
+      namespace {
+        std::istream &getline_with_newline(std::istream &is, std::string &line) {
+          line.clear();
+
+          std::istream::sentry se(is, true);
+          std::streambuf *sb = is.rdbuf();
+
+          while (true) {
+            int c = sb->sbumpc();
+            switch (c) {
+            case EOF:
+              if (line.empty()) {
+                is.setstate(std::ios::eofbit);
+              }
+              return is;
+            default:
+              line += static_cast<char>(c);
+            }
+          }
         }
+      } // namespace
+
+      void client::impl::read_response_body(const boost::system::error_code &ec,
+                                            std::size_t bytes_read,
+                                            std::shared_ptr<response> res) {
+        if (bytes_read == 0) {
+          response_promise_.set_value(*res);
+          return;
+        }
+
+        std::istream is(&response_);
+        string_type line;
+        while (!getline_with_newline(is, line).eof()) {
+          res->append_body(line);
+        }
+
+        connection_->async_read(response_,
+                                strand_.wrap(
+                                  [=] (const boost::system::error_code &ec,
+                                       std::size_t bytes_read) {
+                                    read_response_body(ec, bytes_read, res);
+                                  }));
+      }
 
       std::future<response> client::impl::do_request(method met,
 						     request req,
@@ -199,7 +245,8 @@ namespace network {
         std::ostream request_stream(&request_);
         request_stream << req;
         if (!request_stream) {
-          // set error
+          response_promise_.set_exception(std::make_exception_ptr(
+                                            client_exception(client_error::invalid_request)));
         }
 
         // HTTP 1.1

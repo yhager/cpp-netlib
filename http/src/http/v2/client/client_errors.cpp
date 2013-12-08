@@ -37,8 +37,12 @@ namespace network {
 	switch (client_error(ev)) {
 	case client_error::invalid_url:
 	  return "Requires HTTP or HTTPS URL.";
-	case client_error::resolver_error:
-	  return "Unable to resolve host";
+	case client_error::invalid_request:
+	  return "Invalid HTTP request.";
+        case client_error::host_not_found:
+	  return "Unable to resolve host.";
+        case client_error::invalid_response:
+	  return "Invalid HTTP response.";
 	default:
 	  break;
 	}
@@ -63,21 +67,12 @@ namespace network {
 
       }
 
-      resolver_error::resolver_error()
-	: std::system_error(make_error_code(client_error::resolver_error)) {
-
-      }
-
-      resolver_error::~resolver_error() {
-
-      }
-
-      connection_error::connection_error(client_error error)
+      client_exception::client_exception(client_error error)
 	: std::system_error(make_error_code(error)) {
 
       }
 
-      connection_error::~connection_error() {
+      client_exception::~client_exception() {
 
       }
 
