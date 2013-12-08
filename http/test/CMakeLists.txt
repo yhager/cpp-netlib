@@ -1,5 +1,6 @@
 # Copyright 2013 Google, Inc.
 # Copyright 2010, 2013 Dean Michael Berris <dberris@google.com>
+# Copyright (c) Glyn Matthews 2013.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +8,6 @@
 include_directories(
   ${CPP-NETLIB_SOURCE_DIR}/config/src
   ${CPP-NETLIB_SOURCE_DIR}/uri/src
-  ${CPP-NETLIB_SOURCE_DIR}/message/src
   ${CPP-NETLIB_SOURCE_DIR}/logging/src
   ${CPP-NETLIB_SOURCE_DIR}/http/src
   ${GTEST_INCLUDE_DIRS}

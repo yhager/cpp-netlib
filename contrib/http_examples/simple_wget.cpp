@@ -1,8 +1,8 @@
-//            Copyright (c) Glyn Matthews 2009-2012.
+// Copyright (c) Glyn Matthews 2009-2013.
 // Copyright 2012 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 //[ simple_wget_main
 /*`
@@ -13,25 +13,19 @@
   It demonstrates the use the `uri` and the `http::client`.
 */
 
-#include <network/http/client.hpp>
-#include <network/uri.hpp>
+#include <network/http/v2/client.hpp>
 #include <string>
 #include <fstream>
 #include <iostream>
 
-namespace http = network::http;
+namespace http = network::http::v2;
 
 namespace {
-std::string get_filename(const network::uri& url) {
-  auto path = url.path();
-  if (path) {
-    auto path_str = std::string(*path);
-    auto index = path_str.find_last_of('/');
-    auto filename = path_str.substr(index + 1);
+  std::string get_filename(const std::string& path) {
+    auto index = path.find_last_of('/');
+    auto filename = path.substr(index + 1);
     return filename.empty() ? "index.html" : filename;
   }
-  return "index.html";
-}
 }  // namespace
 
 int main(int argc, char* argv[]) {
@@ -43,15 +37,15 @@ int main(int argc, char* argv[]) {
 
   try {
     http::client client;
-    http::client::request request(argv[1]);
-    http::client::response response = client.get(request);
+    http::request request{network::uri{std::string{argv[1]}}};
+    request.append_header("Connection", "close");
+    auto future_response = client.get(request);
+    auto response = future_response.get();
 
-    network::uri uri;
-    request.get_uri(uri);
-    std::string filename = get_filename(uri);
+    auto filename = get_filename(request.path());
     std::cout << "Saving to: " << filename << std::endl;
     std::ofstream ofs(filename.c_str());
-    ofs << static_cast<std::string>(body(response)) << std::endl;
+    ofs << response.body() << std::endl;
   }
   catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
