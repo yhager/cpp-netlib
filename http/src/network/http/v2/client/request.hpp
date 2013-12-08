@@ -35,7 +35,7 @@ namespace network {
     namespace v2 {
       /**
        * \ingroup http_client
-       * \class request_options network/http/v2/client/request.hpp
+       * \class request_options network/http/v2/client/request.hpp network/http/v2/client.hpp
        * \brief A class used to configure an HTTP request.
        */
       class request_options {
@@ -135,7 +135,7 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class byte_source network/http/v2/client/request.hpp
+       * \class byte_source network/http/v2/client/request.hpp network/http/v2/client.hpp
        * \brief An abstract class that allows a request object to read
        *        data from any source.
        */
@@ -170,7 +170,7 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class string_byte_source network/http/v2/client/request.hpp
+       * \class string_byte_source network/http/v2/client/request.hpp network/http/v2/client.hpp
        * \brief A class that wraps a string as a byte source.
        */
       class string_byte_source : public byte_source {
@@ -197,7 +197,7 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class request network/http/v2/client/request.hpp
+       * \class request network/http/v2/client/request.hpp network/http/v2/client.hpp
        * \brief A class that models an HTTP request.
        */
       class request {
@@ -209,16 +209,19 @@ namespace network {
          * \brief The request string type.
          */
         typedef byte_source::string_type string_type;
+
         /**
          * \typedef headers_type
          * \brief The request headers type.
          */
         typedef std::vector<std::pair<string_type, string_type>> headers_type;
+
         /**
          * \typedef headers_iterator
          * \brief The request headers iterator.
          */
         typedef headers_type::iterator headers_iterator;
+
         /**
          * \typedef const_headers_iterator
          * \brief The request headers const_iterator.
@@ -307,7 +310,8 @@ namespace network {
 
         /**
          * \brief Sets the HTTP request method.
-         * \param method THe HTTP request method.
+         * \param method The HTTP request method.
+         * \returns *this
          */
         request &method(network::http::v2::method method) {
           method_ = method;
@@ -322,11 +326,20 @@ namespace network {
           return method_;
         }
 
-        request &path(std::string path) {
+        /**
+         * \brief Sets the HTTP path.
+         * \param path The HTTP path.
+         * \returns *this
+         */
+        request &path(string_type path) {
           path_ = path;
           return *this;
         }
 
+        /**
+         * \brief Gets the HTTP path.
+         * \returns The HTTP path.
+         */
         string_type path() const {
           return path_;
         }

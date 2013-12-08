@@ -4,6 +4,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <future>
+#include <boost/asio/strand.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <network/uri.hpp>
 #include <network/config.hpp>
@@ -34,22 +36,25 @@ namespace network {
                            std::size_t bytes_written);
 
         void read_response_status(const boost::system::error_code &ec,
-                                  std::size_t bytes_written);
+                                  std::size_t bytes_written,
+                                  std::shared_ptr<response> res);
 
         void read_response_headers(const boost::system::error_code &ec,
-                                   std::size_t bytes_read);
+                                   std::size_t bytes_read,
+                                   std::shared_ptr<response> res);
 
 	std::future<response> do_request(method method_, request request_, request_options options);
 
 	client_options options_;
 	boost::asio::io_service io_service_;
+        boost::asio::io_service::strand strand_;
         std::unique_ptr<async_resolver> resolver_;
         std::unique_ptr<async_connection> connection_;
 	std::unique_ptr<boost::asio::io_service::work> sentinel_;
 	std::thread lifetime_thread_;
 
-        boost::asio::streambuf request_;
         std::promise<response> response_promise_;
+        boost::asio::streambuf request_;
         boost::asio::streambuf response_;
 
         // promise
@@ -59,6 +64,7 @@ namespace network {
 
       client::impl::impl(client_options options)
 	: options_(options)
+        , strand_(io_service_)
 	, resolver_(new tcp_resolver(io_service_, options.cache_resolved()))
         , connection_(new normal_connection(io_service_))
 	, sentinel_(new boost::asio::io_service::work(io_service_))
@@ -87,9 +93,10 @@ namespace network {
 
         tcp::endpoint endpoint(*endpoint_iterator);
         connection_->async_connect(endpoint,
-                                   [=] (const boost::system::error_code &ec) {
-                                     write_request(ec);
-                                   });
+                                     strand_.wrap(
+                                     [=] (const boost::system::error_code &ec) {
+                                       write_request(ec);
+                                     }));
       }
 
       void client::impl::write_request(const boost::system::error_code &ec) {
@@ -100,10 +107,11 @@ namespace network {
         }
 
         connection_->async_write(request_,
-                                 [=] (const boost::system::error_code &ec,
-                                      std::size_t bytes_written) {
-                                   read_response(ec, bytes_written);
-                                 });
+                                 strand_.wrap(
+                                   [=] (const boost::system::error_code &ec,
+                                        std::size_t bytes_written) {
+                                     read_response(ec, bytes_written);
+                                   }));
       }
 
       void client::impl::read_response(const boost::system::error_code &ec, std::size_t) {
@@ -113,16 +121,19 @@ namespace network {
           return;
         }
 
+        std::shared_ptr<response> res(new response{});
         connection_->async_read_until(response_,
                                       "\r\n",
-                                      [=] (const boost::system::error_code &ec,
-                                           std::size_t bytes_read) {
-                                        read_response_status(ec, bytes_read);
-                                      });
+                                      strand_.wrap(
+                                        [=] (const boost::system::error_code &ec,
+                                             std::size_t bytes_read) {
+                                          read_response_status(ec, bytes_read, res);
+                                        }));
       }
 
       void client::impl::read_response_status(const boost::system::error_code &ec,
-                                              std::size_t) {
+                                              std::size_t,
+                                              std::shared_ptr<response> res) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
                                             std::system_error(ec.value(), std::system_category())));
@@ -130,19 +141,29 @@ namespace network {
         }
 
         std::istream is(&response_);
-        std::string status;
-        std::getline(is, status);
+        std::string version;
+        is >> version;
+        unsigned int status;
+        is >> status;
+        std::string message;
+        std::getline(is, message);
+
+        res->set_version(version);
+        res->set_status(network::http::v2::status::code(status));
+        res->set_status_message(boost::trim_copy(message));
 
         connection_->async_read_until(response_,
                                       "\r\n",
-                                      [=] (const boost::system::error_code &ec,
-                                           std::size_t bytes_read) {
-                                        read_response_headers(ec, bytes_read);
-                                      });
+                                      strand_.wrap(
+                                        [=] (const boost::system::error_code &ec,
+                                             std::size_t bytes_read) {
+                                          read_response_headers(ec, bytes_read, res);
+                                        }));
       }
 
       void client::impl::read_response_headers(const boost::system::error_code &ec,
-                                               std::size_t) {
+                                               std::size_t,
+                                               std::shared_ptr<response> res) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
                                             std::system_error(ec.value(), std::system_category())));
@@ -152,11 +173,12 @@ namespace network {
         // fill headers
         connection_->async_read_until(response_,
                                       "\r\n\r\n",
-                                      [=] (const boost::system::error_code &ec,
-                                           std::size_t bytes_read) {
-                                        // um...
-                                        response_promise_.set_value(response());
-                                      });
+                                      strand_.wrap(
+                                        [=] (const boost::system::error_code &ec,
+                                             std::size_t bytes_read) {
+                                          // um...
+                                          response_promise_.set_value(*res);
+                                        }));
         }
 
       std::future<response> client::impl::do_request(method met,
@@ -193,10 +215,11 @@ namespace network {
         auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
 
 	resolver_->async_resolve(host, port,
-                                 [=](const boost::system::error_code &ec,
-                                     tcp::resolver::iterator endpoint_iterator) {
-                                   connect(ec, endpoint_iterator);
-                                 });
+                                 strand_.wrap(
+                                   [=](const boost::system::error_code &ec,
+                                       tcp::resolver::iterator endpoint_iterator) {
+                                     connect(ec, endpoint_iterator);
+                                   }));
 
 	return res;
       }

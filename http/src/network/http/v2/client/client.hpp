@@ -31,7 +31,7 @@ namespace network {
     namespace v2 {
       /**
        * \ingroup http_client
-       * \class client_options network/http/v2/client/client.hpp
+       * \class client_options network/http/v2/client/client.hpp network/http/v2/client.hpp
        * \brief A set of options to configure an HTTP client.
        */
       class client_options {
@@ -234,7 +234,7 @@ namespace network {
 
       /**
        * \ingroup http_client
-       * \class client network/http/v2/client/client.hpp
+       * \class client network/http/v2/client/client.hpp network/http/v2/client.hpp
        * \brief A class that encapsulates the operations and methods
        *        for communicating with an HTTP server.
        */
@@ -246,18 +246,19 @@ namespace network {
       public:
 
         /**
-         * \typedef The client's string_type.
+         * \typedef string_type
+         * \brief The client string_type.
          */
         typedef request::string_type string_type;
 
         /**
-         * Constructor.
-         * \params options Client options.
+         * \brief Constructor.
+         * \param options Client options.
          */
         explicit client(client_options options = client_options());
 
         /**
-         * Destructor.
+         * \brief Destructor.
          */
         ~client() noexcept;
 

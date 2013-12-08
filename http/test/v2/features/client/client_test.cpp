@@ -19,7 +19,7 @@ Describe(http_client) {
 
   }
 
-  It(gets_a_response) {
+  It(gets_a_header_response) {
     http::request request;
     request
       .method(http::method::GET)
@@ -28,10 +28,10 @@ Describe(http_client) {
       .append_header("Host", "www.boost.org")
       .append_header("User-Agent", "cpp-netlib client_test")
       .append_header("Connection", "close");
-    auto future_response = client_->get(request);
+    auto future_response = client_->head(request);
     auto response = future_response.get();
 
-    Assert::That(response.version(), Equals("1.1"));
+    Assert::That(response.version(), Equals("HTTP/1.1"));
     Assert::That(response.status(), Equals(http::status::code::OK));
     Assert::That(response.status_message(), Equals("OK"));
   }

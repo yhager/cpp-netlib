@@ -32,23 +32,25 @@ namespace network {
 
         /**
          * \typedef string_type
-         * \brief The responses string_type.
+         * \brief The response string_type.
          */
 	typedef std::string string_type;
 
         /**
          * \typedef headers_type
-         * \brief
+         * \brief The response headers type.
          */
 	typedef std::vector<std::pair<string_type, string_type>> headers_type;
 
         /**
          * \typedef headers_iterator
+         * \brief The response headers iterator.
          */
 	typedef headers_type::iterator headers_iterator;
 
         /**
          * \typedef const_headers_iterator
+         * \brief The response headers const_iterator.
          */
 	typedef headers_type::const_iterator const_headers_iterator;
 
@@ -103,6 +105,14 @@ namespace network {
 	}
 
         /**
+         * \brief Sets the HTTP version.
+         * \param version The HTTP version (1.0 or 1.1).
+         */
+        void set_version(const string_type &version) {
+          version_ = version;
+        }
+
+        /**
          * \brief Returns the HTTP version.
          * \returns The HTTP version.
          */
@@ -111,12 +121,28 @@ namespace network {
 	}
 
         /**
+         * \brief Sets the HTTP response status code.
+         * \param status The HTTP response status code.
+         */
+        void set_status(network::http::v2::status::code status) {
+          status_ = status;
+        }
+
+        /**
          * \brief Returns the HTTP response status.
          * \returns The status code.
          */
         network::http::v2::status::code status() const {
 	  return status_;
 	}
+
+        /**
+         * \brief Sets the HTTP response status message.
+         * \param status The HTTP response status message.
+         */
+        void set_status_message(const string_type &status_message) {
+          status_message_ = status_message;
+        }
 
         /**
          * \brief Returns the HTTP response status message.
@@ -135,9 +161,6 @@ namespace network {
 
 	std::future<string_type> read_body(std::size_t length) const;
 
-        // set_version
-        // set_status
-        // set_status_message
 	// add_header
 	// set_body
 	// append_body

@@ -9,5 +9,5 @@
 namespace http = network::http::v2;
 
 TEST(response_test, constructor) {
-  http::response response;
+  ASSERT_NO_THROW(http::response());
 }
