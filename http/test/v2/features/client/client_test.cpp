@@ -32,7 +32,7 @@ Describe(http_client) {
     auto response = future_response.get();
 
     Assert::That(response.version(), Equals("HTTP/1.1"));
-    Assert::That(response.status(), Equals(http::status::code::OK));
+    Assert::That(response.status(), Equals(http::status::code::ok));
     Assert::That(response.status_message(), Equals("OK"));
 
     auto headers = response.headers();
