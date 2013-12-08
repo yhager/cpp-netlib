@@ -6,6 +6,7 @@
 #include <future>
 #include <boost/asio/strand.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <network/uri.hpp>
 #include <network/config.hpp>
@@ -171,6 +172,14 @@ namespace network {
         }
 
         // fill headers
+        std::istream is(&response_);
+        std::string header;
+        while ((header != "\r") && std::getline(is, header)) {
+          std::vector<string_type> kvp;
+          boost::split(kvp, header, boost::is_any_of(":"));
+          res->add_header(kvp[0], boost::trim_copy(kvp[1]));
+        }
+
         connection_->async_read_until(response_,
                                       "\r\n\r\n",
                                       strand_.wrap(

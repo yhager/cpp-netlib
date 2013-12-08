@@ -152,6 +152,10 @@ namespace network {
 	  return status_message_;
 	}
 
+        void add_header(const string_type &name, const string_type &value) {
+          headers_.push_back(std::make_pair(name, value));
+        }
+
         /**
          * \brief
          */

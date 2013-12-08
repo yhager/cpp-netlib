@@ -34,6 +34,9 @@ Describe(http_client) {
     Assert::That(response.version(), Equals("HTTP/1.1"));
     Assert::That(response.status(), Equals(http::status::code::OK));
     Assert::That(response.status_message(), Equals("OK"));
+
+    auto headers = response.headers();
+    Assert::That(std::begin(headers)->first, Equals("Date"));
   }
 
   std::unique_ptr<http::client> client_;
