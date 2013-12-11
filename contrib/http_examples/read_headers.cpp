@@ -24,6 +24,10 @@ main(int argc, char *argv[]) {
     auto future_response = client.head(request);
     auto response = future_response.get();
 
+    std::cout << "HTTP version: " << response.version() << std::endl;
+    std::cout << "HTTP status: " << static_cast<int>(response.status()) << std::endl;
+    std::cout << "HTTP status message: " << response.status_message() << std::endl;
+    std::cout << std::endl;
     for (auto header : response.headers()) {
       std::cout << header.first << ": " << header.second << std::endl;
     }
