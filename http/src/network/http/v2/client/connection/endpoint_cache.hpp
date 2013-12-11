@@ -14,51 +14,52 @@
 namespace network {
   namespace http {
     namespace v2 {
+      namespace client_connection {
 
-      class endpoint_cache {
+        class endpoint_cache {
 
-        typedef boost::asio::ip::tcp::resolver resolver;
+          typedef boost::asio::ip::tcp::resolver resolver;
 
-        typedef resolver::iterator resolver_iterator;
+          typedef resolver::iterator resolver_iterator;
 
-        typedef std::unordered_map<std::string,
-                                   resolver_iterator> cache_type;
+          typedef std::unordered_map<std::string,
+                                     resolver_iterator> cache_type;
 
-      public:
+        public:
 
-        typedef cache_type::iterator iterator;
+          typedef cache_type::iterator iterator;
 
-        cache_type::iterator begin() {
-          return endpoints_.begin();
-        }
+          cache_type::iterator begin() {
+            return endpoints_.begin();
+          }
 
-        cache_type::iterator end() {
-          return endpoints_.end();
-        }
+          cache_type::iterator end() {
+            return endpoints_.end();
+          }
 
-        void insert(const std::string &host,
-                    resolver_iterator endpoint_iterator) {
-          endpoints_.insert(std::make_pair(host, endpoint_iterator));
-        }
+          void insert(const std::string &host,
+                      resolver_iterator endpoint_iterator) {
+            endpoints_.insert(std::make_pair(host, endpoint_iterator));
+          }
 
-        iterator find(const std::string &host) {
-          return endpoints_.find(boost::to_lower_copy(host));
-        }
+          iterator find(const std::string &host) {
+            return endpoints_.find(boost::to_lower_copy(host));
+          }
 
-        void clear() {
-          endpoint_cache().swap(*this);
-        }
+          void clear() {
+            endpoint_cache().swap(*this);
+          }
 
-        void swap(endpoint_cache &other) noexcept {
-          endpoints_.swap(other.endpoints_);
-        }
+          void swap(endpoint_cache &other) noexcept {
+            endpoints_.swap(other.endpoints_);
+          }
 
-      private:
+        private:
 
-        cache_type endpoints_;
+          cache_type endpoints_;
 
-      };
-
+        };
+      } // namespace client_connection
     } // namespace v2
   } // namespace http
 } // namespace network

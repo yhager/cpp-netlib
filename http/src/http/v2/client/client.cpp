@@ -53,8 +53,8 @@ namespace network {
 	client_options options_;
 	boost::asio::io_service io_service_;
         boost::asio::io_service::strand strand_;
-        std::unique_ptr<async_resolver> resolver_;
-        std::unique_ptr<async_connection> connection_;
+        std::unique_ptr<client_connection::async_resolver> resolver_;
+        std::unique_ptr<client_connection::async_connection> connection_;
 	std::unique_ptr<boost::asio::io_service::work> sentinel_;
 	std::thread lifetime_thread_;
 
@@ -70,8 +70,8 @@ namespace network {
       client::impl::impl(client_options options)
 	: options_(options)
         , strand_(io_service_)
-	, resolver_(new tcp_resolver(io_service_, options.cache_resolved()))
-        , connection_(new normal_connection(io_service_))
+	, resolver_(new client_connection::tcp_resolver(io_service_, options.cache_resolved()))
+        , connection_(new client_connection::normal_connection(io_service_))
 	, sentinel_(new boost::asio::io_service::work(io_service_))
 	, lifetime_thread_([=] () { io_service_.run(); }) {
 

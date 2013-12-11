@@ -16,83 +16,85 @@
 namespace network {
   namespace http {
     namespace v2 {
-      /**
-       * \class async_connection network/http/v2/client/connection/async_connection.hpp
-       * \brief Manages a connection through a socket.
-       */
-      class async_connection {
-
-        async_connection(const async_connection &) = delete;
-        async_connection &operator = (const async_connection &) = delete;
-
-      public:
-
+      namespace client_connection {
         /**
-         * \typedef connect_callback
+         * \class async_connection network/http/v2/client/connection/async_connection.hpp
+         * \brief Manages a connection through a socket.
          */
-        typedef std::function<void (const boost::system::error_code &)> connect_callback;
+        class async_connection {
 
-        /**
-         * \typedef write_callback
-         */
-        typedef std::function<void (const boost::system::error_code &, std::size_t)> write_callback;
+          async_connection(const async_connection &) = delete;
+          async_connection &operator = (const async_connection &) = delete;
 
-        /**
-         * \typedef read_callback
-         */
-        typedef std::function<void (const boost::system::error_code &, std::size_t)> read_callback;
+        public:
 
-        /**
-         * \brief Constructor.
-         */
-        async_connection() = default;
+          /**
+           * \typedef connect_callback
+           */
+          typedef std::function<void (const boost::system::error_code &)> connect_callback;
 
-        /**
-         * \brief Destructor.
-         */
-        virtual ~async_connection() noexcept { }
+          /**
+           * \typedef write_callback
+           */
+          typedef std::function<void (const boost::system::error_code &, std::size_t)> write_callback;
 
-        /**
-         * \brief Asynchronously creates a connection to an endpoint.
-         * \param endpoint The endpoint to which to connect.
-         * \param callback A callback handler.
-         */
-        virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
-                                   connect_callback callback) = 0;
+          /**
+           * \typedef read_callback
+           */
+          typedef std::function<void (const boost::system::error_code &, std::size_t)> read_callback;
 
-        /**
-         * \brief Asynchronously writes data across the connection.
-         * \param command_streambuf
-         * \param callback A callback handler.
-         */
-        virtual void async_write(boost::asio::streambuf &command_streambuf,
-                                 write_callback callback) = 0;
+          /**
+           * \brief Constructor.
+           */
+          async_connection() = default;
 
-        /**
-         * \brief Asynchronously reads some data from the connection.
-         * \param command_streambuf
-         * \param delim A delimiter string which, if found, the socket
-         *        will stop reading.
-         * \param callback A callback handler.
-         */
-        virtual void async_read_until(boost::asio::streambuf &command_streambuf,
-                                      const std::string &delim,
-                                      read_callback callback) = 0;
+          /**
+           * \brief Destructor.
+           */
+          virtual ~async_connection() noexcept { }
 
-        /**
-         * \brief Asynchronously reads some data from the connection.
-         * \param command_streambuf
-         * \param callback A callback handler.
-         */
-        virtual void async_read(boost::asio::streambuf &command_streambuf,
-                                read_callback callback) = 0;
+          /**
+           * \brief Asynchronously creates a connection to an endpoint.
+           * \param endpoint The endpoint to which to connect.
+           * \param callback A callback handler.
+           */
+          virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
+                                     connect_callback callback) = 0;
 
-        /**
-         * \brief Cancels an operation on a connection.
-         */
-        virtual void cancel() = 0;
+          /**
+           * \brief Asynchronously writes data across the connection.
+           * \param command_streambuf
+           * \param callback A callback handler.
+           */
+          virtual void async_write(boost::asio::streambuf &command_streambuf,
+                                   write_callback callback) = 0;
 
-      };
+          /**
+           * \brief Asynchronously reads some data from the connection.
+           * \param command_streambuf
+           * \param delim A delimiter string which, if found, the socket
+           *        will stop reading.
+           * \param callback A callback handler.
+           */
+          virtual void async_read_until(boost::asio::streambuf &command_streambuf,
+                                        const std::string &delim,
+                                        read_callback callback) = 0;
+
+          /**
+           * \brief Asynchronously reads some data from the connection.
+           * \param command_streambuf
+           * \param callback A callback handler.
+           */
+          virtual void async_read(boost::asio::streambuf &command_streambuf,
+                                  read_callback callback) = 0;
+
+          /**
+           * \brief Cancels an operation on a connection.
+           */
+          virtual void cancel() = 0;
+
+        };
+      } // namespace client_connection
     } // namespace v2
   } // namespace http
 } // namespace network

@@ -20,7 +20,7 @@ Describe(normal_http_connection) {
   void SetUp() {
     io_service_.reset(new boost::asio::io_service{});
     resolver_.reset(new tcp::resolver(*io_service_));
-    connection_.reset(new http::normal_connection(*io_service_));
+    connection_.reset(new http::client_connection::normal_connection(*io_service_));
   }
 
   void TearDown() {
@@ -112,7 +112,7 @@ Describe(normal_http_connection) {
 
   std::unique_ptr<boost::asio::io_service> io_service_;
   std::unique_ptr<tcp::resolver> resolver_;
-  std::unique_ptr<http::async_connection> connection_;
+  std::unique_ptr<http::client_connection::async_connection> connection_;
 
   boost::asio::streambuf request_;
   boost::asio::streambuf response_;

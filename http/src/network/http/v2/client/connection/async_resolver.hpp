@@ -14,62 +14,64 @@
 namespace network {
   namespace http {
     namespace v2 {
-      /**
-       * \class async_resolver network/http/v2/client/connection/async_resolver.hpp
-       * \brief Resolves and maintains a cache of hosts.
-       */
-      class async_resolver {
-
-        async_resolver(const async_resolver &) = delete;
-        async_resolver &operator = (const async_resolver &) = delete;
-
-      public:
-
+      namespace client_connection {
         /**
-         * \brief resolver
+         * \class async_resolver network/http/v2/client/connection/async_resolver.hpp
+         * \brief Resolves and maintains a cache of hosts.
          */
-        typedef boost::asio::ip::tcp::resolver resolver;
+        class async_resolver {
 
-        /**
-         * \brief resolver_iterator
-         */
-        typedef resolver::iterator resolver_iterator;
+          async_resolver(const async_resolver &) = delete;
+          async_resolver &operator = (const async_resolver &) = delete;
 
-        /**
-         * \typedef resolve_callback
-         */
-        typedef std::function<void (const boost::system::error_code &,
-                                    resolver_iterator)> resolve_callback;
+        public:
 
-        /**
-         * \brief Constructor.
-         */
-        async_resolver() {
+          /**
+           * \brief resolver
+           */
+          typedef boost::asio::ip::tcp::resolver resolver;
 
-        }
+          /**
+           * \brief resolver_iterator
+           */
+          typedef resolver::iterator resolver_iterator;
 
-        /**
-         * \brief Destructor.
-         */
-        virtual ~async_resolver() noexcept {
+          /**
+           * \typedef resolve_callback
+           */
+          typedef std::function<void (const boost::system::error_code &,
+                                      resolver_iterator)> resolve_callback;
 
-        }
+          /**
+           * \brief Constructor.
+           */
+          async_resolver() {
 
-        /**
-         * \brief Resolves a host asynchronously.
-         * \param host The hostname to resolve.
-         * \param port The port number.
-         * \param callback A callback handler.
-         */
-        virtual void async_resolve(const std::string &host, std::uint16_t port,
-                                   resolve_callback handler) = 0;
+          }
 
-        /**
-         * \brief Clears the cache of already resolved endpoints.
-         */
-        virtual void clear_resolved_cache() = 0;
+          /**
+           * \brief Destructor.
+           */
+          virtual ~async_resolver() noexcept {
 
-      };
+          }
+
+          /**
+           * \brief Resolves a host asynchronously.
+           * \param host The hostname to resolve.
+           * \param port The port number.
+           * \param callback A callback handler.
+           */
+          virtual void async_resolve(const std::string &host, std::uint16_t port,
+                                     resolve_callback handler) = 0;
+
+          /**
+           * \brief Clears the cache of already resolved endpoints.
+           */
+          virtual void clear_resolved_cache() = 0;
+
+        };
+      } // namespace client_connection
     } // namespace v2
   } // namespace http
 } // namespace network
