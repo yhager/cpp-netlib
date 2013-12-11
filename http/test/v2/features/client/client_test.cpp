@@ -20,7 +20,7 @@ Describe(http_client) {
   }
 
   It(gets_a_header_response) {
-    http::request request;
+    http::client::request request;
     request
       .method(http::method::GET)
       .path("/LICENSE_1_0.txt")

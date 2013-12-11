@@ -13,6 +13,7 @@
 using namespace igloo;
 using boost::asio::ip::tcp;
 namespace http = network::http::v2;
+namespace http_cm = network::http::v2::client_message;
 
 Describe(normal_http_connection) {
 
@@ -43,7 +44,7 @@ Describe(normal_http_connection) {
   void WriteToBoost(boost::system::error_code &ec,
                     std::size_t &bytes_written) {
     // Create an HTTP request.
-    http::request request;
+    http_cm::request request;
     request
       .method(http::method::GET)
       .path("/LICENSE_1_0.txt")

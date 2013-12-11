@@ -13,12 +13,12 @@
   It demonstrates the use the `uri` and the `http::client`.
 */
 
-#include <network/http/v2/client.hpp>
+#include <network/http/client.hpp>
 #include <string>
 #include <fstream>
 #include <iostream>
 
-namespace http = network::http::v2;
+namespace http = network::http;
 
 namespace {
   std::string get_filename(const std::string& path) {
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
   try {
     http::client client;
-    http::request request{network::uri{std::string{argv[1]}}};
+    http::client::request request{network::uri{std::string{argv[1]}}};
     request.append_header("Connection", "close");
     auto future_response = client.get(request);
     auto response = future_response.get();

@@ -3,11 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <network/http/v2/client.hpp>
+#include <network/http/client.hpp>
 #include <iostream>
 
-namespace http = network::http::v2;
-
+namespace http = network::http;
 
 
 int
@@ -20,7 +19,7 @@ main(int argc, char *argv[]) {
 
   try {
     http::client client;
-    http::request request{network::uri{std::string{argv[1]}}};
+    http::client::request request{network::uri{std::string{argv[1]}}};
     request.append_header("Connection", "close");
     auto future_response = client.head(request);
     auto response = future_response.get();

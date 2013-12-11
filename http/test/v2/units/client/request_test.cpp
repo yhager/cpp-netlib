@@ -7,35 +7,36 @@
 #include "network/http/v2/client/request.hpp"
 
 namespace http = network::http::v2;
+namespace http_cm = network::http::v2::client_message;
 
 
 TEST(request_test, constructor_url) {
-  ASSERT_NO_THROW(http::request{network::uri{"http://www.example.com/"}});
+  ASSERT_NO_THROW(http_cm::request{network::uri{"http://www.example.com/"}});
 }
 
 TEST(request_test, constructor_https_url) {
-  ASSERT_NO_THROW(http::request{network::uri{"https://www.example.com/"}});
+  ASSERT_NO_THROW(http_cm::request{network::uri{"https://www.example.com/"}});
 }
 
 TEST(request_test, constructor_invalid_url) {
-  ASSERT_THROW(http::request{network::uri{"mailto:john.doe@example.com"}},
+  ASSERT_THROW(http_cm::request{network::uri{"mailto:john.doe@example.com"}},
 	       http::invalid_url);
 }
 
 TEST(request_test, constructor_empty_uri) {
-  ASSERT_THROW(http::request{network::uri{}},
+  ASSERT_THROW(http_cm::request{network::uri{}},
 	       http::invalid_url);
 }
 
 TEST(request_test, constructor_uri_no_scheme) {
   network::uri_builder builder;
   builder.host("www.example.com").path("/");
-  ASSERT_THROW(http::request{builder.uri()},
+  ASSERT_THROW(http_cm::request{builder.uri()},
 	       http::invalid_url);
 }
 
 TEST(request_test, stream) {
-  http::request instance{network::uri{"http://www.example.com/"}};
+  http_cm::request instance{network::uri{"http://www.example.com/"}};
   instance
     .method(http::method::GET)
     .version("1.1")
@@ -50,7 +51,7 @@ TEST(request_test, stream) {
 }
 
 TEST(request_test, stream_2) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
     .method(http::method::GET)
     .version("1.1")
@@ -65,12 +66,12 @@ TEST(request_test, stream_2) {
 }
 
 TEST(request_test, read_path) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   ASSERT_EQ("/path/to/resource/index.html", instance.path());
 }
 
 TEST(request_test, read_full_request) {
-  http::request instance;
+  http_cm::request instance;
   instance
     .method(http::method::GET)
     .path("/path/to/resource/index.html")
@@ -96,7 +97,7 @@ TEST(request_test, read_full_request) {
 }
 
 TEST(request_test, read_headers) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
     .method(http::method::GET)
     .version("1.1")
@@ -116,7 +117,7 @@ TEST(request_test, read_headers) {
 }
 
 TEST(request_test, clear_headers) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
     .method(http::method::GET)
     .version("1.1")
@@ -128,7 +129,7 @@ TEST(request_test, clear_headers) {
 }
 
 TEST(request_test, remove_headers) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
     .method(http::method::GET)
     .version("1.1")
@@ -149,7 +150,7 @@ TEST(request_test, remove_headers) {
 }
 
 TEST(request_test, remove_duplicate_headers) {
-  http::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
     .method(http::method::GET)
     .version("1.1")

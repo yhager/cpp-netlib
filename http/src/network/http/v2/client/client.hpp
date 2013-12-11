@@ -245,6 +245,10 @@ namespace network {
 
       public:
 
+        typedef client_message::request_options request_options;
+        typedef client_message::request request;
+        typedef client_message::response response;
+
         /**
          * \typedef string_type
          * \brief The client string_type.

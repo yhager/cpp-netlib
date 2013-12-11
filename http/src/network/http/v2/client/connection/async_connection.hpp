@@ -70,13 +70,20 @@ namespace network {
 
         /**
          * \brief Asynchronously reads some data from the connection.
-         * \param read_buffer The buffer in which to read the network data.
+         * \param command_streambuf
+         * \param delim A delimiter string which, if found, the socket
+         *        will stop reading.
          * \param callback A callback handler.
          */
         virtual void async_read_until(boost::asio::streambuf &command_streambuf,
                                       const std::string &delim,
                                       read_callback callback) = 0;
 
+        /**
+         * \brief Asynchronously reads some data from the connection.
+         * \param command_streambuf
+         * \param callback A callback handler.
+         */
         virtual void async_read(boost::asio::streambuf &command_streambuf,
                                 read_callback callback) = 0;
 

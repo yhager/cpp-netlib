@@ -18,27 +18,27 @@ include_directories(
 if (OPENSSL_FOUND)
 include_directories(${OPENSSL_INCLUDE_DIR})
 endif()
-#
-#set(CPP-NETLIB_HTTP_MESSAGE_SRCS
-#  http/request.cpp
-#  http/response.cpp)
-#
-#if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-#  add_library(cppnetlib-http-message ${CPP-NETLIB_HTTP_MESSAGE_SRCS})
-#  add_dependencies(cppnetlib-http-message
-#    cppnetlib-message)
-#  target_link_libraries(cppnetlib-http-message
-#    ${Boost_LIBRARIES}
-#    cppnetlib-message)
-#endif()
-#
-#set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
-#    http/message/wrappers.cpp)
-#
-#if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-#  add_library(cppnetlib-http-message-wrappers ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS})
-#endif()
-#
+
+set(CPP-NETLIB_HTTP_MESSAGE_SRCS
+  http/request.cpp
+  http/response.cpp)
+
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-http-message ${CPP-NETLIB_HTTP_MESSAGE_SRCS})
+  add_dependencies(cppnetlib-http-message
+    cppnetlib-message)
+  target_link_libraries(cppnetlib-http-message
+    ${Boost_LIBRARIES}
+    cppnetlib-message)
+endif()
+
+set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
+    http/message/wrappers.cpp)
+
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-http-message-wrappers ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS})
+endif()
+
 #set(CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS
 #    http/client_connections.cpp
 #    http/simple_connection_manager.cpp
@@ -54,24 +54,24 @@ endif()
 #if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
 #  add_library(cppnetlib-http-client-connections ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS})
 #endif()
-#
-#set(CPP-NETLIB_CONSTANTS_SRCS
-#    constants.cpp)
-#
-#if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-#  add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
-#endif()
-#
-## Server implementation files.
-#set(CPP-NETLIB_HTTP_SERVER_SRCS
-#  http/server/session.cpp
-#  http/server/simple_sessions.cpp
-#  http/server/dynamic_dispatcher.cpp)
-#
-#if (NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-#  add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
-#endif()
-#
+
+set(CPP-NETLIB_CONSTANTS_SRCS
+    constants.cpp)
+
+if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-constants ${CPP-NETLIB_CONSTANTS_SRCS})
+endif()
+
+# Server implementation files.
+set(CPP-NETLIB_HTTP_SERVER_SRCS
+  http/server/session.cpp
+  http/server/simple_sessions.cpp
+  http/server/dynamic_dispatcher.cpp)
+
+if (NOT CPP-NETLIB_BUILD_SINGLE_LIB)
+  add_library(cppnetlib-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
+endif()
+
 #set(CPP-NETLIB_HTTP_CLIENT_SRCS
 #    http/client.cpp)
 #
@@ -109,29 +109,29 @@ set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS
   )
 add_library(network-http-v2-client ${CPP-NETLIB_HTTP_V2_CLIENT_SRCS})
 add_dependencies(network-http-v2-client
-  cppnetlib-uri
+  network-uri
   )
 target_link_libraries(network-http-v2-client
   ${Boost_LIBRARIES}
-  cppnetlib-uri
+  network-uri
   )
 
 # prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
-#    CPP-NETLIB_HTTP_MESSAGE_SRCS
-#    CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
+    CPP-NETLIB_HTTP_MESSAGE_SRCS
+    CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
 #    CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS
-#    CPP-NETLIB_CONSTANTS_SRCS
-#    CPP-NETLIB_HTTP_SERVER_SRCS
+    CPP-NETLIB_CONSTANTS_SRCS
+    CPP-NETLIB_HTTP_SERVER_SRCS
 #    CPP-NETLIB_HTTP_CLIENT_SRCS
     CPP-NETLIB_HTTP_V2_CLIENT_SRCS )
 
 
-## propagate sources to parent directory for one-lib-build
-#set(CPP-NETLIB_HTTP_MESSAGE_SRCS ${CPP-NETLIB_HTTP_MESSAGE_SRCS} PARENT_SCOPE)
-#set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS} PARENT_SCOPE)
+# propagate sources to parent directory for one-lib-build
+set(CPP-NETLIB_HTTP_MESSAGE_SRCS ${CPP-NETLIB_HTTP_MESSAGE_SRCS} PARENT_SCOPE)
+set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS} PARENT_SCOPE)
 #set(CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS ${CPP-NETLIB_HTTP_CLIENT_CONNECTIONS_SRCS} PARENT_SCOPE)
 #set(CPP-NETLIB_HTTP_CLIENT_SRCS ${CPP-NETLIB_HTTP_CLIENT_SRCS} PARENT_SCOPE)
-#set(CPP-NETLIB_HTTP_SERVER_SRCS ${CPP-NETLIB_HTTP_SERVER_SRCS} PARENT_SCOPE)
-#set(CPP-NETLIB_CONSTANTS_SRCS ${CPP-NETLIB_CONSTANTS_SRCS} PARENT_SCOPE)
+set(CPP-NETLIB_HTTP_SERVER_SRCS ${CPP-NETLIB_HTTP_SERVER_SRCS} PARENT_SCOPE)
+set(CPP-NETLIB_CONSTANTS_SRCS ${CPP-NETLIB_CONSTANTS_SRCS} PARENT_SCOPE)
 set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS ${CPP-NETLIB_HTTP_V2_CLIENT_SRCS} PARENT SCOPE)

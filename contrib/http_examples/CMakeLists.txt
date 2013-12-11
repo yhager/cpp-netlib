@@ -27,7 +27,7 @@ set(EXAMPLES
 foreach(example ${EXAMPLES})
   add_executable(${example} ${example}.cpp)
   target_link_libraries(${example}
-    cppnetlib-uri
+    network-uri
     network-http-v2-client
     ${Boost_LIBRARIES}
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}

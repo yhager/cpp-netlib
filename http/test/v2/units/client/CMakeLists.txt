@@ -20,7 +20,7 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
 
   add_executable(cpp-netlib-http-v2-${test} ${test}.cpp)
   target_link_libraries(cpp-netlib-http-v2-${test}
-    cppnetlib-uri
+    network-uri
     network-http-v2-client
     ${Boost_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}

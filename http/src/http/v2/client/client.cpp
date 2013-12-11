@@ -236,7 +236,7 @@ namespace network {
                                   }));
       }
 
-      std::future<response> client::impl::do_request(method met,
+      std::future<client::response> client::impl::do_request(method met,
 						     request req,
 						     request_options options) {
         std::future<response> res = response_promise_.get_future();
@@ -289,29 +289,29 @@ namespace network {
 	delete pimpl_;
       }
 
-      std::future<response> client::get(request req, request_options options) {
+      std::future<client::response> client::get(request req, request_options options) {
 	return pimpl_->do_request(method::GET, req, options);
       }
 
-      std::future<response> client::post(request req, request_options options) {
+      std::future<client::response> client::post(request req, request_options options) {
 	return pimpl_->do_request(method::POST, req, options);
       }
 
-      std::future<response> client::put(request req, request_options options) {
+      std::future<client::response> client::put(request req, request_options options) {
 	return pimpl_->do_request(method::PUT, req, options);
       }
 
-      std::future<response> client::delete_(request req, request_options options) {
+      std::future<client::response> client::delete_(request req, request_options options) {
 	return pimpl_->do_request(method::DELETE, req, options);
       }
 
-      std::future<response> client::head(request req, request_options options) {
+      std::future<client::response> client::head(request req, request_options options) {
 	return pimpl_->do_request(method::HEAD, req, options);
       }
 
-      std::future<response> client::options(request req, request_options options) {
+      std::future<client::response> client::options(request req, request_options options) {
 	return pimpl_->do_request(method::OPTIONS, req, options);
       }
     } // namespace v2
-  } // namespace network
+  } // namespace http
 } // namespace network
