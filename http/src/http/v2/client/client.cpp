@@ -22,6 +22,17 @@ namespace network {
     namespace v2 {
       using boost::asio::ip::tcp;
 
+      struct request_helper {
+
+        client::request request_;
+        client::request_options options_;
+
+        request_helper(client::request request, client::request_options options)
+          : request_(request)
+          , options_(options) { }
+
+      };
+
       struct client::impl {
 
 	explicit impl(client_options options);
@@ -29,26 +40,32 @@ namespace network {
 	~impl() noexcept;
 
         void connect(const boost::system::error_code &ec,
-                     tcp::resolver::iterator endpoint_iterator);
+                     tcp::resolver::iterator endpoint_iterator,
+                     std::shared_ptr<request_helper> helper);
 
-        void write_request(const boost::system::error_code &ec);
+        void write_request(const boost::system::error_code &ec,
+                           std::shared_ptr<request_helper> helper);
 
         void read_response(const boost::system::error_code &ec,
-                           std::size_t bytes_written);
+                           std::size_t bytes_written,
+                           std::shared_ptr<request_helper> helper);
 
         void read_response_status(const boost::system::error_code &ec,
                                   std::size_t bytes_written,
+                                  std::shared_ptr<request_helper> helper,
                                   std::shared_ptr<response> res);
 
         void read_response_headers(const boost::system::error_code &ec,
                                    std::size_t bytes_read,
+                                   std::shared_ptr<request_helper> helper,
                                    std::shared_ptr<response> res);
 
         void read_response_body(const boost::system::error_code &ec,
                                 std::size_t bytes_read,
+                                std::shared_ptr<request_helper> helper,
                                 std::shared_ptr<response> res);
 
-	std::future<response> do_request(method method_, request request_, request_options options);
+	std::future<response> do_request(method method_, std::shared_ptr<request_helper> helper);
 
 	client_options options_;
 	boost::asio::io_service io_service_;
@@ -59,11 +76,8 @@ namespace network {
 	std::thread lifetime_thread_;
 
         std::promise<response> response_promise_;
-        boost::asio::streambuf request_;
-        boost::asio::streambuf response_;
-
-        // promise
-        // future response
+        boost::asio::streambuf request_buffer_;
+        boost::asio::streambuf response_buffer_;
 
       };
 
@@ -83,7 +97,8 @@ namespace network {
       }
 
       void client::impl::connect(const boost::system::error_code &ec,
-                                 tcp::resolver::iterator endpoint_iterator) {
+                                 tcp::resolver::iterator endpoint_iterator,
+                                 std::shared_ptr<request_helper> helper) {
         if (ec) {
           if (endpoint_iterator == tcp::resolver::iterator()) {
             response_promise_.set_exception(std::make_exception_ptr(
@@ -100,26 +115,28 @@ namespace network {
         connection_->async_connect(endpoint,
                                      strand_.wrap(
                                      [=] (const boost::system::error_code &ec) {
-                                       write_request(ec);
+                                       write_request(ec, helper);
                                      }));
       }
 
-      void client::impl::write_request(const boost::system::error_code &ec) {
+      void client::impl::write_request(const boost::system::error_code &ec,
+                                       std::shared_ptr<request_helper> helper) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
                                               std::system_error(ec.value(), std::system_category())));
           return;
         }
 
-        connection_->async_write(request_,
+        connection_->async_write(request_buffer_,
                                  strand_.wrap(
                                    [=] (const boost::system::error_code &ec,
                                         std::size_t bytes_written) {
-                                     read_response(ec, bytes_written);
+                                     read_response(ec, bytes_written, helper);
                                    }));
       }
 
-      void client::impl::read_response(const boost::system::error_code &ec, std::size_t) {
+      void client::impl::read_response(const boost::system::error_code &ec, std::size_t,
+                                       std::shared_ptr<request_helper> helper) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
                                             std::system_error(ec.value(), std::system_category())));
@@ -127,17 +144,18 @@ namespace network {
         }
 
         std::shared_ptr<response> res(new response{});
-        connection_->async_read_until(response_,
+        connection_->async_read_until(response_buffer_,
                                       "\r\n",
                                       strand_.wrap(
                                         [=] (const boost::system::error_code &ec,
                                              std::size_t bytes_read) {
-                                          read_response_status(ec, bytes_read, res);
+                                          read_response_status(ec, bytes_read, helper, res);
                                         }));
       }
 
       void client::impl::read_response_status(const boost::system::error_code &ec,
                                               std::size_t,
+                                              std::shared_ptr<request_helper> helper,
                                               std::shared_ptr<response> res) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
@@ -145,7 +163,7 @@ namespace network {
           return;
         }
 
-        std::istream is(&response_);
+        std::istream is(&response_buffer_);
         string_type version;
         is >> version;
         unsigned int status;
@@ -157,17 +175,18 @@ namespace network {
         res->set_status(network::http::v2::status::code(status));
         res->set_status_message(boost::trim_copy(message));
 
-        connection_->async_read_until(response_,
+        connection_->async_read_until(response_buffer_,
                                       "\r\n\r\n",
                                       strand_.wrap(
                                         [=] (const boost::system::error_code &ec,
                                              std::size_t bytes_read) {
-                                          read_response_headers(ec, bytes_read, res);
+                                          read_response_headers(ec, bytes_read, helper, res);
                                         }));
       }
 
       void client::impl::read_response_headers(const boost::system::error_code &ec,
                                                std::size_t,
+                                               std::shared_ptr<request_helper> helper,
                                                std::shared_ptr<response> res) {
         if (ec) {
           response_promise_.set_exception(std::make_exception_ptr(
@@ -176,7 +195,7 @@ namespace network {
         }
 
         // fill headers
-        std::istream is(&response_);
+        std::istream is(&response_buffer_);
         string_type header;
         while (std::getline(is, header) && (header != "\r")) {
           auto delim = boost::find_first_of(header, ":");
@@ -186,11 +205,11 @@ namespace network {
           res->add_header(key, value);
         }
 
-        connection_->async_read(response_,
+        connection_->async_read(response_buffer_,
                                 strand_.wrap(
                                   [=] (const boost::system::error_code &ec,
                                        std::size_t bytes_read) {
-                                    read_response_body(ec, bytes_read, res);
+                                    read_response_body(ec, bytes_read, helper, res);
                                   }));
       }
 
@@ -218,45 +237,46 @@ namespace network {
 
       void client::impl::read_response_body(const boost::system::error_code &ec,
                                             std::size_t bytes_read,
+                                            std::shared_ptr<request_helper> helper,
                                             std::shared_ptr<response> res) {
         if (bytes_read == 0) {
           response_promise_.set_value(*res);
           return;
         }
 
-        std::istream is(&response_);
+        std::istream is(&response_buffer_);
         string_type line;
         while (!getline_with_newline(is, line).eof()) {
           res->append_body(line);
         }
 
-        connection_->async_read(response_,
+        connection_->async_read(response_buffer_,
                                 strand_.wrap(
                                   [=] (const boost::system::error_code &ec,
                                        std::size_t bytes_read) {
-                                    read_response_body(ec, bytes_read, res);
+                                    read_response_body(ec, bytes_read, helper, res);
                                   }));
       }
 
       std::future<client::response> client::impl::do_request(method met,
-						     request req,
-						     request_options options) {
-        std::future<response> res = response_promise_.get_future();
+                                                             std::shared_ptr<request_helper> helper) {
+        std::future<client::response> res = response_promise_.get_future();
 
-	req.method(met);
-        std::ostream request_stream(&request_);
-        request_stream << req;
+	helper->request_.method(met);
+        std::ostream request_stream(&request_buffer_);
+        request_stream << helper->request_;
         if (!request_stream) {
           response_promise_.set_exception(std::make_exception_ptr(
                                             client_exception(client_error::invalid_request)));
         }
 
         // HTTP 1.1
-        auto it = std::find_if(std::begin(req.headers()), std::end(req.headers()),
+        auto it = std::find_if(std::begin(helper->request_.headers()),
+                               std::end(helper->request_.headers()),
                                [] (const std::pair<uri::string_type, uri::string_type> &header) {
                                  return (boost::iequals(header.first, "host"));
                                });
-        if (it == std::end(req.headers())) {
+        if (it == std::end(helper->request_.headers())) {
           // set error
           response_promise_.set_value(response());
           return res;
@@ -276,7 +296,7 @@ namespace network {
                                  strand_.wrap(
                                    [=](const boost::system::error_code &ec,
                                        tcp::resolver::iterator endpoint_iterator) {
-                                     connect(ec, endpoint_iterator);
+                                     connect(ec, endpoint_iterator, helper);
                                    }));
 
 	return res;
@@ -292,27 +312,27 @@ namespace network {
       }
 
       std::future<client::response> client::get(request req, request_options options) {
-	return pimpl_->do_request(method::GET, req, options);
+	return pimpl_->do_request(method::GET, std::make_shared<request_helper>(req, options));
       }
 
       std::future<client::response> client::post(request req, request_options options) {
-	return pimpl_->do_request(method::POST, req, options);
+	return pimpl_->do_request(method::POST, std::make_shared<request_helper>(req, options));
       }
 
       std::future<client::response> client::put(request req, request_options options) {
-	return pimpl_->do_request(method::PUT, req, options);
+	return pimpl_->do_request(method::PUT, std::make_shared<request_helper>(req, options));
       }
 
       std::future<client::response> client::delete_(request req, request_options options) {
-	return pimpl_->do_request(method::DELETE, req, options);
+	return pimpl_->do_request(method::DELETE, std::make_shared<request_helper>(req, options));
       }
 
       std::future<client::response> client::head(request req, request_options options) {
-	return pimpl_->do_request(method::HEAD, req, options);
+	return pimpl_->do_request(method::HEAD, std::make_shared<request_helper>(req, options));
       }
 
       std::future<client::response> client::options(request req, request_options options) {
-	return pimpl_->do_request(method::OPTIONS, req, options);
+	return pimpl_->do_request(method::OPTIONS, std::make_shared<request_helper>(req, options));
       }
     } // namespace v2
   } // namespace http
