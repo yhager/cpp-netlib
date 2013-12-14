@@ -38,7 +38,9 @@ int main(int argc, char* argv[]) {
   try {
     http::client client;
     http::client::request request{network::uri{std::string{argv[1]}}};
+    request.version("1.0");
     request.append_header("Connection", "close");
+    request.append_header("User-Agent", "cpp-netlib simple_wget example");
     auto future_response = client.get(request);
     auto response = future_response.get();
 
@@ -54,4 +56,3 @@ int main(int argc, char* argv[]) {
 
   return 0;
 }
-//]

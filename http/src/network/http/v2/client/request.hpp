@@ -249,6 +249,7 @@ namespace network {
 
               is_https_ = boost::equal(*scheme, boost::as_literal("https"));
               path_.assign(std::begin(*url.path()), std::end(*url.path()));
+              // TODO append query and fragment to path_
 
               std::ostringstream oss;
               std::copy(std::begin(*url.host()), std::end(*url.host()),

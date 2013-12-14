@@ -52,6 +52,8 @@ namespace network {
 
 	~impl() noexcept;
 
+	std::future<response> do_request(std::shared_ptr<request_helper> helper);
+
         void connect(const boost::system::error_code &ec,
                      tcp::resolver::iterator endpoint_iterator,
                      std::shared_ptr<request_helper> helper);
@@ -78,8 +80,6 @@ namespace network {
                                 std::shared_ptr<request_helper> helper,
                                 std::shared_ptr<response> res);
 
-	std::future<response> do_request(method method_, std::shared_ptr<request_helper> helper);
-
 	client_options options_;
 	boost::asio::io_service io_service_;
 	std::unique_ptr<boost::asio::io_service::work> sentinel_;
@@ -103,6 +103,44 @@ namespace network {
 	lifetime_thread_.join();
       }
 
+      std::future<client::response> client::impl::do_request(std::shared_ptr<request_helper> helper) {
+        std::future<client::response> res = helper->response_promise_.get_future();
+
+        // TODO see linearize.hpp
+        // TODO write User-Agent: cpp-netlib/NETLIB_VERSION (if no user-agent is supplied)
+
+        // HTTP 1.1
+        auto it = std::find_if(std::begin(helper->request_.headers()),
+                               std::end(helper->request_.headers()),
+                               [] (const std::pair<uri::string_type, uri::string_type> &header) {
+                                 return (boost::iequals(header.first, "host"));
+                               });
+        if (it == std::end(helper->request_.headers())) {
+          // set error
+          helper->response_promise_.set_value(response());
+          return res;
+        }
+
+        uri_builder builder;
+        builder
+          .authority(it->second)
+          ;
+
+        auto auth = builder.uri();
+        auto host = auth.host()?
+          uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
+        auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
+
+	resolver_->async_resolve(host, port,
+                                 strand_.wrap(
+                                   [=](const boost::system::error_code &ec,
+                                       tcp::resolver::iterator endpoint_iterator) {
+                                     connect(ec, endpoint_iterator, helper);
+                                   }));
+
+	return res;
+      }
+
       void client::impl::connect(const boost::system::error_code &ec,
                                  tcp::resolver::iterator endpoint_iterator,
                                  std::shared_ptr<request_helper> helper) {
@@ -122,6 +160,15 @@ namespace network {
         helper->connection_->async_connect(endpoint,
                                      strand_.wrap(
                                      [=] (const boost::system::error_code &ec) {
+                                       if (ec && endpoint_iterator != tcp::resolver::iterator()) {
+                                         // copy iterator because it is const after the lambda
+                                         // capture
+                                         auto it = endpoint_iterator;
+                                         boost::system::error_code ignore;
+                                         connect(ignore, ++it, helper);
+                                         return;
+                                       }
+
                                        write_request(ec, helper);
                                      }));
       }
@@ -133,6 +180,15 @@ namespace network {
             std::make_exception_ptr(std::system_error(ec.value(), std::system_category())));
           return;
         }
+
+        std::ostream request_stream(&helper->request_buffer_);
+        request_stream << helper->request_;
+        if (!request_stream) {
+          helper->response_promise_.set_exception(
+            std::make_exception_ptr(client_exception(client_error::invalid_request)));
+        }
+
+        // TODO write payload to request_buffer_
 
         helper->connection_->async_write(helper->request_buffer_,
                                  strand_.wrap(
@@ -265,52 +321,6 @@ namespace network {
                                   }));
       }
 
-      std::future<client::response> client::impl::do_request(method met,
-                                                             std::shared_ptr<request_helper> helper) {
-        std::future<client::response> res = helper->response_promise_.get_future();
-
-	helper->request_.method(met);
-        std::ostream request_stream(&helper->request_buffer_);
-        request_stream << helper->request_;
-        if (!request_stream) {
-          helper->response_promise_.set_exception(
-            std::make_exception_ptr(client_exception(client_error::invalid_request)));
-        }
-
-        // TODO write payload to request_buffer_
-
-        // HTTP 1.1
-        auto it = std::find_if(std::begin(helper->request_.headers()),
-                               std::end(helper->request_.headers()),
-                               [] (const std::pair<uri::string_type, uri::string_type> &header) {
-                                 return (boost::iequals(header.first, "host"));
-                               });
-        if (it == std::end(helper->request_.headers())) {
-          // set error
-          helper->response_promise_.set_value(response());
-          return res;
-        }
-
-        uri_builder builder;
-        builder
-          .authority(it->second)
-          ;
-
-        auto auth = builder.uri();
-        auto host = auth.host()?
-          uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
-        auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
-
-	resolver_->async_resolve(host, port,
-                                 strand_.wrap(
-                                   [=](const boost::system::error_code &ec,
-                                       tcp::resolver::iterator endpoint_iterator) {
-                                     connect(ec, endpoint_iterator, helper);
-                                   }));
-
-	return res;
-      }
-
       client::client(client_options options)
 	: pimpl_(new impl(options)) {
 
@@ -321,33 +331,33 @@ namespace network {
       }
 
       std::future<client::response> client::get(request req, request_options options) {
-	return pimpl_->do_request(method::get,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::get);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
 
       std::future<client::response> client::post(request req, request_options options) {
-	return pimpl_->do_request(method::post,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::post);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
 
       std::future<client::response> client::put(request req, request_options options) {
-	return pimpl_->do_request(method::put,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::put);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
 
       std::future<client::response> client::delete_(request req, request_options options) {
-	return pimpl_->do_request(method::delete_,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::delete_);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
 
       std::future<client::response> client::head(request req, request_options options) {
-	return pimpl_->do_request(method::head,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::head);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
 
       std::future<client::response> client::options(request req, request_options options) {
-	return pimpl_->do_request(method::options,
-                                  std::make_shared<request_helper>(pimpl_->io_service_, req, options));
+	req.method(method::options);
+	return pimpl_->do_request(std::make_shared<request_helper>(pimpl_->io_service_, req, options));
       }
     } // namespace v2
   } // namespace http

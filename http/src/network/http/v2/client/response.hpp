@@ -161,12 +161,19 @@ namespace network {
             return status_message_;
           }
 
+          /**
+           * \brief Adds a header to the HTTP response.
+           * \param name The header name.
+           * \param value The header value.
+           */
           void add_header(const string_type &name, const string_type &value) {
             headers_.push_back(std::make_pair(name, value));
           }
 
           /**
-           * \brief
+           * \brief Returns the full range of headers.
+           * \returns An iterator range covering the HTTP response
+           *          headers.
            */
           boost::iterator_range<const_headers_iterator> headers() const {
             return boost::make_iterator_range(std::begin(headers_), std::end(headers_));

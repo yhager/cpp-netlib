@@ -15,6 +15,9 @@
 namespace network {
   namespace http {
     using v2::client;
+    using v2::client_options;
+    using v2::method;
+    namespace status = v2::status;
     using v2::client_error;
     using v2::invalid_url;
     using v2::client_exception;

@@ -1,5 +1,5 @@
 // Copyright Dean Michael Berris 2009.
-// Copyright Glyn Matthews 2010.
+// Copyright Glyn Matthews 2010, 2013.
 // Copyright 2012 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
