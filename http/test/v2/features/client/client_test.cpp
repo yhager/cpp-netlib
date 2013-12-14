@@ -22,7 +22,7 @@ Describe(http_client) {
   It(gets_a_header_response) {
     http::client::request request;
     request
-      .method(http::method::GET)
+      .method(http::method::get)
       .path("/LICENSE_1_0.txt")
       .version("1.1")
       .append_header("Host", "www.boost.org")

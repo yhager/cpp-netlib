@@ -46,7 +46,7 @@ Describe(normal_http_connection) {
     // Create an HTTP request.
     http_cm::request request;
     request
-      .method(http::method::GET)
+      .method(http::method::get)
       .path("/LICENSE_1_0.txt")
       .version("1.0")
       .append_header("Host", "www.boost.org")

@@ -233,18 +233,21 @@ namespace network {
            * \brief Constructor.
            */
           request()
-            : byte_source_(nullptr) { }
+            : is_https_(false),
+              byte_source_(nullptr) { }
 
           /**
            * \brief Constructor.
            */
-          explicit request(uri url) {
+          explicit request(uri url)
+            : is_https_(false) {
             if (auto scheme = url.scheme()) {
               if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
                   (!boost::equal(*scheme, boost::as_literal("https")))) {
                 throw invalid_url();
               }
 
+              is_https_ = boost::equal(*scheme, boost::as_literal("https"));
               path_.assign(std::begin(*url.path()), std::end(*url.path()));
 
               std::ostringstream oss;
@@ -266,7 +269,8 @@ namespace network {
            * \brief Copy constructor.
            */
           request(const request &other)
-            : method_(other.method_)
+            : is_https_(other.is_https_)
+            , method_(other.method_)
             , path_(other.path_)
             , version_(other.version_)
             , headers_(other.headers_)
@@ -276,7 +280,8 @@ namespace network {
            * \brief Move constructor.
            */
           request(request &&other) noexcept
-          : method_(std::move(other.method_))
+            : is_https_(std::move(other.is_https_))
+            , method_(std::move(other.method_))
             , path_(std::move(other.path_))
             , version_(std::move(other.version_))
             , headers_(std::move(other.headers_))
@@ -302,11 +307,16 @@ namespace network {
            */
           void swap(request &other) noexcept {
             using std::swap;
+            swap(is_https_, other.is_https_);
             swap(method_, other.method_);
             swap(path_, other.path_);
             swap(version_, other.version_);
             swap(headers_, other.headers_);
             swap(byte_source_, other.byte_source_);
+          }
+
+          bool is_https() const {
+            return is_https_;
           }
 
           /**
@@ -410,6 +420,7 @@ namespace network {
 
         private:
 
+          bool is_https_;
           network::http::v2::method method_;
           string_type path_;
           string_type version_;

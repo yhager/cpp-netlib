@@ -7,7 +7,7 @@
 #include "network/http/v2/client/request.hpp"
 
 namespace http = network::http::v2;
-namespace http_cm = network::http::v2::client_message;
+namespace http_cm = http::client_message;
 
 
 TEST(request_test, constructor_url) {
@@ -38,7 +38,7 @@ TEST(request_test, constructor_uri_no_scheme) {
 TEST(request_test, stream) {
   http_cm::request instance{network::uri{"http://www.example.com/"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
@@ -53,7 +53,7 @@ TEST(request_test, stream) {
 TEST(request_test, stream_2) {
   http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
@@ -73,14 +73,14 @@ TEST(request_test, read_path) {
 TEST(request_test, read_full_request) {
   http_cm::request instance;
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .path("/path/to/resource/index.html")
     .version("1.1")
     .append_header("Host", "www.example.com")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
 
-  ASSERT_EQ(http::method::GET, instance.method());
+  ASSERT_EQ(http::method::get, instance.method());
   ASSERT_EQ("/path/to/resource/index.html", instance.path());
   ASSERT_EQ("1.1", instance.version());
 
@@ -99,7 +99,7 @@ TEST(request_test, read_full_request) {
 TEST(request_test, read_headers) {
   http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
@@ -119,7 +119,7 @@ TEST(request_test, read_headers) {
 TEST(request_test, clear_headers) {
   http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
@@ -131,7 +131,7 @@ TEST(request_test, clear_headers) {
 TEST(request_test, remove_headers) {
   http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test");
@@ -152,7 +152,7 @@ TEST(request_test, remove_headers) {
 TEST(request_test, remove_duplicate_headers) {
   http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
   instance
-    .method(http::method::GET)
+    .method(http::method::get)
     .version("1.1")
     .append_header("Connection", "close")
     .append_header("User-Agent", "request_test")
@@ -169,4 +169,14 @@ TEST(request_test, remove_duplicate_headers) {
   ASSERT_EQ("close", headers_it->second);
   ++headers_it;
   ASSERT_TRUE(headers_it == std::end(headers));
+}
+
+TEST(request_test, is_not_https) {
+  http_cm::request instance{network::uri{"http://www.example.com/"}};
+  ASSERT_FALSE(instance.is_https());
+}
+
+TEST(request_test, is_https) {
+  http_cm::request instance{network::uri{"https://www.example.com/"}};
+  ASSERT_TRUE(instance.is_https());
 }

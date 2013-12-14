@@ -17,30 +17,30 @@
 namespace network {
   namespace http {
     namespace v2 {
-      enum class method { GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT, MERGE, PATCH, };
+      enum class method { get, post, put, delete_, head, options, trace, connect, merge, patch, };
 
       inline
       std::ostream &operator << (std::ostream &os, method m) {
 	  switch (m) {
-	  case method::GET:
+	  case method::get:
 	    return os << "GET";
-	  case method::POST:
+	  case method::post:
 	    return os << "POST";
-	  case method::PUT:
+	  case method::put:
 	    return os << "PUT";
-	  case method::DELETE:
+	  case method::delete_:
 	    return os << "DELETE";
-	  case method::HEAD:
+	  case method::head:
 	    return os << "HEAD";
-	  case method::OPTIONS:
+	  case method::options:
 	    return os << "OPTIONS";
-	  case method::TRACE:
+	  case method::trace:
 	    return os << "TRACE";
-	  case method::CONNECT:
+	  case method::connect:
 	    return os << "CONNECT";
-	  case method::MERGE:
+	  case method::merge:
 	    return os << "MERGE";
-	  case method::PATCH:
+	  case method::patch:
 	    return os << "PATCH";
 	  }
 	  return os;
