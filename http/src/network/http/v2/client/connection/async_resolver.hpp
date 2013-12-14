@@ -8,6 +8,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_ASYNC_RESOLVER_INC
 
+/**
+ * \file
+ * \brief
+ */
+
 #include <functional>
 #include <boost/asio/ip/tcp.hpp>
 

@@ -6,6 +6,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_SSL_CONNECTION_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_SSL_CONNECTION_INC
 
+/**
+ * \file
+ * \brief
+ */
+
 #include <memory>
 #include <vector>
 #include <boost/asio/ip/tcp.hpp>

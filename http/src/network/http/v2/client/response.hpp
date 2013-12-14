@@ -8,6 +8,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_RESPONSE_INC
 #define NETWORK_HTTP_V2_CLIENT_RESPONSE_INC
 
+/**
+ * \file
+ * \brief Defines the HTTP response.
+ */
+
 #include <cstdint>
 #include <vector>
 #include <utility>

@@ -303,7 +303,8 @@ namespace network {
           }
 
           /**
-           * \brief Swap.
+           * \brief Swaps one request object with another.
+           * \param other The other request object.
            */
           void swap(request &other) noexcept {
             using std::swap;
@@ -315,6 +316,10 @@ namespace network {
             swap(byte_source_, other.byte_source_);
           }
 
+          /**
+           * \brief Checks whether this is an HTTPS request.
+           * \returns \c true if it is HTTPS, \c false otherwise.
+           */
           bool is_https() const {
             return is_https_;
           }

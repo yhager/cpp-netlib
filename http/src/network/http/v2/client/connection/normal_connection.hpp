@@ -6,6 +6,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_NORMAL_CONNECTION_INC
 
+/**
+ * \file
+ * \brief
+ */
+
 #include <boost/asio/write.hpp>
 #include <boost/asio/read.hpp>
 #include <boost/asio/read_until.hpp>

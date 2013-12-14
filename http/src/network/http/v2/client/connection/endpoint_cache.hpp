@@ -6,6 +6,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_ENDPOINT_CACHE_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_ENDPOINT_CACHE_INC
 
+/**
+ * \file
+ * \brief
+ */
+
 #include <string>
 #include <unordered_map>
 #include <boost/asio/ip/tcp.hpp>

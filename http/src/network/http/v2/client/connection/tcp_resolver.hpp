@@ -8,6 +8,11 @@
 #ifndef NETWORK_HTTP_V2_CLIENT_CONNECTION_TCP_RESOLVER_INC
 #define NETWORK_HTTP_V2_CLIENT_CONNECTION_TCP_RESOLVER_INC
 
+/**
+ * \file
+ * \brief
+ */
+
 #include <stdexcept>
 #include <cstdint>
 #include <string>

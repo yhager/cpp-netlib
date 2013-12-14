@@ -22,6 +22,11 @@ namespace network {
   namespace http {
     namespace v2 {
       namespace status {
+        /**
+         * \ingroup http
+         * \enum code
+         * \brief Provides the full set of HTTP status codes.
+         */
         enum class code {
           // informational
           continue_ = 100,
@@ -98,6 +103,13 @@ namespace network {
   namespace http {
     namespace v2 {
       namespace status {
+        /**
+         * \ingroup http_client
+         * \fn
+         * \brief Returns a message based on the status code provided.
+         * \param code The status code.
+         * \returns The corresponding status message.
+         */
         inline
         std::string message(code status_code) {
           static std::unordered_map<code, std::string> status_messages{
