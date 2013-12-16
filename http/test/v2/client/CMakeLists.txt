@@ -4,4 +4,6 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 add_subdirectory(units)
-add_subdirectory(features)
+if(NOT CPP-NETLIB_DISABLE_FEATURE_TESTS)
+  add_subdirectory(features)
+endif()

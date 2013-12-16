@@ -1,5 +1,6 @@
 # Copyright (c) Dean Michael Berris 2010.
 # Copyright (c) Google, Inc. 2012.
+# Copyright (c) Glyn Matthews 2013.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +15,7 @@ option( CPP-NETLIB_BUILD_EXAMPLES "Build the examples using cpp-netlib." ON )
 option( CPP-NETLIB_ALWAYS_LOGGING "Allow cpp-netlib to log debug messages even in non-debug mode." OFF )
 option( CPP-NETLIB_DISABLE_LOGGING "Disable logging definitely, no logging code will be generated or compiled." OFF )
 option( CPP-NETLIB_DISABLE_LIBCXX "Disable using libc++ when compiling with clang." OFF )
+option( CPP-NETLIB_DISABLE_FEATURE_TESTS "Disable the feature tests (which may use a network connection)." OFF )
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package( ICU )
@@ -86,13 +88,14 @@ if (Boost_FOUND)
 endif(Boost_FOUND)
 
 message(STATUS "CPP-NETLIB options selected:")
-message(STATUS "  CPP-NETLIB_BUILD_SHARED_LIBS: ${CPP-NETLIB_BUILD_SHARED_LIBS}\t(Build cpp-netlib as shared libraries: OFF, ON)")
-message(STATUS "  CPP-NETLIB_BUILD_SINGLE_LIB:  ${CPP-NETLIB_BUILD_SINGLE_LIB}\t(Build cpp-netlib into a single library: OFF, ON)")
-message(STATUS "  CPP-NETLIB_BUILD_TESTS:       ${CPP-NETLIB_BUILD_TESTS}\t(Build the unit tests: ON, OFF)")
-message(STATUS "  CPP-NETLIB_BUILD_EXAMPLES:    ${CPP-NETLIB_BUILD_EXAMPLES}\t(Build the examples using cpp-netlib: ON, OFF)")
-message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:    ${CPP-NETLIB_ALWAYS_LOGGING}\t(Allow cpp-netlib to log debug messages even in non-debug mode: ON, OFF)")
-message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:   ${CPP-NETLIB_DISABLE_LOGGING}\t(Disable logging definitely, no logging code will be generated or compiled: ON, OFF)")
-message(STATUS "  CPP-NETLIB_DISABLE_LIBCXX:    ${CPP-NETLIB_DISABLE_LIBCXX}\t(Disable using libc++ when building with clang: ON, OFF)")
+message(STATUS "  CPP-NETLIB_BUILD_SHARED_LIBS:      ${CPP-NETLIB_BUILD_SHARED_LIBS}\t(Build cpp-netlib as shared libraries: OFF, ON)")
+message(STATUS "  CPP-NETLIB_BUILD_SINGLE_LIB:       ${CPP-NETLIB_BUILD_SINGLE_LIB}\t(Build cpp-netlib into a single library: OFF, ON)")
+message(STATUS "  CPP-NETLIB_BUILD_TESTS:            ${CPP-NETLIB_BUILD_TESTS}\t(Build the unit tests: ON, OFF)")
+message(STATUS "  CPP-NETLIB_BUILD_EXAMPLES:         ${CPP-NETLIB_BUILD_EXAMPLES}\t(Build the examples using cpp-netlib: ON, OFF)")
+message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:         ${CPP-NETLIB_ALWAYS_LOGGING}\t(Allow cpp-netlib to log debug messages even in non-debug mode: ON, OFF)")
+message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:        ${CPP-NETLIB_DISABLE_LOGGING}\t(Disable logging definitely, no logging code will be generated or compiled: ON, OFF)")
+message(STATUS "  CPP-NETLIB_DISABLE_LIBCXX:         ${CPP-NETLIB_DISABLE_LIBCXX}\t(Disable using libc++ when building with clang: ON, OFF)")
+message(STATUS "  CPP-NETLIB_DISABLE_FEATURE_TESTS:  ${CPP-NETLIB_DISABLE_FEATURE_TESTS}\t(Disable the feature tests (which may use a network connection): ON, OFF)")
 message(STATUS "CMake build options selected:")
 
 # Takes one or more lists as parameter and prepends the prefix to every element.
