@@ -72,7 +72,7 @@ namespace network {
 
       }
 
-      client_exception::~client_exception() {
+      client_exception::~client_exception() noexcept {
 
       }
 

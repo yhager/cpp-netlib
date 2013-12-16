@@ -380,6 +380,7 @@ namespace network {
 
           request &body(std::shared_ptr<byte_source> byte_source) {
             byte_source_ = byte_source;
+            return *this;
           }
 
           /**
