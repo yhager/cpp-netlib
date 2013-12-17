@@ -12,8 +12,9 @@
  *        clients.
  */
 
-#include <network/config.hpp>
 #include <system_error>
+#include <stdexcept>
+#include <network/config.hpp>
 
 namespace network {
   namespace http {
@@ -24,9 +25,6 @@ namespace network {
        * \brief An enumeration of all types of client error.
        */
       enum class client_error {
-        // url
-        invalid_url,
-
         // request
         invalid_request,
 
@@ -52,7 +50,7 @@ namespace network {
        * \class invalid_url network/http/v2/client/client_errors.hpp network/http/v2/client.hpp
        * \brief An exception thrown if the URL provides is invalid.
        */
-      class invalid_url : public std::system_error {
+      class invalid_url : public std::invalid_argument {
 
       public:
 

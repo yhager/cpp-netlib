@@ -35,8 +35,7 @@ namespace network {
 
       std::string client_category_impl::message(int ev) const {
 	switch (client_error(ev)) {
-	case client_error::invalid_url:
-	  return "Requires HTTP or HTTPS URL.";
+
 	case client_error::invalid_request:
 	  return "Invalid HTTP request.";
         case client_error::host_not_found:
@@ -59,7 +58,7 @@ namespace network {
       }
 
       invalid_url::invalid_url()
-	: std::system_error(make_error_code(client_error::invalid_url)) {
+        : std::invalid_argument("Requires HTTP or HTTPS URL.") {
 
       }
 
