@@ -29,6 +29,11 @@
 namespace network {
   namespace http {
     namespace v2 {
+      namespace client_connection {
+        class async_resolver;
+        class async_connection;
+      } // namespace client_connection
+
       /**
        * \ingroup http_client
        * \class client_options network/http/v2/client/client.hpp network/http/v2/client.hpp
@@ -240,8 +245,8 @@ namespace network {
        */
       class client {
 
-        client(client const &) = delete;
-        client(client &&) = delete;
+        client(const client&) = delete;
+        client& operator=(const client&) = delete;
 
       public:
 
@@ -261,48 +266,59 @@ namespace network {
          */
         explicit client(client_options options = client_options());
 
+        client(std::unique_ptr<client_connection::async_resolver> mock_resolver,
+               std::unique_ptr<client_connection::async_connection> mock_connection,
+               client_options options = client_options());
+
         /**
          * \brief Destructor.
          */
         ~client() noexcept;
 
         /**
-         * \brief Makes an HTTP GET request.
+         * \brief Executes an HTTP request.
+         * \param req The request object.
+         * \param options The request options.
+         */
+        std::future<response> execute(request req, request_options options = request_options());
+
+        /**
+         * \brief Executes an HTTP GET request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> get(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP POST request.
+         * \brief Executes an HTTP POST request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> post(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP PUT request.
+         * \brief Executes an HTTP PUT request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> put(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP DELETE request.
+         * \brief Executes an HTTP DELETE request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> delete_(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP HEAD request.
+         * \brief Executes an HTTP HEAD request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> head(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP OPTIONS request.
+         * \brief Executes an HTTP OPTIONS request.
          * \param req The request object.
          * \param options The request options.
          */
