@@ -7,3 +7,6 @@
 [submodule "deps/gmock"]
 	path = deps/gmock
 	url = git://github.com/cpp-netlib/gmock
+[submodule "deps/igloo"]
+	path = deps/igloo
+	url = git://github.com/joakimkarlsson/igloo.git
