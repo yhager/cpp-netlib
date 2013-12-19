@@ -171,6 +171,20 @@ TEST(request_test, remove_duplicate_headers) {
   ASSERT_TRUE(headers_it == std::end(headers));
 }
 
+TEST(request_test, get_header) {
+  http_cm::request instance{network::uri{"http://www.example.com/path/to/resource/index.html"}};
+  instance
+    .method(http::method::get)
+    .version("1.1")
+    .append_header("Connection", "close")
+    .append_header("User-Agent", "request_test")
+    ;
+
+  auto header = instance.header("User-Agent");
+  ASSERT_TRUE(header);
+  ASSERT_EQ("request_test", *header);
+}
+
 TEST(request_test, is_not_https) {
   http_cm::request instance{network::uri{"http://www.example.com/"}};
   ASSERT_FALSE(instance.is_https());

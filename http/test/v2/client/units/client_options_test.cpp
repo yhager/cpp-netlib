@@ -21,14 +21,24 @@ TEST(client_options_test, default_options_use_proxy) {
   ASSERT_FALSE(opts.use_proxy());
 }
 
-TEST(client_options, default_options_openssl_certificate_paths) {
+TEST(client_options_test, default_options_openssl_certificate_paths) {
   network::http::v2::client_options opts;
   ASSERT_TRUE(opts.openssl_certificate_paths().empty());
 }
 
-TEST(client_options, default_options_openssl_verify_paths) {
+TEST(client_options_test, default_options_openssl_verify_paths) {
   network::http::v2::client_options opts;
   ASSERT_TRUE(opts.openssl_verify_paths().empty());
+}
+
+TEST(client_options_test, always_verify_peer) {
+  network::http::v2::client_options opts;
+  ASSERT_FALSE(opts.always_verify_peer());
+}
+
+TEST(client_options_test, user_agent) {
+  network::http::v2::client_options opts;
+  ASSERT_EQ("cpp-netlib/1.0.0a", opts.user_agent());
 }
 
 TEST(client_options_test, set_option_follow_redirects) {
@@ -59,4 +69,10 @@ TEST(client_options_test, set_option_openssl_verify_path) {
   network::http::v2::client_options opts;
   opts.openssl_verify_path("openssl_verify");
   ASSERT_EQ(std::vector<std::string>{"openssl_verify"}, opts.openssl_verify_paths());
+}
+
+TEST(client_options_test, set_always_verify_peer) {
+  network::http::v2::client_options opts;
+  opts.always_verify_peer(true);
+  ASSERT_TRUE(opts.always_verify_peer());
 }

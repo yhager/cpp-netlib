@@ -38,8 +38,6 @@ namespace network {
 
 	case client_error::invalid_request:
 	  return "Invalid HTTP request.";
-        case client_error::host_not_found:
-	  return "Unable to resolve host.";
         case client_error::invalid_response:
 	  return "Invalid HTTP response.";
 	default:

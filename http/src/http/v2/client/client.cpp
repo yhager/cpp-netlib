@@ -160,12 +160,6 @@ namespace network {
                                  tcp::resolver::iterator endpoint_iterator,
                                  std::shared_ptr<request_helper> helper) {
         if (ec) {
-          if (endpoint_iterator == tcp::resolver::iterator()) {
-            helper->response_promise_.set_exception(
-              std::make_exception_ptr(client_exception(client_error::host_not_found)));
-            return;
-          }
-
           helper->response_promise_.set_exception(
             std::make_exception_ptr(std::system_error(ec.value(), std::system_category())));
           return;
@@ -344,9 +338,7 @@ namespace network {
       client::client(std::unique_ptr<client_connection::async_resolver> mock_resolver,
                      std::unique_ptr<client_connection::async_connection> mock_connection,
                      client_options options)
-        : pimpl_(new impl(std::move(mock_resolver), std::move(mock_connection), options)) {
-
-      }
+        : pimpl_(new impl(std::move(mock_resolver), std::move(mock_connection), options)) { }
 
       client::~client() noexcept {
         delete pimpl_;

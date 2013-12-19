@@ -25,6 +25,8 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/as_literal.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/optional.hpp>
 #include <network/config.hpp>
 #include <network/http/v2/method.hpp>
 #include <network/http/v2/client/client_errors.hpp>
@@ -395,6 +397,15 @@ namespace network {
             return *this;
           }
 
+          boost::optional<string_type> header(const string_type &name) {
+            for (auto header : headers_) {
+              if (boost::iequals(header.first, name)) {
+                return header.second;
+              }
+            }
+            return boost::optional<string_type>();
+          }
+
           /**
            * \brief Returns the headers range.
            * \returns An iterator range covering all headers.
@@ -410,10 +421,10 @@ namespace network {
            * If the header name can not be found, nothing happens. If
            * the header is duplicated, then both entries are removed.
            */
-          void remove_header(string_type name) {
+          void remove_header(const string_type &name) {
             auto it = std::remove_if(std::begin(headers_), std::end(headers_),
                                      [&name] (const std::pair<string_type, string_type> &header) {
-                                       return header.first == name;
+                                       return boost::iequals(header.first, name);
                                      });
             headers_.erase(it, std::end(headers_));
           }

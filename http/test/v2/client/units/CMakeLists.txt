@@ -5,6 +5,7 @@
 
 set(CPP-NETLIB_CLIENT_TESTS
   client_options_test
+  client_test
   client_resolution_test
   request_options_test
   byte_source_test

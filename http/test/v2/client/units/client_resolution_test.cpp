@@ -21,8 +21,8 @@ public:
   virtual void async_resolve(const std::string &, std::uint16_t,
                              resolve_callback callback) {
     // arbitrary error code, I just want this to fail
-    boost::system::error_code ec(boost::system::errc::broken_pipe,
-                                 boost::system::system_category());
+    boost::system::error_code ec(boost::asio::error::host_not_found,
+                                 boost::asio::error::get_netdb_category());
     callback(ec, resolver_iterator());
   }
 
@@ -84,5 +84,5 @@ TEST_F(client_resolution_test, host_not_found) {
     .append_header("User-Agent", "cpp-netlib client_test")
     .append_header("Connection", "close");
   auto future_response = client_->head(request);
-  ASSERT_THROW(future_response.get(), http::client_exception);
+  ASSERT_THROW(future_response.get(), std::system_error);
 }

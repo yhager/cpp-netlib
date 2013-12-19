@@ -28,9 +28,6 @@ namespace network {
         // request
         invalid_request,
 
-        // connection
-        host_not_found,
-
         // response
         invalid_response,
       };
