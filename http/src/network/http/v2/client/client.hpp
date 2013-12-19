@@ -74,7 +74,7 @@ namespace network {
          * \brief Move constructor.
          */
         client_options(client_options &&other)
-          : io_service_(std::move(io_service_))
+          : io_service_(std::move(other.io_service_))
           , follow_redirects_(std::move(other.follow_redirects_))
           , cache_resolved_(std::move(other.cache_resolved_))
           , use_proxy_(std::move(other.use_proxy_))
