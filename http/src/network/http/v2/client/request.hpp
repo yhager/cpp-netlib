@@ -57,12 +57,20 @@ namespace network {
           /**
            * \brief Copy constructor.
            */
-          request_options(request_options const &) = default;
+          request_options(request_options const &other)
+            : resolve_timeout_(other.resolve_timeout_)
+            , read_timeout_(other.read_timeout_)
+            , total_timeout_(other.total_timeout_)
+            , max_redirects_(other.max_redirects_) { }
 
           /**
            * \brief Move constructor.
            */
-          request_options(request_options &&) = default;
+          request_options(request_options &&other)
+            : resolve_timeout_(std::move(other.resolve_timeout_))
+            , read_timeout_(std::move(other.read_timeout_))
+            , total_timeout_(std::move(other.total_timeout_))
+            , max_redirects_(std::move(other.max_redirects_)) { }
 
           /**
            * \brief Assignment operator.
