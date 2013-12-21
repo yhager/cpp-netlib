@@ -6,12 +6,11 @@
 set(CPP-NETLIB_CLIENT_TESTS
   client_options_test
   client_test
-  #client_resolution_test
+  client_resolution_test
   request_options_test
   byte_source_test
   request_test
   response_test
-  #response_parser_test
   )
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})

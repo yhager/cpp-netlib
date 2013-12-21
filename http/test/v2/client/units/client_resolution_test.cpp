@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include "network/http/v2/client/connection/async_resolver.hpp"
 #include "network/http/v2/client/connection/async_connection.hpp"
 #include "network/http/v2/client.hpp"
