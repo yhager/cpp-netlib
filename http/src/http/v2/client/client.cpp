@@ -26,10 +26,10 @@ namespace network {
 
         std::shared_ptr<client_connection::async_connection> connection_;
 
-        client::request request_;
-        client::request_options options_;
+        request request_;
+        request_options options_;
 
-        std::promise<client::response> response_promise_;
+        std::promise<response> response_promise_;
 
         boost::asio::streambuf request_buffer_;
         boost::asio::streambuf response_buffer_;
@@ -37,8 +37,8 @@ namespace network {
         // TODO configure deadline timer for timeouts
 
         request_helper(std::shared_ptr<client_connection::async_connection> connection,
-                       client::request request,
-                       client::request_options options)
+                       request request,
+                       request_options options)
           : connection_(connection)
           , request_(request)
           , options_(options) { }
@@ -118,8 +118,8 @@ namespace network {
         lifetime_thread_.join();
       }
 
-      std::future<client::response> client::impl::execute(std::shared_ptr<request_helper> helper) {
-        std::future<client::response> res = helper->response_promise_.get_future();
+      std::future<response> client::impl::execute(std::shared_ptr<request_helper> helper) {
+        std::future<response> res = helper->response_promise_.get_future();
 
         // TODO see linearize.hpp
 
@@ -332,7 +332,7 @@ namespace network {
         delete pimpl_;
       }
 
-      std::future<client::response> client::execute(request req, request_options options) {
+      std::future<response> client::execute(request req, request_options options) {
         std::shared_ptr<client_connection::async_connection> connection;
         if (pimpl_->mock_connection_) {
           connection = pimpl_->mock_connection_;
@@ -344,32 +344,32 @@ namespace network {
         return pimpl_->execute(std::make_shared<request_helper>(connection, req, options));
       }
 
-      std::future<client::response> client::get(request req, request_options options) {
+      std::future<response> client::get(request req, request_options options) {
         req.method(method::get);
         return execute(req, options);
       }
 
-      std::future<client::response> client::post(request req, request_options options) {
+      std::future<response> client::post(request req, request_options options) {
         req.method(method::post);
         return execute(req, options);
       }
 
-      std::future<client::response> client::put(request req, request_options options) {
+      std::future<response> client::put(request req, request_options options) {
         req.method(method::put);
         return execute(req, options);
       }
 
-      std::future<client::response> client::delete_(request req, request_options options) {
+      std::future<response> client::delete_(request req, request_options options) {
         req.method(method::delete_);
         return execute(req, options);
       }
 
-      std::future<client::response> client::head(request req, request_options options) {
+      std::future<response> client::head(request req, request_options options) {
         req.method(method::head);
         return execute(req, options);
       }
 
-      std::future<client::response> client::options(request req, request_options options) {
+      std::future<response> client::options(request req, request_options options) {
         req.method(method::options);
         return execute(req, options);
       }

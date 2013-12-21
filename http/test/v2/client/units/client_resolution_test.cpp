@@ -75,7 +75,7 @@ protected:
 };
 
 TEST_F(client_resolution_test, host_not_found) {
-  http::client::request request;
+  http::request request;
   request
     .method(http::method::get)
     .path("/LICENSE_1_0.txt")

@@ -280,6 +280,10 @@ namespace network {
         lhs.swap(rhs);
       }
 
+      typedef client_message::request_options request_options;
+      typedef client_message::request request;
+      typedef client_message::response response;
+
       /**
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp network/http/v2/client.hpp
@@ -292,10 +296,6 @@ namespace network {
         client& operator=(const client&) = delete;
 
       public:
-
-        typedef client_message::request_options request_options;
-        typedef client_message::request request;
-        typedef client_message::response response;
 
         /**
          * \typedef string_type
