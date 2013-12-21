@@ -23,6 +23,11 @@ TEST(request_test, constructor_invalid_url) {
 	       http::invalid_url);
 }
 
+TEST(request_test, get_url) {
+  http_cm::request instance{network::uri{"http://www.example.com/"}};
+  ASSERT_EQ("http://www.example.com/", instance.url());
+}
+
 TEST(request_test, constructor_empty_uri) {
   ASSERT_THROW(http_cm::request{network::uri{}},
 	       http::invalid_url);
@@ -193,4 +198,24 @@ TEST(request_test, is_not_https) {
 TEST(request_test, is_https) {
   http_cm::request instance{network::uri{"https://www.example.com/"}};
   ASSERT_TRUE(instance.is_https());
+}
+
+TEST(request_test, path) {
+  http_cm::request instance{network::uri{"http://www.example.com/path/"}};
+  ASSERT_EQ("/path/", instance.path());
+}
+
+TEST(request_test, path_with_query) {
+  http_cm::request instance{network::uri{"http://www.example.com/path/?foo=bar"}};
+  ASSERT_EQ("/path/?foo=bar", instance.path());
+}
+
+TEST(request_test, path_with_fragment) {
+  http_cm::request instance{network::uri{"http://www.example.com/path/#fragment"}};
+  ASSERT_EQ("/path/#fragment", instance.path());
+}
+
+TEST(request_test, path_with_query_and_fragment) {
+  http_cm::request instance{network::uri{"http://www.example.com/path/?foo=bar#fragment"}};
+  ASSERT_EQ("/path/?foo=bar#fragment", instance.path());
 }

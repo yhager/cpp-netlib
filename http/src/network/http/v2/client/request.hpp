@@ -243,23 +243,35 @@ namespace network {
            * \brief Constructor.
            */
           request()
-            : is_https_(false),
-              byte_source_(nullptr) { }
+            : byte_source_(nullptr) { }
 
           /**
            * \brief Constructor.
            */
           explicit request(uri url)
-            : is_https_(false) {
+            : url_(url) {
             if (auto scheme = url.scheme()) {
               if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
                   (!boost::equal(*scheme, boost::as_literal("https")))) {
                 throw invalid_url();
               }
 
-              is_https_ = boost::equal(*scheme, boost::as_literal("https"));
-              path_.assign(std::begin(*url.path()), std::end(*url.path()));
-              // TODO append query and fragment to path_
+              if (auto path = url.path()) {
+                std::copy(std::begin(*path), std::end(*path),
+                          std::back_inserter(path_));
+              }
+
+              if (auto query = url.query()) {
+                path_.push_back('?');
+                std::copy(std::begin(*query), std::end(*query),
+                          std::back_inserter(path_));
+              }
+
+              if (auto fragment = url.fragment()) {
+                path_.push_back('#');
+                std::copy(std::begin(*fragment), std::end(*fragment),
+                          std::back_inserter(path_));
+              }
 
               std::ostringstream oss;
               std::copy(std::begin(*url.host()), std::end(*url.host()),
@@ -280,7 +292,7 @@ namespace network {
            * \brief Copy constructor.
            */
           request(const request &other)
-            : is_https_(other.is_https_)
+            : url_(other.url_)
             , method_(other.method_)
             , path_(other.path_)
             , version_(other.version_)
@@ -291,7 +303,7 @@ namespace network {
            * \brief Move constructor.
            */
           request(request &&other) noexcept
-            : is_https_(std::move(other.is_https_))
+            : url_(std::move(other.url_))
             , method_(std::move(other.method_))
             , path_(std::move(other.path_))
             , version_(std::move(other.version_))
@@ -319,7 +331,7 @@ namespace network {
            */
           void swap(request &other) noexcept {
             using std::swap;
-            swap(is_https_, other.is_https_);
+            swap(url_, other.url_);
             swap(method_, other.method_);
             swap(path_, other.path_);
             swap(version_, other.version_);
@@ -327,12 +339,22 @@ namespace network {
             swap(byte_source_, other.byte_source_);
           }
 
+          request &url(const uri &url) {
+            // throw invalid_url
+            url_ = url;
+            return *this;
+          }
+
+          uri url() const {
+            return url_;
+          }
+
           /**
            * \brief Checks whether this is an HTTPS request.
            * \returns \c true if it is HTTPS, \c false otherwise.
            */
           bool is_https() const {
-            return is_https_;
+            return url_.scheme() && boost::equal(*url_.scheme(), boost::as_literal("https"));
           }
 
           /**
@@ -446,7 +468,7 @@ namespace network {
 
         private:
 
-          bool is_https_;
+          network::uri url_;
           network::http::v2::method method_;
           string_type path_;
           string_type version_;

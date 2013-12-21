@@ -122,29 +122,17 @@ namespace network {
         std::future<client::response> res = helper->response_promise_.get_future();
 
         // TODO see linearize.hpp
-        // TODO write User-Agent: cpp-netlib/NETLIB_VERSION (if no user-agent is supplied)
 
-        // HTTP 1.1
-        auto it = std::find_if(std::begin(helper->request_.headers()),
-                               std::end(helper->request_.headers()),
-                               [] (const std::pair<uri::string_type, uri::string_type> &header) {
-                                 return (boost::iequals(header.first, "host"));
-                               });
-        if (it == std::end(helper->request_.headers())) {
-          // set error
-          helper->response_promise_.set_value(response());
-          return res;
+        // If there is no user-agent, provide one as a default.
+        auto user_agent = helper->request_.header("User-Agent");
+        if (!user_agent) {
+          helper->request_.append_header("User-Agent", options_.user_agent());
         }
 
-        uri_builder builder;
-        builder
-          .authority(it->second)
-          ;
-
-        auto auth = builder.uri();
-        auto host = auth.host()?
-          uri::string_type(std::begin(*auth.host()), std::end(*auth.host())) : uri::string_type();
-        auto port = auth.port<std::uint16_t>()? *auth.port<std::uint16_t>() : 80;
+        auto url = helper->request_.url();
+        auto host = url.host()?
+          uri::string_type(std::begin(*url.host()), std::end(*url.host())) : uri::string_type();
+        auto port = url.port<std::uint16_t>()? *url.port<std::uint16_t>() : 80;
 
         resolver_->async_resolve(host, port,
                                  strand_.wrap(
