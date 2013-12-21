@@ -6,12 +6,12 @@
 set(CPP-NETLIB_CLIENT_TESTS
   client_options_test
   client_test
-  client_resolution_test
+  #client_resolution_test
   request_options_test
   byte_source_test
   request_test
   response_test
-  response_parser_test
+  #response_parser_test
   )
 
 foreach(test ${CPP-NETLIB_CLIENT_TESTS})
@@ -25,7 +25,8 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
     network-uri
     network-http-v2-client
     ${Boost_LIBRARIES}
-    ${GMOCK_BOTH_LIBRARIES}
+    #${GMOCK_BOTH_LIBRARIES}
+    ${GTEST_BOTH_LIBRARIES}
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     )

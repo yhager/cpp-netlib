@@ -12,7 +12,7 @@ include_directories(
   ${CPP-NETLIB_SOURCE_DIR}/logging/src
   ${CPP-NETLIB_SOURCE_DIR}/http/src
   ${GTEST_INCLUDE_DIRS}
-  ${GMOCK_INCLUDE_DIRS}
+  #${GMOCK_INCLUDE_DIRS}
   ${IGLOO_INCLUDE_DIR}
   ${CPP-NETLIB_SOURCE_DIR})
 
