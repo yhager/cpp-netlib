@@ -153,9 +153,11 @@ namespace network {
           return;
         }
 
+        auto host = helper->request_.url().host();
         tcp::endpoint endpoint(*endpoint_iterator);
         helper->connection_->async_connect(endpoint,
-                                     strand_.wrap(
+                                           std::string(std::begin(*host), std::end(*host)),
+                                           strand_.wrap(
                                      [=] (const boost::system::error_code &ec) {
                                        if (ec && endpoint_iterator != tcp::resolver::iterator()) {
                                          // copy iterator because it is const after the lambda

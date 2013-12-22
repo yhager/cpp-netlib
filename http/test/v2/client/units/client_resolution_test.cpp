@@ -38,6 +38,7 @@ public:
   virtual ~fake_async_connection() noexcept { }
 
   virtual void async_connect(const boost::asio::ip::tcp::endpoint &,
+                             const std::string &,
                              connect_callback) { }
 
   virtual void async_write(boost::asio::streambuf &,

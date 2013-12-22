@@ -173,7 +173,7 @@ namespace network {
 
           /**
            * \brief Allows the request to read the data into a local
-           *        copy of it's source string.
+           *        copy of its source string.
            */
           virtual size_type read(string_type &source, size_type length) = 0;
 
@@ -220,6 +220,12 @@ namespace network {
            * \brief The request string type.
            */
           typedef byte_source::string_type string_type;
+
+          /**
+           * \typedef size_type
+           * \brief The request size type.
+           */
+          typedef byte_source::size_type size_type;
 
           /**
            * \typedef headers_type
@@ -415,6 +421,13 @@ namespace network {
             return *this;
           }
 
+          template <class Handler>
+          void body(size_type length, Handler &&handler) {
+            string_type body;
+            byte_source_->read(body, length);
+            handler(body);
+          }
+
           /**
            * \brief Appends a header to the request.
            * \param name The header name.
@@ -436,12 +449,20 @@ namespace network {
             return boost::optional<string_type>();
           }
 
+          const_headers_iterator headers_begin() const {
+            return std::begin(headers_);
+          }
+
+          const_headers_iterator headers_end() const {
+            return std::end(headers_);
+          }
+
           /**
            * \brief Returns the headers range.
            * \returns An iterator range covering all headers.
            */
           boost::iterator_range<const_headers_iterator> headers() const {
-            return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
+            return boost::make_iterator_range(headers_begin(), headers_end());
           }
 
           /**
