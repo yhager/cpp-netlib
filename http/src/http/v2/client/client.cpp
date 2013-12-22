@@ -16,6 +16,7 @@
 #include <network/http/v2/client/response.hpp>
 #include <network/http/v2/client/connection/tcp_resolver.hpp>
 #include <network/http/v2/client/connection/normal_connection.hpp>
+#include <network/http/v2/client/connection/ssl_connection.hpp>
 
 namespace network {
   namespace http {
@@ -341,7 +342,13 @@ namespace network {
         }
         else {
           // TODO factory based on HTTP or HTTPS
-          connection = std::make_shared<client_connection::normal_connection>(pimpl_->io_service_);
+          if (req.is_https()) {
+            connection = std::make_shared<client_connection::ssl_connection>(pimpl_->io_service_,
+                                                                             pimpl_->options_);
+          }
+          else {
+            connection = std::make_shared<client_connection::normal_connection>(pimpl_->io_service_);
+          }
         }
         return pimpl_->execute(std::make_shared<request_helper>(connection, req, options));
       }
