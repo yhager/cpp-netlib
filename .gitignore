@@ -12,5 +12,4 @@ tests/
 _build
 CPP-NETLIB.*
 CMakeScripts/
-*.cmake
 *~
