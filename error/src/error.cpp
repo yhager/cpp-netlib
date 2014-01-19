@@ -5,6 +5,7 @@
 
 #include <network/error.hpp>
 #include <cstring>
+#include <string>
 
 namespace network {
 

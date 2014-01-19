@@ -5,6 +5,7 @@
 
 #include <network/config.hpp>
 #include <network/http/v2/client/client_errors.hpp>
+#include <string>
 
 namespace network {
   namespace http {
