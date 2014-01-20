@@ -25,8 +25,6 @@ set(CPP-NETLIB_HTTP_MESSAGE_SRCS
 
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(cppnetlib-http-message ${CPP-NETLIB_HTTP_MESSAGE_SRCS})
-  add_dependencies(cppnetlib-http-message
-    cppnetlib-message)
   target_link_libraries(cppnetlib-http-message
     ${Boost_LIBRARIES}
     cppnetlib-message)
@@ -77,17 +75,6 @@ endif()
 #
 #if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
 #  add_library(cppnetlib-http-client ${CPP-NETLIB_HTTP_CLIENT_SRCS})
-#  add_dependencies(cppnetlib-http-client
-#    ${CPP-NETLIB_LOGGING_LIB}
-#    cppnetlib-constants
-#    cppnetlib-uri
-#    cppnetlib-message
-#    cppnetlib-message-wrappers
-#    cppnetlib-message-directives
-#    cppnetlib-http-message
-#    cppnetlib-http-message-wrappers
-#    cppnetlib-http-client-connections
-#    )
 #  target_link_libraries(cppnetlib-http-client
 #    ${Boost_LIBRARIES}
 #    ${CPP-NETLIB_LOGGING_LIB}
@@ -108,9 +95,6 @@ set(CPP-NETLIB_HTTP_V2_CLIENT_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/client/client_errors.cpp
   )
 add_library(network-http-v2-client ${CPP-NETLIB_HTTP_V2_CLIENT_SRCS})
-add_dependencies(network-http-v2-client
-  network-uri
-  )
 target_link_libraries(network-http-v2-client
   ${Boost_LIBRARIES}
   network-uri
