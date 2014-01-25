@@ -17,10 +17,10 @@ namespace network {
   namespace concurrency {
 
     struct thread_pool::impl {
-      impl(std::size_t threads = 1,
+      impl(std::size_t thread_count = 1,
 	    io_service_ptr io_service = io_service_ptr(),
 	    std::vector<std::thread> worker_threads = std::vector<std::thread>())
-	: threads_(threads),
+	: thread_count_(thread_count),
 	  io_service_(io_service),
 	  worker_threads_(std::move(worker_threads)),
 	  sentinel_() {
@@ -49,7 +49,7 @@ namespace network {
 	}
 
 	auto local_io_service = io_service_;
-	for (std::size_t counter = 0; counter < threads_; ++counter) {
+	for (std::size_t counter = 0; counter < thread_count_; ++counter) {
 	  worker_threads_.emplace_back([local_io_service]() {
 	      local_io_service->run();
 	    });
@@ -71,23 +71,23 @@ namespace network {
 	}
       }
 
-      std::size_t threads_;
+      std::size_t thread_count_;
       io_service_ptr io_service_;
       std::vector<std::thread> worker_threads_;
       sentinel_ptr sentinel_;
 
     };
 
-  thread_pool::thread_pool(std::size_t threads,
+  thread_pool::thread_pool(std::size_t thread_count,
 			   io_service_ptr io_service,
 			   std::vector<std::thread> worker_threads)
     : pimpl_(new (std::nothrow)
-	     impl(threads, io_service, std::move(worker_threads))) {
+	     impl(thread_count, io_service, std::move(worker_threads))) {
 
   }
 
   std::size_t const thread_pool::thread_count() const {
-    return pimpl_->threads_;
+    return pimpl_->thread_count_;
   }
 
   void thread_pool::post(std::function<void()> f) {
