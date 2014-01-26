@@ -10,3 +10,7 @@
 [submodule "deps/igloo"]
 	path = deps/igloo
 	url = git://github.com/joakimkarlsson/igloo.git
+[submodule "deps/asio"]
+	path = deps/asio
+	url = git://github.com/cpp-netlib/asio
+	branch = cmake-build
