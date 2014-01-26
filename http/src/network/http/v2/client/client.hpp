@@ -23,12 +23,18 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/optional.hpp>
 #include <network/config.hpp>
+#include <network/version.hpp>
 #include <network/http/v2/client/request.hpp>
 #include <network/http/v2/client/response.hpp>
 
 namespace network {
   namespace http {
     namespace v2 {
+      namespace client_connection {
+        class async_resolver;
+        class async_connection;
+      } // namespace client_connection
+
       /**
        * \ingroup http_client
        * \class client_options network/http/v2/client/client.hpp network/http/v2/client.hpp
@@ -46,17 +52,37 @@ namespace network {
           , follow_redirects_(false)
           , cache_resolved_(false)
           , use_proxy_(false)
+          , always_verify_peer_(false)
+          , user_agent_(std::string("cpp-netlib/") + NETLIB_VERSION)
           , timeout_(30000) { }
 
         /**
          * \brief Copy constructor.
          */
-        client_options(client_options const &) = default;
+        client_options(const client_options &other)
+          : io_service_(other.io_service_)
+          , follow_redirects_(other.follow_redirects_)
+          , cache_resolved_(other.cache_resolved_)
+          , use_proxy_(other.use_proxy_)
+          , always_verify_peer_(other.always_verify_peer_)
+          , user_agent_(other.user_agent_)
+          , timeout_(other.timeout_)
+          , openssl_certificate_paths_(other.openssl_certificate_paths_)
+          , openssl_verify_paths_(other.openssl_verify_paths_) { }
 
         /**
          * \brief Move constructor.
          */
-        client_options(client_options &&) = default;
+        client_options(client_options &&other)
+          : io_service_(std::move(other.io_service_))
+          , follow_redirects_(std::move(other.follow_redirects_))
+          , cache_resolved_(std::move(other.cache_resolved_))
+          , use_proxy_(std::move(other.use_proxy_))
+          , always_verify_peer_(std::move(other.always_verify_peer_))
+          , user_agent_(std::move(other.user_agent_))
+          , timeout_(std::move(other.timeout_))
+          , openssl_certificate_paths_(std::move(other.openssl_certificate_paths_))
+          , openssl_verify_paths_(std::move(other.openssl_verify_paths_)) { }
 
         /**
          * \brief Assignment operator.
@@ -82,6 +108,8 @@ namespace network {
           swap(follow_redirects_, other.follow_redirects_);
           swap(cache_resolved_, other.cache_resolved_);
           swap(use_proxy_, other.use_proxy_);
+          swap(always_verify_peer_, other.always_verify_peer_);
+          swap(user_agent_, other.user_agent_);
           swap(timeout_, other.timeout_);
           swap(openssl_certificate_paths_, other.openssl_certificate_paths_);
           swap(openssl_verify_paths_, other.openssl_verify_paths_);
@@ -215,12 +243,32 @@ namespace network {
           return openssl_verify_paths_;
         }
 
+        client_options &always_verify_peer(bool always_verify_peer) {
+          always_verify_peer_ = always_verify_peer;
+          return *this;
+        }
+
+        bool always_verify_peer() const {
+          return always_verify_peer_;
+        }
+
+        client_options &user_agent(const std::string &user_agent) {
+          user_agent_ = user_agent;
+          return *this;
+        }
+
+        std::string user_agent() const {
+          return user_agent_;
+        }
+
       private:
 
         boost::optional<boost::asio::io_service &> io_service_;
         bool follow_redirects_;
         bool cache_resolved_;
         bool use_proxy_;
+        bool always_verify_peer_;
+        std::string user_agent_;
         std::chrono::milliseconds timeout_;
         std::vector<std::string> openssl_certificate_paths_;
         std::vector<std::string> openssl_verify_paths_;
@@ -232,6 +280,10 @@ namespace network {
         lhs.swap(rhs);
       }
 
+      typedef client_message::request_options request_options;
+      typedef client_message::request request;
+      typedef client_message::response response;
+
       /**
        * \ingroup http_client
        * \class client network/http/v2/client/client.hpp network/http/v2/client.hpp
@@ -240,14 +292,10 @@ namespace network {
        */
       class client {
 
-        client(client const &) = delete;
-        client(client &&) = delete;
+        client(const client&) = delete;
+        client& operator=(const client&) = delete;
 
       public:
-
-        typedef client_message::request_options request_options;
-        typedef client_message::request request;
-        typedef client_message::response response;
 
         /**
          * \typedef string_type
@@ -261,48 +309,59 @@ namespace network {
          */
         explicit client(client_options options = client_options());
 
+        client(std::unique_ptr<client_connection::async_resolver> mock_resolver,
+               std::unique_ptr<client_connection::async_connection> mock_connection,
+               client_options options = client_options());
+
         /**
          * \brief Destructor.
          */
         ~client() noexcept;
 
         /**
-         * \brief Makes an HTTP GET request.
+         * \brief Executes an HTTP request.
+         * \param req The request object.
+         * \param options The request options.
+         */
+        std::future<response> execute(request req, request_options options = request_options());
+
+        /**
+         * \brief Executes an HTTP GET request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> get(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP POST request.
+         * \brief Executes an HTTP POST request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> post(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP PUT request.
+         * \brief Executes an HTTP PUT request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> put(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP DELETE request.
+         * \brief Executes an HTTP DELETE request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> delete_(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP HEAD request.
+         * \brief Executes an HTTP HEAD request.
          * \param req The request object.
          * \param options The request options.
          */
         std::future<response> head(request req, request_options options = request_options());
 
         /**
-         * \brief Makes an HTTP OPTIONS request.
+         * \brief Executes an HTTP OPTIONS request.
          * \param req The request object.
          * \param options The request options.
          */

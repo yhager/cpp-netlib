@@ -40,6 +40,7 @@ namespace network {
           }
 
           virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
+                                     const std::string &host,
                                      connect_callback callback) {
             using boost::asio::ip::tcp;
             socket_.reset(new tcp::socket{io_service_});

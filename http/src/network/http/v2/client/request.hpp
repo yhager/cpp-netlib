@@ -25,6 +25,8 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/as_literal.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/optional.hpp>
 #include <network/config.hpp>
 #include <network/http/v2/method.hpp>
 #include <network/http/v2/client/client_errors.hpp>
@@ -55,12 +57,20 @@ namespace network {
           /**
            * \brief Copy constructor.
            */
-          request_options(request_options const &) = default;
+          request_options(request_options const &other)
+            : resolve_timeout_(other.resolve_timeout_)
+            , read_timeout_(other.read_timeout_)
+            , total_timeout_(other.total_timeout_)
+            , max_redirects_(other.max_redirects_) { }
 
           /**
            * \brief Move constructor.
            */
-          request_options(request_options &&) = default;
+          request_options(request_options &&other)
+            : resolve_timeout_(std::move(other.resolve_timeout_))
+            , read_timeout_(std::move(other.read_timeout_))
+            , total_timeout_(std::move(other.total_timeout_))
+            , max_redirects_(std::move(other.max_redirects_)) { }
 
           /**
            * \brief Assignment operator.
@@ -163,7 +173,7 @@ namespace network {
 
           /**
            * \brief Allows the request to read the data into a local
-           *        copy of it's source string.
+           *        copy of its source string.
            */
           virtual size_type read(string_type &source, size_type length) = 0;
 
@@ -212,6 +222,12 @@ namespace network {
           typedef byte_source::string_type string_type;
 
           /**
+           * \typedef size_type
+           * \brief The request size type.
+           */
+          typedef byte_source::size_type size_type;
+
+          /**
            * \typedef headers_type
            * \brief The request headers type.
            */
@@ -233,23 +249,35 @@ namespace network {
            * \brief Constructor.
            */
           request()
-            : is_https_(false),
-              byte_source_(nullptr) { }
+            : byte_source_(nullptr) { }
 
           /**
            * \brief Constructor.
            */
           explicit request(uri url)
-            : is_https_(false) {
+            : url_(url) {
             if (auto scheme = url.scheme()) {
               if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
                   (!boost::equal(*scheme, boost::as_literal("https")))) {
                 throw invalid_url();
               }
 
-              is_https_ = boost::equal(*scheme, boost::as_literal("https"));
-              path_.assign(std::begin(*url.path()), std::end(*url.path()));
-              // TODO append query and fragment to path_
+              if (auto path = url.path()) {
+                std::copy(std::begin(*path), std::end(*path),
+                          std::back_inserter(path_));
+              }
+
+              if (auto query = url.query()) {
+                path_.push_back('?');
+                std::copy(std::begin(*query), std::end(*query),
+                          std::back_inserter(path_));
+              }
+
+              if (auto fragment = url.fragment()) {
+                path_.push_back('#');
+                std::copy(std::begin(*fragment), std::end(*fragment),
+                          std::back_inserter(path_));
+              }
 
               std::ostringstream oss;
               std::copy(std::begin(*url.host()), std::end(*url.host()),
@@ -270,7 +298,7 @@ namespace network {
            * \brief Copy constructor.
            */
           request(const request &other)
-            : is_https_(other.is_https_)
+            : url_(other.url_)
             , method_(other.method_)
             , path_(other.path_)
             , version_(other.version_)
@@ -281,7 +309,7 @@ namespace network {
            * \brief Move constructor.
            */
           request(request &&other) noexcept
-            : is_https_(std::move(other.is_https_))
+            : url_(std::move(other.url_))
             , method_(std::move(other.method_))
             , path_(std::move(other.path_))
             , version_(std::move(other.version_))
@@ -309,7 +337,7 @@ namespace network {
            */
           void swap(request &other) noexcept {
             using std::swap;
-            swap(is_https_, other.is_https_);
+            swap(url_, other.url_);
             swap(method_, other.method_);
             swap(path_, other.path_);
             swap(version_, other.version_);
@@ -317,12 +345,22 @@ namespace network {
             swap(byte_source_, other.byte_source_);
           }
 
+          request &url(const uri &url) {
+            // throw invalid_url
+            url_ = url;
+            return *this;
+          }
+
+          uri url() const {
+            return url_;
+          }
+
           /**
            * \brief Checks whether this is an HTTPS request.
            * \returns \c true if it is HTTPS, \c false otherwise.
            */
           bool is_https() const {
-            return is_https_;
+            return url_.scheme() && boost::equal(*url_.scheme(), boost::as_literal("https"));
           }
 
           /**
@@ -383,6 +421,13 @@ namespace network {
             return *this;
           }
 
+          template <class Handler>
+          void body(size_type length, Handler &&handler) {
+            string_type body;
+            byte_source_->read(body, length);
+            handler(body);
+          }
+
           /**
            * \brief Appends a header to the request.
            * \param name The header name.
@@ -395,12 +440,29 @@ namespace network {
             return *this;
           }
 
+          boost::optional<string_type> header(const string_type &name) {
+            for (auto header : headers_) {
+              if (boost::iequals(header.first, name)) {
+                return header.second;
+              }
+            }
+            return boost::optional<string_type>();
+          }
+
+          const_headers_iterator headers_begin() const {
+            return std::begin(headers_);
+          }
+
+          const_headers_iterator headers_end() const {
+            return std::end(headers_);
+          }
+
           /**
            * \brief Returns the headers range.
            * \returns An iterator range covering all headers.
            */
           boost::iterator_range<const_headers_iterator> headers() const {
-            return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
+            return boost::make_iterator_range(headers_begin(), headers_end());
           }
 
           /**
@@ -410,10 +472,10 @@ namespace network {
            * If the header name can not be found, nothing happens. If
            * the header is duplicated, then both entries are removed.
            */
-          void remove_header(string_type name) {
+          void remove_header(const string_type &name) {
             auto it = std::remove_if(std::begin(headers_), std::end(headers_),
                                      [&name] (const std::pair<string_type, string_type> &header) {
-                                       return header.first == name;
+                                       return boost::iequals(header.first, name);
                                      });
             headers_.erase(it, std::end(headers_));
           }
@@ -427,7 +489,7 @@ namespace network {
 
         private:
 
-          bool is_https_;
+          network::uri url_;
           network::http::v2::method method_;
           string_type path_;
           string_type version_;

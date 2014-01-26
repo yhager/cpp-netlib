@@ -6,11 +6,11 @@
 
 //[ simple_wget_main
 /*`
-  This is a very basic clone of wget.  It's missing a lot of
+  This is a very basic clone of wget. It's missing a lot of
   features, such as content-type detection, but it does the
   fundamental things the same.
 
-  It demonstrates the use the `uri` and the `http::client`.
+  It demonstrates the use of the `uri` and the `http::client`.
 */
 
 #include <network/http/client.hpp>
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
   try {
     http::client client;
-    http::client::request request{network::uri{std::string{argv[1]}}};
+    http::request request{network::uri{std::string{argv[1]}}};
     request.version("1.0");
     request.append_header("Connection", "close");
     request.append_header("User-Agent", "cpp-netlib simple_wget example");

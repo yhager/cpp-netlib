@@ -36,6 +36,7 @@ Describe(normal_http_connection) {
     // Make sure that the connection is successful.
     tcp::endpoint endpoint(it->endpoint());
     connection_->async_connect(endpoint,
+                               "www.boost.org",
                                [&ec] (const boost::system::error_code &ec_) {
                                  ec = ec_;
                                });

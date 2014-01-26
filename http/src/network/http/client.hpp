@@ -5,8 +5,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef NETWORK_HTTP_CLIENT_INC__
-#define NETWORK_HTTP_CLIENT_INC__
+#ifndef NETWORK_HTTP_CLIENT_INC
+#define NETWORK_HTTP_CLIENT_INC
 
 #include <network/http/v2/client.hpp>
 #include <network/http/v2/method.hpp>
@@ -16,6 +16,9 @@ namespace network {
   namespace http {
     using v2::client;
     using v2::client_options;
+    using v2::request;
+    using v2::request_options;
+    using v2::response;
     using v2::method;
     namespace status = v2::status;
     using v2::client_error;
@@ -25,4 +28,4 @@ namespace network {
 } // namespace network
 
 
-#endif  // NETWORK_HTTP_CLIENT_INC__
+#endif  // NETWORK_HTTP_CLIENT_INC

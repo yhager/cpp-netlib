@@ -170,18 +170,21 @@ namespace network {
             headers_.push_back(std::make_pair(name, value));
           }
 
+          const_headers_iterator headers_begin() const {
+            return std::begin(headers_);
+          }
+
+          const_headers_iterator headers_end() const {
+            return std::end(headers_);
+          }
+
           /**
            * \brief Returns the full range of headers.
            * \returns An iterator range covering the HTTP response
            *          headers.
            */
           boost::iterator_range<const_headers_iterator> headers() const {
-            return boost::make_iterator_range(std::begin(headers_), std::end(headers_));
-          }
-
-          void append_body(const char *body, std::size_t length) {
-            body_.reserve(body_.size() + length);
-            body_.append(body);
+            return boost::make_iterator_range(headers_begin(), headers_end());
           }
 
           void append_body(string_type body) {

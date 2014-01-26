@@ -20,7 +20,7 @@ Describe(http_client) {
   }
 
   It(gets_a_header_response) {
-    http::client::request request;
+    http::request request{network::uri{"http://www.boost.org/"}};
     request
       .method(http::method::get)
       .path("/LICENSE_1_0.txt")
