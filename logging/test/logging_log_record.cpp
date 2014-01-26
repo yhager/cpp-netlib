@@ -8,7 +8,9 @@
 #include <gtest/gtest.h>
 
 #include <network/logging/logging.hpp>
-#define NETWORK_ENABLE_LOGGING
+#ifndef NETWORK_ENABLE_LOGGING
+# define NETWORK_ENABLE_LOGGING
+#endif
 #include <network/detail/debug.hpp>
 
 using namespace network::logging;

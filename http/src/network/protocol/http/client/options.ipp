@@ -30,7 +30,7 @@ class client_options_pimpl {
   }
 
   void io_service(boost::asio::io_service* io_service) {
-    io_service_ = io_service_;
+    io_service_ = io_service;
   }
 
   boost::asio::io_service* io_service() const { return io_service_; }

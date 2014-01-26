@@ -11,18 +11,13 @@ if (CPP-NETLIB_BUILD_TESTS)
   set(TESTS message_test message_transform_test)
   if(CPP-NETLIB_BUILD_SINGLE_LIB)
     set(link_cppnetlib_lib cppnetlib)
-    set(dependencies cppnetlib)
   else()
     set(link_cppnetlib_lib cppnetlib-message
-      cppnetlib-message-directives
-      cppnetlib-message-wrappers)
-    set(dependencies cppnetlib-message
       cppnetlib-message-directives
       cppnetlib-message-wrappers)
   endif()
   foreach (test ${TESTS})
     add_executable(cpp-netlib-${test} ${test}.cpp)
-    add_dependencies(cpp-netlib-${test} ${dependencies})
     target_link_libraries(cpp-netlib-${test}
       ${Boost_SYSTEM_LIBRARY}
       ${CMAKE_THREAD_LIBS_INIT}

@@ -8,7 +8,6 @@
 
 #include <gtest/gtest.h>
 #include <network/concurrency/thread_pool.hpp>
-// #include <boost/bind.hpp>
 #include <functional>
 
 using network::concurrency::thread_pool;
@@ -42,5 +41,5 @@ TEST(concurrency_test, post_work) {
     ASSERT_NO_THROW(pool.post(std::bind(&foo::bar, &instance, 2)));
     // require that pool is destroyed here, RAII baby
   }
-  ASSERT_EQ(instance.val(), 3);
+  ASSERT_EQ(3, instance.val());
 }

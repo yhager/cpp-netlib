@@ -11,8 +11,7 @@ set(CPP-NETLIB_MESSAGE_SRCS
     message.cpp)
 
 add_library(cppnetlib-message ${CPP-NETLIB_MESSAGE_SRCS})
-add_dependencies(cppnetlib-message cppnetlib-uri)
-target_link_libraries(cppnetlib-message cppnetlib-uri)
+target_link_libraries(cppnetlib-message network-uri)
 
 set(CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS
     directives.cpp)
