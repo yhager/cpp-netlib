@@ -1,16 +1,8 @@
 *.swp
 *.pyc
-CMakeCache.txt
-CMakeFiles
-Makefile
-Testing
 *.gch
 libs/mime/test/mime-roundtrip
-*.a
 bin/
 tests/
 _build
-CPP-NETLIB.*
-CMakeScripts/
-*.cmake
 *~
