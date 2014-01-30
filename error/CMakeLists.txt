@@ -4,8 +4,3 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 add_subdirectory(src)
-
-if(CPP-NETLIB_BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(test)
-endif(CPP-NETLIB_BUILD_TESTS)
