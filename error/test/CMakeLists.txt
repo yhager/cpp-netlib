@@ -12,7 +12,6 @@ if (CPP-NETLIB_BUILD_TESTS)
   add_executable(cpp-netlib-error_test error_test.cpp)
   target_link_libraries(cpp-netlib-error_test
     ${link_cppnetlib_lib}
-    network-error
     ${Boost_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT})
