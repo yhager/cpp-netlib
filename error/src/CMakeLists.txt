@@ -9,7 +9,7 @@ set(CPP-NETLIB_ERROR_SRCS
     error.cpp)
 
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
-  add_library(network_error ${CPP-NETLIB_ERROR_SRCS})
+  add_library(network-error ${CPP-NETLIB_ERROR_SRCS})
 endif()
 
 # prepend current directory to make paths absolute
