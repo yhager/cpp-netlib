@@ -7,16 +7,3 @@ include_directories(${CPP-NETLIB_SOURCE_DIR}/error/src
   ${GTEST_INCLUDE_DIRS}
   ${CPP-NETLIB_SOURCE_DIR}
 )
-
-if (CPP-NETLIB_BUILD_TESTS)
-  add_executable(cpp-netlib-error_test error_test.cpp)
-  target_link_libraries(cpp-netlib-error_test
-    ${link_cppnetlib_lib}
-    ${Boost_LIBRARIES}
-    ${GTEST_BOTH_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT})
-  set_target_properties(cpp-netlib-error_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
-  add_test(cpp-netlib-error_test
-    ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-error_test)
-endif()
