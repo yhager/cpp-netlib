@@ -9,6 +9,3 @@ if(CPP-NETLIB_BUILD_TESTS)
   enable_testing()
   add_subdirectory(test)
 endif(CPP-NETLIB_BUILD_TESTS)
-
-# propagate sources to parent directory for one-lib-build
-set(CPP-NETLIB_ERROR_SRCS ${CPP-NETLIB_ERROR_SRCS} PARENT_SCOPE)
