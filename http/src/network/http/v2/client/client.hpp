@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Glyn Matthews
+// Copyright (C) 2013, 2014 by Glyn Matthews
 // Copyright Dean Michael Berris 2012.
 // Copyright Google, Inc. 2012.
 // Distributed under the Boost Software License, Version 1.0.
