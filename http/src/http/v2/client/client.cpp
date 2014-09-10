@@ -142,6 +142,7 @@ std::future<response> client::impl::execute(std::shared_ptr<request_context> con
     context->request_.append_header("User-Agent", options_.user_agent());
   }
 
+  // Get the host and port from the request and resolve
   auto url = context->request_.url();
   auto host = url.host()?
     uri::string_type(std::begin(*url.host()), std::end(*url.host())) : uri::string_type();
@@ -164,23 +165,25 @@ void client::impl::connect(const boost::system::error_code &ec,
     return;
   }
 
+  // make a connection to an endpoint
   auto host = context->request_.url().host();
   tcp::endpoint endpoint(*endpoint_iterator);
   context->connection_->async_connect(endpoint,
-                                     std::string(std::begin(*host), std::end(*host)),
-                                     strand_.wrap([=] (const boost::system::error_code &ec) {
-                                                    if (ec && endpoint_iterator != tcp::resolver::iterator()) {
-                                                      // copy iterator because it is const after the lambda
-                                                      // capture
-                                                      auto it = endpoint_iterator;
-                                                      boost::system::error_code ignore;
-                                                      connect(ignore, ++it, context);
-                                                      return;
-                                                    }
+                                      std::string(std::begin(*host), std::end(*host)),
+                                      strand_.wrap([=] (const boost::system::error_code &ec) {
+                                          // If there is no connection, try again on another endpoint
+                                          if (ec && endpoint_iterator != tcp::resolver::iterator()) {
+                                            // copy iterator because it is const after the lambda
+                                            // capture
+                                            auto it = endpoint_iterator;
+                                            boost::system::error_code ignore;
+                                            connect(ignore, ++it, context);
+                                            return;
+                                          }
 
-                                                    write_request(ec, context);
-                                                  }));
-    }
+                                          write_request(ec, context);
+                                        }));
+}
 
 void client::impl::write_request(const boost::system::error_code &ec,
                                  std::shared_ptr<request_context> context) {
@@ -189,6 +192,7 @@ void client::impl::write_request(const boost::system::error_code &ec,
     return;
   }
 
+  // write the request to an I/O stream.
   std::ostream request_stream(&context->request_buffer_);
   request_stream << context->request_;
   if (!request_stream) {
@@ -210,11 +214,13 @@ void client::impl::write_body(const boost::system::error_code &ec,
     return;
   }
 
+  // update progress
   context->total_bytes_written_ += bytes_written;
   if (auto progress = context->options_.progress()) {
     progress(client_message::transfer_direction::bytes_written, context->total_bytes_written_);
   }
 
+  // write the body to an I/O stream
   std::ostream request_stream(&context->request_buffer_);
   // TODO write payload to request_buffer_
   if (!request_stream) {
@@ -236,11 +242,13 @@ void client::impl::read_response(const boost::system::error_code &ec,
     return;
   }
 
+  // update progress.
   context->total_bytes_written_ += bytes_written;
   if (auto progress = context->options_.progress()) {
     progress(client_message::transfer_direction::bytes_written, context->total_bytes_written_);
   }
 
+  // Create a response object and fill it with the status from the server.
   std::shared_ptr<response> res(new response{});
   context->connection_->async_read_until(context->response_buffer_,
                                         "\r\n",
@@ -259,6 +267,7 @@ void client::impl::read_response_status(const boost::system::error_code &ec,
     return;
   }
 
+  // Update the reponse status.
   std::istream is(&context->response_buffer_);
   string_type version;
   is >> version;
@@ -271,6 +280,7 @@ void client::impl::read_response_status(const boost::system::error_code &ec,
   res->set_status(network::http::v2::status::code(status));
   res->set_status_message(boost::trim_copy(message));
 
+  // Read the response headers.
   context->connection_->async_read_until(context->response_buffer_,
                                         "\r\n\r\n",
                                         strand_.wrap([=] (const boost::system::error_code &ec,
@@ -299,6 +309,7 @@ void client::impl::read_response_headers(const boost::system::error_code &ec,
     res->add_header(key, value);
   }
 
+  // read the response body.
   context->connection_->async_read(context->response_buffer_,
                                   strand_.wrap([=] (const boost::system::error_code &ec,
                                                     std::size_t bytes_read) {
@@ -307,6 +318,8 @@ void client::impl::read_response_headers(const boost::system::error_code &ec,
 }
 
 namespace {
+// I don't want to to delimit with newlines when using the input
+// stream operator, so that's why I wrote this function.
 std::istream &getline_with_newline(std::istream &is, std::string &line) {
   line.clear();
 
@@ -332,11 +345,13 @@ void client::impl::read_response_body(const boost::system::error_code &ec,
                                       std::size_t bytes_read,
                                       std::shared_ptr<request_context> context,
                                       std::shared_ptr<response> res) {
+  // update progress.
   context->total_bytes_read_ += bytes_read;
   if (auto progress = context->options_.progress()) {
     progress(client_message::transfer_direction::bytes_read, context->total_bytes_read_);
   }
 
+  // If there's no data else to read, then set the response and exit.
   if (bytes_read == 0) {
     context->response_promise_.set_value(*res);
     return;
@@ -348,11 +363,12 @@ void client::impl::read_response_body(const boost::system::error_code &ec,
     res->append_body(line);
   }
 
+  // Keep reading the response body until we have nothing else to read.
   context->connection_->async_read(context->response_buffer_,
-                                  strand_.wrap([=] (const boost::system::error_code &ec,
-                                                    std::size_t bytes_read) {
-                                                 read_response_body(ec, bytes_read, context, res);
-                                               }));
+                                   strand_.wrap([=] (const boost::system::error_code &ec,
+                                                     std::size_t bytes_read) {
+                                                  read_response_body(ec, bytes_read, context, res);
+                                                }));
 }
 
 client::client(client_options options)
