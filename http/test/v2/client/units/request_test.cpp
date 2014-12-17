@@ -186,7 +186,7 @@ TEST(request_test, get_header) {
     ;
 
   auto header = instance.header("User-Agent");
-  ASSERT_TRUE(header);
+  ASSERT_TRUE(static_cast<bool>(header));
   ASSERT_EQ("request_test", *header);
 }
 
