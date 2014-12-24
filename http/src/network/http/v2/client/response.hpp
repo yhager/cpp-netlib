@@ -166,8 +166,8 @@ public:
    * \param name The header name.
    * \param value The header value.
    */
-  void add_header(const string_type &name, const string_type &value) {
-    headers_.push_back(std::make_pair(name, value));
+  void add_header(string_type name, string_type value) {
+    headers_.emplace_back(name, value);
   }
 
   /**

@@ -99,7 +99,6 @@ namespace network {
         boost::asio::io_service::strand strand_;
         std::unique_ptr<client_connection::async_resolver> resolver_;
         std::shared_ptr<client_connection::async_connection> mock_connection_;
-        // TODO configure deadline timer for timeouts
         bool timedout_;
         boost::asio::deadline_timer timer_;
         std::thread lifetime_thread_;
@@ -409,6 +408,16 @@ namespace network {
           const boost::system::error_code &ec, std::size_t bytes_read,
           std::shared_ptr<request_context> context,
           std::shared_ptr<response> res) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
+        if (ec && ec != boost::asio::error::eof) {
+          set_error(ec, context);
+          return;
+        }
+
         // update progress.
         context->total_bytes_read_ += bytes_read;
         if (auto progress = context->options_.progress()) {
@@ -425,8 +434,9 @@ namespace network {
 
         std::istream is(&context->response_buffer_);
         string_type line;
+        line.reserve(bytes_read);
         while (!getline_with_newline(is, line).eof()) {
-          res->append_body(line);
+          res->append_body(std::move(line));
         }
 
         // Keep reading the response body until we have nothing else to read.
