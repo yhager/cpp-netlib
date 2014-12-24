@@ -80,8 +80,7 @@ namespace network {
 
         void read_response_status(const boost::system::error_code &ec,
                                   std::size_t bytes_written,
-                                  std::shared_ptr<request_context> context,
-                                  std::shared_ptr<response> res);
+                                  std::shared_ptr<request_context> context);
 
         void read_response_headers(const boost::system::error_code &ec,
                                    std::size_t bytes_read,
@@ -299,19 +298,17 @@ namespace network {
         }
 
         // Create a response object and fill it with the status from the server.
-        std::shared_ptr<response> res(new response{});
         context->connection_->async_read_until(
             context->response_buffer_, "\r\n",
             strand_.wrap([=](const boost::system::error_code &ec,
                              std::size_t bytes_read) {
-              read_response_status(ec, bytes_read, context, res);
+              read_response_status(ec, bytes_read, context);
             }));
       }
 
       void client::impl::read_response_status(
           const boost::system::error_code &ec, std::size_t,
-          std::shared_ptr<request_context> context,
-          std::shared_ptr<response> res) {
+          std::shared_ptr<request_context> context) {
         if (timedout_) {
           set_error(boost::asio::error::timed_out, context);
           return;
@@ -331,6 +328,11 @@ namespace network {
         string_type message;
         std::getline(is, message);
 
+        // if options_.follow_redirects()
+        // and if status in range 300 - 307
+        // then take the request and reset the URL
+
+        std::shared_ptr<response> res(new response{});
         res->set_version(version);
         res->set_status(network::http::v2::status::code(status));
         res->set_status_message(boost::trim_copy(message));

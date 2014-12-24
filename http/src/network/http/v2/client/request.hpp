@@ -373,7 +373,7 @@ public:
    * \brief Move constructor.
    */
   request(request &&other) noexcept
-  : url_(std::move(other.url_))
+    : url_(std::move(other.url_))
     , method_(std::move(other.method_))
     , path_(std::move(other.path_))
     , version_(std::move(other.version_))
