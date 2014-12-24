@@ -95,6 +95,11 @@ namespace network {
                                   read_callback callback) = 0;
 
           /**
+           * \brief Breaks the connection.
+           */
+          virtual void disconnect() = 0;
+
+          /**
            * \brief Cancels an operation on a connection.
            */
           virtual void cancel() = 0;

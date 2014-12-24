@@ -33,12 +33,6 @@ namespace network {
         boost::asio::streambuf request_buffer_;
         boost::asio::streambuf response_buffer_;
 
-        // TODO configure chunked transfer encoding
-        bool chunked_;
-
-        // TODO configure deadline timer for timeouts
-        bool timedout_;
-
         std::uint64_t total_bytes_written_, total_bytes_read_;
 
         request_context(
@@ -47,8 +41,6 @@ namespace network {
             : connection_(connection),
               request_(request),
               options_(options),
-              chunked_(false),
-              timedout_(false),
               total_bytes_written_(0),
               total_bytes_read_(0) {}
       };
@@ -63,7 +55,13 @@ namespace network {
 
         ~impl();
 
+        void set_error(const boost::system::error_code &ec,
+                       std::shared_ptr<request_context> context);
+
         std::future<response> execute(std::shared_ptr<request_context> context);
+
+        void timeout(const boost::system::error_code &ec,
+                     std::shared_ptr<request_context> context);
 
         void connect(const boost::system::error_code &ec,
                      tcp::resolver::iterator endpoint_iterator,
@@ -101,7 +99,11 @@ namespace network {
         boost::asio::io_service::strand strand_;
         std::unique_ptr<client_connection::async_resolver> resolver_;
         std::shared_ptr<client_connection::async_connection> mock_connection_;
+        // TODO configure deadline timer for timeouts
+        bool timedout_;
+        boost::asio::deadline_timer timer_;
         std::thread lifetime_thread_;
+
       };
 
       client::impl::impl(client_options options)
@@ -110,6 +112,8 @@ namespace network {
             strand_(io_service_),
             resolver_(new client_connection::tcp_resolver(
                 io_service_, options_.cache_resolved())),
+            timedout_(false),
+            timer_(io_service_),
             lifetime_thread_([=]() { io_service_.run(); }) {}
 
       client::impl::impl(
@@ -120,11 +124,21 @@ namespace network {
             sentinel_(new boost::asio::io_service::work(io_service_)),
             strand_(io_service_),
             resolver_(std::move(mock_resolver)),
+            timedout_(false),
+            timer_(io_service_),
             lifetime_thread_([=]() { io_service_.run(); }) {}
 
       client::impl::~impl() {
         sentinel_.reset();
         lifetime_thread_.join();
+      }
+
+
+      void client::impl::set_error(const boost::system::error_code &ec,
+                                   std::shared_ptr<request_context> context) {
+        context->response_promise_.set_exception(std::make_exception_ptr(
+            std::system_error(ec.value(), std::system_category())));
+        timer_.cancel();
       }
 
       std::future<response> client::impl::execute(
@@ -153,15 +167,29 @@ namespace network {
               connect(ec, endpoint_iterator, context);
             }));
 
+        if (options_.timeout() > std::chrono::milliseconds(0)) {
+          timer_.expires_from_now(boost::posix_time::milliseconds(options_.timeout().count()));
+          timer_.async_wait(strand_.wrap([=](const boost::system::error_code &ec) {
+                timeout(ec, context);
+              }));
+        }
+
         return res;
+      }
+
+      void client::impl::timeout(const boost::system::error_code &ec,
+                                 std::shared_ptr<request_context> context) {
+        if (!ec) {
+          context->connection_->disconnect();
+        }
+        timedout_ = true;
       }
 
       void client::impl::connect(const boost::system::error_code &ec,
                                  tcp::resolver::iterator endpoint_iterator,
                                  std::shared_ptr<request_context> context) {
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -188,9 +216,13 @@ namespace network {
       void client::impl::write_request(
           const boost::system::error_code &ec,
           std::shared_ptr<request_context> context) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -200,6 +232,7 @@ namespace network {
         if (!request_stream) {
           context->response_promise_.set_exception(std::make_exception_ptr(
               client_exception(client_error::invalid_request)));
+          timer_.cancel();
         }
 
         context->connection_->async_write(
@@ -213,9 +246,13 @@ namespace network {
       void client::impl::write_body(const boost::system::error_code &ec,
                                     std::size_t bytes_written,
                                     std::shared_ptr<request_context> context) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -245,9 +282,13 @@ namespace network {
       void client::impl::read_response(
           const boost::system::error_code &ec, std::size_t bytes_written,
           std::shared_ptr<request_context> context) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -272,9 +313,13 @@ namespace network {
           const boost::system::error_code &ec, std::size_t,
           std::shared_ptr<request_context> context,
           std::shared_ptr<response> res) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -304,9 +349,13 @@ namespace network {
           const boost::system::error_code &ec, std::size_t,
           std::shared_ptr<request_context> context,
           std::shared_ptr<response> res) {
+        if (timedout_) {
+          set_error(boost::asio::error::timed_out, context);
+          return;
+        }
+
         if (ec) {
-          context->response_promise_.set_exception(std::make_exception_ptr(
-              std::system_error(ec.value(), std::system_category())));
+          set_error(ec, context);
           return;
         }
 
@@ -370,6 +419,7 @@ namespace network {
         // If there's no data else to read, then set the response and exit.
         if (bytes_read == 0) {
           context->response_promise_.set_value(*res);
+          timer_.cancel();
           return;
         }
 

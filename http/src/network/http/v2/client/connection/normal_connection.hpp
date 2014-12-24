@@ -75,6 +75,16 @@ namespace network {
                                   boost::asio::transfer_at_least(1), callback);
         }
 
+        virtual void disconnect() {
+          if (socket_ && socket_->is_open()) {
+            boost::system::error_code ec;
+            socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+            if (!ec) {
+              socket_->close(ec);
+            }
+          }
+        }
+
         virtual void cancel() {
           socket_->cancel();
         }

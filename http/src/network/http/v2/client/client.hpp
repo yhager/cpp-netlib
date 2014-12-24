@@ -21,6 +21,7 @@
 #include <vector>
 #include <chrono>
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/optional.hpp>
 #include <network/config.hpp>
 #include <network/version.hpp>

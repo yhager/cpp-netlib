@@ -51,6 +51,8 @@ public:
   virtual void async_read(boost::asio::streambuf &,
                           read_callback) { }
 
+  virtual void disconnect() { }
+
   virtual void cancel() { }
 
 };
