@@ -395,7 +395,7 @@ public:
 private:
 
   struct impl;
-  impl *pimpl_;
+  std::unique_ptr<impl> pimpl_;
 
 };
 } // namespace v2

@@ -9,7 +9,7 @@
 
 namespace network {
   namespace http {
-    namespace v2 {
+  inline namespace v2 {
       class client_category_impl : public std::error_category {
 
        public:

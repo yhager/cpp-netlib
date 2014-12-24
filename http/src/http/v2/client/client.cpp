@@ -397,7 +397,7 @@ namespace network {
           : pimpl_(new impl(std::move(mock_resolver),
                             std::move(mock_connection), options)) {}
 
-      client::~client() { delete pimpl_; }
+      client::~client() { }
 
       std::future<response> client::execute(request req,
                                             request_options options) {
