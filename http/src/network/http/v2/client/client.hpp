@@ -20,8 +20,6 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/optional.hpp>
 #include <network/config.hpp>
 #include <network/version.hpp>
@@ -49,8 +47,7 @@ public:
    * \brief Constructor.
    */
   client_options()
-    : io_service_(boost::none)
-    , follow_redirects_(false)
+    : follow_redirects_(false)
     , cache_resolved_(false)
     , use_proxy_(false)
     , always_verify_peer_(false)
@@ -60,30 +57,12 @@ public:
   /**
    * \brief Copy constructor.
    */
-  client_options(const client_options &other)
-    : io_service_(other.io_service_)
-    , follow_redirects_(other.follow_redirects_)
-    , cache_resolved_(other.cache_resolved_)
-    , use_proxy_(other.use_proxy_)
-    , always_verify_peer_(other.always_verify_peer_)
-    , user_agent_(other.user_agent_)
-    , timeout_(other.timeout_)
-    , openssl_certificate_paths_(other.openssl_certificate_paths_)
-    , openssl_verify_paths_(other.openssl_verify_paths_) { }
+  client_options(const client_options &other) = default;
 
   /**
    * \brief Move constructor.
    */
-  client_options(client_options &&other)
-    : io_service_(std::move(other.io_service_))
-    , follow_redirects_(std::move(other.follow_redirects_))
-    , cache_resolved_(std::move(other.cache_resolved_))
-    , use_proxy_(std::move(other.use_proxy_))
-    , always_verify_peer_(std::move(other.always_verify_peer_))
-    , user_agent_(std::move(other.user_agent_))
-    , timeout_(std::move(other.timeout_))
-    , openssl_certificate_paths_(std::move(other.openssl_certificate_paths_))
-    , openssl_verify_paths_(std::move(other.openssl_verify_paths_)) { }
+  client_options(client_options &&other) = default;
 
   /**
    * \brief Assignment operator.
@@ -96,16 +75,13 @@ public:
   /**
    * \brief Destructor.
    */
-  ~client_options() {
-
-  }
+  ~client_options() = default;
 
   /**
    * \brief Swap.
    */
   void swap(client_options &other) noexcept {
     using std::swap;
-    std::swap(io_service_, other.io_service_);
     swap(follow_redirects_, other.follow_redirects_);
     swap(cache_resolved_, other.cache_resolved_);
     swap(use_proxy_, other.use_proxy_);
@@ -114,23 +90,6 @@ public:
     swap(timeout_, other.timeout_);
     swap(openssl_certificate_paths_, other.openssl_certificate_paths_);
     swap(openssl_verify_paths_, other.openssl_verify_paths_);
-  }
-
-  /**
-   * \brief Overrides the client's I/O service.
-   * \param io_service The new io_service object to use.
-   */
-  client_options &io_service(boost::asio::io_service &io_service) {
-    io_service_ = io_service;
-    return *this;
-  }
-
-  /**
-   * \brief Gets the overridden I/O service.
-   * \returns An optional io_service object.
-   */
-  boost::optional<boost::asio::io_service &> io_service() const {
-    return io_service_;
   }
 
   /**
@@ -284,7 +243,6 @@ public:
 
 private:
 
-  boost::optional<boost::asio::io_service &> io_service_;
   bool follow_redirects_;
   bool cache_resolved_;
   bool use_proxy_;

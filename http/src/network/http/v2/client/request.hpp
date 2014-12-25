@@ -62,20 +62,12 @@ public:
   /**
    * \brief Copy constructor.
    */
-  request_options(request_options const &other)
-    : resolve_timeout_(other.resolve_timeout_)
-    , read_timeout_(other.read_timeout_)
-    , total_timeout_(other.total_timeout_)
-    , max_redirects_(other.max_redirects_) { }
+  request_options(request_options const &other) = default;
 
   /**
    * \brief Move constructor.
    */
-  request_options(request_options &&other)
-    : resolve_timeout_(std::move(other.resolve_timeout_))
-    , read_timeout_(std::move(other.read_timeout_))
-    , total_timeout_(std::move(other.total_timeout_))
-    , max_redirects_(std::move(other.max_redirects_)) { }
+  request_options(request_options &&other) = default;
 
   /**
    * \brief Assignment operator.
@@ -88,9 +80,7 @@ public:
   /**
    * \brief Destructor.
    */
-  ~request_options() {
-
-  }
+  ~request_options() = default;
 
   /**
    * \brief
@@ -312,14 +302,49 @@ public:
   /**
    * \brief Constructor.
    */
-  request()
-    : byte_source_(nullptr) { }
+  request() = default;
 
   /**
    * \brief Constructor.
    */
-  explicit request(uri url)
-    : url_(url) {
+  explicit request(uri url) {
+    this->url(url);
+  }
+
+  /**
+   * \brief Copy constructor.
+   */
+  request(const request &other) = default;
+
+  /**
+   * \brief Move constructor.
+   */
+  request(request &&other) noexcept = default;
+
+  /**
+   * \brief Destructor.
+   */
+  ~request() = default;
+
+  /**
+   * \brief Swaps one request object with another.
+   * \param other The other request object.
+   */
+  void swap(request &other) noexcept {
+    using std::swap;
+    swap(url_, other.url_);
+    swap(method_, other.method_);
+    swap(path_, other.path_);
+    swap(version_, other.version_);
+    swap(headers_, other.headers_);
+    swap(byte_source_, other.byte_source_);
+  }
+
+  /**
+   * \brief
+   * \returns
+   */
+  request &url(const uri &url) {
     if (auto scheme = url.scheme()) {
       if ((!boost::equal(*scheme, boost::as_literal("http"))) &&
           (!boost::equal(*scheme, boost::as_literal("https")))) {
@@ -356,65 +381,6 @@ public:
     else {
       throw invalid_url();
     }
-  }
-
-  /**
-   * \brief Copy constructor.
-   */
-  request(const request &other)
-    : url_(other.url_)
-    , method_(other.method_)
-    , path_(other.path_)
-    , version_(other.version_)
-    , headers_(other.headers_)
-    , byte_source_(other.byte_source_) { }
-
-  /**
-   * \brief Move constructor.
-   */
-  request(request &&other) noexcept
-    : url_(std::move(other.url_))
-    , method_(std::move(other.method_))
-    , path_(std::move(other.path_))
-    , version_(std::move(other.version_))
-    , headers_(std::move(other.headers_))
-    , byte_source_(std::move(other.byte_source_)) { }
-
-  /**
-   * \brief Assignment operator.
-   */
-  request &operator = (request other) {
-    other.swap(*this);
-    return *this;
-  }
-
-  /**
-   * \brief Destructor.
-   */
-  ~request() {
-
-  }
-
-  /**
-   * \brief Swaps one request object with another.
-   * \param other The other request object.
-   */
-  void swap(request &other) noexcept {
-    using std::swap;
-    swap(url_, other.url_);
-    swap(method_, other.method_);
-    swap(path_, other.path_);
-    swap(version_, other.version_);
-    swap(headers_, other.headers_);
-    swap(byte_source_, other.byte_source_);
-  }
-
-  /**
-   * \brief
-   * \returns
-   */
-  request &url(const uri &url) {
-    // throw invalid_url
     url_ = url;
     return *this;
   }
@@ -516,7 +482,7 @@ public:
    * Duplicates are allowed.
    */
   request &append_header(string_type name, string_type value) {
-    headers_.emplace_back(std::make_pair(name, value));
+    headers_.emplace_back(name, value);
     return *this;
   }
 

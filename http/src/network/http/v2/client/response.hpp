@@ -63,42 +63,19 @@ public:
   /**
    * \brief Constructor.
    */
-  response() { }
+  response() = default;
 
   /**
    * \brief Copy constructor.
    * \param other The other response object.
    */
-  response(const response &other)
-    : version_(other.version_)
-    , status_(other.status_)
-    , status_message_(other.status_message_)
-    , headers_(other.headers_)
-    , body_(other.body_) {
-
-  }
+  response(const response &other) = default;
 
   /**
    * \brief Move constructor.
    * \param other The other response object.
    */
-  response(response &&other) noexcept
-  : version_(std::move(other.version_))
-    , status_(std::move(other.status_))
-    , status_message_(std::move(other.status_message_))
-    , headers_(std::move(other.headers_))
-    , body_(std::move(other.body_)) {
-
-  }
-
-  /**
-   * \brief Assignment operator.
-   * \param other The other response object.
-   */
-  response &operator= (response other) {
-    other.swap(*this);
-    return *this;
-  }
+  response(response &&other) noexcept = default;
 
   /**
    * \brief Swap function.

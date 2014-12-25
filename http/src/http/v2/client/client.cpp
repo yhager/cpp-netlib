@@ -4,6 +4,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/asio/strand.hpp>
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/algorithm/find_first_of.hpp>
@@ -142,8 +143,6 @@ namespace network {
       std::future<response> client::impl::execute(
           std::shared_ptr<request_context> context) {
         std::future<response> res = context->response_promise_.get_future();
-
-        // TODO see linearize.hpp
 
         // If there is no user-agent, provide one as a default.
         auto user_agent = context->request_.header("User-Agent");
@@ -330,11 +329,13 @@ namespace network {
 
         // if options_.follow_redirects()
         // and if status in range 300 - 307
-        // then take the request and reset the URL
+        // then take the request and reset the URL from the 'Location' header
+        // restart connection
+        // Not that the 'Location' header can be a *relative* URI
 
         std::shared_ptr<response> res(new response{});
         res->set_version(version);
-        res->set_status(network::http::v2::status::code(status));
+        res->set_status(network::http::status::code(status));
         res->set_status_message(boost::trim_copy(message));
 
         // Read the response headers.
