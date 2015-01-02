@@ -21,59 +21,80 @@
 
 namespace network {
   namespace http {
-    namespace v2 {
+    inline namespace v2 {
       namespace client_connection {
-        class normal_connection : public async_connection {
 
-          normal_connection(const normal_connection &) = delete;
-          normal_connection &operator = (const normal_connection &) = delete;
+      /**
+       * \class
+       * \brief
+       */
+      class normal_connection : public async_connection {
 
-        public:
+        normal_connection(const normal_connection &) = delete;
+        normal_connection &operator = (const normal_connection &) = delete;
 
-          explicit normal_connection(boost::asio::io_service &io_service)
-            : io_service_(io_service) {
+      public:
 
+        /**
+         * \brief
+         */
+        explicit normal_connection(boost::asio::io_service &io_service)
+          : io_service_(io_service) {
+
+        }
+
+        /**
+         * \brief Destructor.
+         */
+        virtual ~normal_connection() noexcept {
+
+        }
+
+        virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
+                                   const std::string &host,
+                                   connect_callback callback) {
+          using boost::asio::ip::tcp;
+          socket_.reset(new tcp::socket{io_service_});
+          socket_->async_connect(endpoint, callback);
+        }
+
+        virtual void async_write(boost::asio::streambuf &command_streambuf,
+                                 write_callback callback) {
+          boost::asio::async_write(*socket_, command_streambuf, callback);
+        }
+
+        virtual void async_read_until(boost::asio::streambuf &command_streambuf,
+                                      const std::string &delim,
+                                      read_callback callback) {
+          boost::asio::async_read_until(*socket_, command_streambuf, delim, callback);
+        }
+
+        virtual void async_read(boost::asio::streambuf &command_streambuf,
+                                read_callback callback) {
+          boost::asio::async_read(*socket_, command_streambuf,
+                                  boost::asio::transfer_at_least(1), callback);
+        }
+
+        virtual void disconnect() {
+          if (socket_ && socket_->is_open()) {
+            boost::system::error_code ec;
+            socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+            if (!ec) {
+              socket_->close(ec);
+            }
           }
+        }
 
-          virtual ~normal_connection() noexcept {
+        virtual void cancel() {
+          socket_->cancel();
+        }
 
-          }
+      private:
 
-          virtual void async_connect(const boost::asio::ip::tcp::endpoint &endpoint,
-                                     const std::string &host,
-                                     connect_callback callback) {
-            using boost::asio::ip::tcp;
-            socket_.reset(new tcp::socket{io_service_});
-            socket_->async_connect(endpoint, callback);
-          }
+        boost::asio::io_service &io_service_;
+        std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
 
-          virtual void async_write(boost::asio::streambuf &command_streambuf,
-                                   write_callback callback) {
-            boost::asio::async_write(*socket_, command_streambuf, callback);
-          }
-
-          virtual void async_read_until(boost::asio::streambuf &command_streambuf,
-                                        const std::string &delim,
-                                        read_callback callback) {
-            boost::asio::async_read_until(*socket_, command_streambuf, delim, callback);
-          }
-
-          virtual void async_read(boost::asio::streambuf &command_streambuf,
-                                  read_callback callback) {
-            boost::asio::async_read(*socket_, command_streambuf,
-                                    boost::asio::transfer_at_least(1), callback);
-          }
-
-          virtual void cancel() {
-            socket_->cancel();
-          }
-
-        private:
-
-          boost::asio::io_service &io_service_;
-          std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
-
-        };
+      };
       } // namespace client_connection
     } // namespace v2
   } // namespace http

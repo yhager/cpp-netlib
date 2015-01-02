@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Glyn Matthews
+// Copyright (C) 2013, 2014 by Glyn Matthews
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -33,4 +33,14 @@ TEST(request_options_test, set_max_redirects) {
   http_cm::request_options opts;
   opts.max_redirects(5);
   ASSERT_EQ(5, opts.max_redirects());
+}
+
+TEST(request_options_test, set_progress_handler) {
+  std::uint64_t bytes = 0;
+  http_cm::request_options opts;
+  opts.progress([&bytes] (http_cm::transfer_direction direction, std::uint64_t bytes_) {
+      bytes = bytes_;
+    });
+  opts.progress()(http_cm::transfer_direction::bytes_written, 42);
+  ASSERT_EQ(42, bytes);
 }

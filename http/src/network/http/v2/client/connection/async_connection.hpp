@@ -20,7 +20,7 @@
 
 namespace network {
   namespace http {
-    namespace v2 {
+    inline namespace v2 {
       namespace client_connection {
         /**
          * \class async_connection network/http/v2/client/connection/async_connection.hpp
@@ -93,6 +93,11 @@ namespace network {
            */
           virtual void async_read(boost::asio::streambuf &command_streambuf,
                                   read_callback callback) = 0;
+
+          /**
+           * \brief Breaks the connection.
+           */
+          virtual void disconnect() = 0;
 
           /**
            * \brief Cancels an operation on a connection.
