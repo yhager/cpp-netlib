@@ -104,6 +104,12 @@ you will need. These are:
           your home directory.
   [#] http://www.cmake.org/
 
+Installing from packages
+------------------------
+
+FreeBSD users can use the ports tree to install cpp-netlib:
+    $ cd /usr/ports/devel/cpp-netlib && make install clean
+
 Hacking on cpp-netlib
 ---------------------
 
