@@ -14,6 +14,7 @@ if (CPP-NETLIB_BUILD_TESTS)
     ${Boost_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT})
+  target_include_directories(cpp-netlib-thread_pool_test PUBLIC ${Boost_INCLUDE_DIRS})
   set_target_properties(cpp-netlib-thread_pool_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
   add_test(cpp-netlib-thread_pool_test

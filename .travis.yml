@@ -14,6 +14,7 @@ env:
 before_install:
     - sudo add-apt-repository ppa:apokluda/boost1.53 --yes
     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes # libstdc++-4.8
+    - sudo add-apt-repository ppa:george-edison55/cmake-3.x --yes
     - if [ "${CXX}" == "clang++" ]; then sudo add-apt-repository --yes ppa:h-rayflood/llvm; fi # clang++-3.2
     - sudo apt-get update
 
@@ -23,6 +24,7 @@ install:
     - sudo apt-get install libboost-system1.53-dev
     - sudo apt-get install libboost-regex1.53-dev
     - sudo apt-get install libboost-filesystem1.53-dev
+    - sudo apt-get install cmake
 
 before_script:
     # update compilers

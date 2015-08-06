@@ -10,6 +10,7 @@ set(CPP-NETLIB_CONCURRENCY_SRCS
 
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(network-concurrency ${CPP-NETLIB_CONCURRENCY_SRCS})
+  target_include_directories(network-concurrency PUBLIC ${Boost_INCLUDE_DIRS})
 endif()
 
 # prepend current directory to make paths absolute

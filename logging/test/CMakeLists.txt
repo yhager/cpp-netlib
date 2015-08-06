@@ -28,6 +28,7 @@ if (CPP-NETLIB_BUILD_TESTS)
     add_executable(cpp-netlib-${test} ${test}.cpp)
     target_link_libraries(cpp-netlib-${test}
       ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${link_cppnetlib_lib})
+    target_include_directories(cpp-netlib-${test} PUBLIC ${Boost_INCLUDE_DIRS})
     set_target_properties(cpp-netlib-${test}
       PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-${test}

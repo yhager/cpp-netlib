@@ -58,6 +58,7 @@ if (CPP-NETLIB_BUILD_TESTS)
       ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
       ${CMAKE_THREAD_LIBS_INIT}
       ${CPPNETLIB_LIBRARIES} )
+    target_include_directories(cpp-netlib-http-${test} PUBLIC ${Boost_INCLUDE_DIRS})
     set_target_properties(cpp-netlib-http-${test}
       PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-http-${test}
@@ -91,6 +92,7 @@ if (CPP-NETLIB_BUILD_TESTS)
       ${GTEST_BOTH_LIBRARIES}
       ${CMAKE_THREAD_LIBS_INIT}
       ${CPPNETLIB_SERVER_LIBRARIES} )
+    target_include_directories(cpp-netlib-http-${test} PUBLIC ${Boost_INCLUDE_DIRS})
     set_target_properties(cpp-netlib-http-${test} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-http-${test}

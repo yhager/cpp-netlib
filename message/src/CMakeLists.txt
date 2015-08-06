@@ -11,17 +11,20 @@ set(CPP-NETLIB_MESSAGE_SRCS
     message.cpp)
 
 add_library(network-message ${CPP-NETLIB_MESSAGE_SRCS})
+target_include_directories(network-message PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(network-message network-uri)
 
 set(CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS
     directives.cpp)
 
 add_library(network-message-directives ${CPP-NETLIB_MESSAGE_DIRECTIVES_SRCS})
+target_include_directories(network-message-directives PUBLIC ${Boost_INCLUDE_DIRS})
 
 set(CPP-NETLIB_MESSAGE_WRAPPERS_SRCS
     wrappers.cpp)
 
 add_library(network-message-wrappers ${CPP-NETLIB_MESSAGE_WRAPPERS_SRCS})
+target_include_directories(network-message-wrappers PUBLIC ${Boost_INCLUDE_DIRS})
 
 # prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
