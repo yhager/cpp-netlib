@@ -61,23 +61,6 @@ public:
   typedef headers_type::const_iterator const_headers_iterator;
 
   /**
-   * \brief Constructor.
-   */
-  response() = default;
-
-  /**
-   * \brief Copy constructor.
-   * \param other The other response object.
-   */
-  response(const response &other) = default;
-
-  /**
-   * \brief Move constructor.
-   * \param other The other response object.
-   */
-  response(response &&other) noexcept = default;
-
-  /**
    * \brief Swap function.
    * \param other The other response object.
    */
