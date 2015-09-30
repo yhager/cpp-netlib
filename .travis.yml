@@ -36,3 +36,8 @@ script:
     - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS} -DCPP-NETLIB_DISABLE_LIBCXX=YES -DCPP-NETLIB_DISABLE_FEATURE_TESTS=YES ..
     - make
     - make test
+
+notifications:
+  slack:
+    rooms:
+      - cpp-netlib:NRR34vWovC6yqLXYn0rb0xDp#travis
