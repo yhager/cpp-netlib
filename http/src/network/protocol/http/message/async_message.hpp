@@ -46,7 +46,10 @@ template <class Tag> struct async_message {
         destination_(other.destination_),
         status_(other.status_),
         headers_(other.headers_),
-        body_(other.body_) {}
+        body_(other.body_),
+        added_headers(other.added_headers),
+        removed_headers(other.removed_headers),
+        retrieved_headers_(other.retrieved_headers_) {}
 
   string_type const status_message() const { return status_message_.get(); }
 
@@ -117,6 +120,9 @@ template <class Tag> struct async_message {
     std::swap(destination_, other.destination_);
     std::swap(headers_, other.headers_);
     std::swap(body_, other.body_);
+    std::swap(added_headers, other.added_headers);
+    std::swap(removed_headers, other.removed_headers);
+    std::swap(retrieved_headers_, other.retrieved_headers_);
   }
 
   async_message& operator=(async_message other) {
