@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <boost/range/iterator_range.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace network {
 namespace http {
