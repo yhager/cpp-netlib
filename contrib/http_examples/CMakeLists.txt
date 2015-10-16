@@ -33,5 +33,6 @@ foreach(example ${EXAMPLES})
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     )
+  target_include_directories(${example} PUBLIC ${Boost_INCLUDE_DIRS})
   set_target_properties(${example} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 endforeach(example)

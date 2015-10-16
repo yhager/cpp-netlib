@@ -5,7 +5,7 @@
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project(CPP-NETLIB)
 
 option( CPP-NETLIB_BUILD_SHARED_LIBS "Build cpp-netlib as shared libraries." OFF )
@@ -84,7 +84,6 @@ endif(MSVC)
 if (WIN32)
   add_definitions(-D_WIN32_WINNT=0x0501)
 endif(WIN32)
-include_directories(${Boost_INCLUDE_DIRS})
 
 message(STATUS "CPP-NETLIB options selected:")
 message(STATUS "  CPP-NETLIB_BUILD_SHARED_LIBS:      ${CPP-NETLIB_BUILD_SHARED_LIBS}\t(Build cpp-netlib as shared libraries: OFF, ON)")
@@ -157,7 +156,7 @@ if (DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 if(CPP-NETLIB_BUILD_SINGLE_LIB)
-  include_directories(
+  set( all_include_dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/config/src
     ${CMAKE_CURRENT_SOURCE_DIR}/concurrency/src
     ${CMAKE_CURRENT_SOURCE_DIR}/http/src
@@ -194,4 +193,5 @@ if(CPP-NETLIB_BUILD_SINGLE_LIB)
     ${CPP-NETLIB_CONCURRENCY_SRCS}
   )
   target_link_libraries(cppnetlib ${Boost_LIBRARIES})
+  target_include_directories(cppnetlib PUBLIC ${all_include_dirs} ${Boost_INCLUDE_DIRS})
 endif()

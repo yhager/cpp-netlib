@@ -23,6 +23,7 @@ install:
     - sudo apt-get install libboost-system1.53-dev
     - sudo apt-get install libboost-regex1.53-dev
     - sudo apt-get install libboost-filesystem1.53-dev
+    - wget -qO- http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz | tar xvz && sudo cp -fR cmake-3.3.2-Linux-x86_64/* /usr
 
 before_script:
     # update compilers

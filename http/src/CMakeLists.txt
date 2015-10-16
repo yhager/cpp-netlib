@@ -28,6 +28,7 @@ if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   target_link_libraries(network-http-message
     ${Boost_LIBRARIES}
     network-message)
+  target_include_directories(network-http-message PUBLIC ${Boost_INCLUDE_DIRS})
 endif()
 
 set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
@@ -35,6 +36,7 @@ set(CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS
 
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(network-http-message-wrappers ${CPP-NETLIB_HTTP_MESSAGE_WRAPPERS_SRCS})
+  target_include_directories(network-http-message-wrappers PUBLIC ${Boost_INCLUDE_DIRS})
 endif()
 
 set(CPP-NETLIB_CONSTANTS_SRCS
@@ -42,6 +44,7 @@ set(CPP-NETLIB_CONSTANTS_SRCS
 
 if(NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(network-constants ${CPP-NETLIB_CONSTANTS_SRCS})
+  target_include_directories(network-constants PUBLIC ${Boost_INCLUDE_DIRS})
 endif()
 
 # Server implementation files.
@@ -52,6 +55,7 @@ set(CPP-NETLIB_HTTP_SERVER_SRCS
 
 if (NOT CPP-NETLIB_BUILD_SINGLE_LIB)
   add_library(network-http-server ${CPP-NETLIB_HTTP_SERVER_SRCS})
+  target_include_directories(network-http-server PUBLIC ${Boost_INCLUDE_DIRS})
 endif()
 
 # HTTP client
@@ -64,6 +68,7 @@ target_link_libraries(network-http-v2-client
   ${Boost_LIBRARIES}
   network-uri
   )
+target_include_directories(network-http-v2-client PUBLIC ${Boost_INCLUDE_DIRS})
 if (OPENSSL_FOUND)
   target_link_libraries(network-http-v2-client ${OPENSSL_LIBRARIES})
 endif()

@@ -53,13 +53,13 @@ Building with CMake
 ~~~~~~~~~~~~~~~~~~~
 
 To build the libraries and run the tests with CMake, you will need to
-have CMake version 2.8.10 or higher installed appropriately in your
+have CMake version 3.0 or higher installed appropriately in your
 system.
 
 ::
 
     $ cmake --version
-    cmake version 2.8.10
+    cmake version 3.2.2
 
 Inside the cpp-netlib directory, you can issue the following statements to
 configure and generate the Makefiles, and build the tests::

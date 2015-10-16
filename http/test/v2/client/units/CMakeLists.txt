@@ -29,6 +29,7 @@ foreach(test ${CPP-NETLIB_CLIENT_TESTS})
     ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     )
+  target_include_directories(cpp-netlib-http-v2-${test} PUBLIC ${Boost_INCLUDE_DIRS})
   set_target_properties(cpp-netlib-http-v2-${test}
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
   add_test(cpp-netlib-http-v2-${test}
