@@ -11,6 +11,7 @@
 
 #include <iterator>
 #include <cstdint>
+#include <iostream>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/asio/placeholders.hpp>
@@ -36,6 +37,77 @@ namespace boost {
 namespace network {
 namespace http {
 namespace impl {
+
+template <class Tag>
+struct chunk_encoding_parser {
+
+  chunk_encoding_parser() : state(state_t::header), chunk_size(0) {}
+
+  enum state_t { header, header_end, data, data_end };
+
+  state_t state;
+  size_t chunk_size;
+  std::array<typename char_<Tag>::type, 1024> buffer;
+
+  void update_chunk_size(boost::iterator_range<typename std::array<typename char_<Tag>::type, 1024>::const_iterator> const& range) {
+    if (range.empty())
+        return;
+    std::stringstream ss;
+    ss << std::hex << range;
+    size_t size;
+    ss >> size;
+    chunk_size = (chunk_size << (range.size()*4)) + size;
+  }
+
+  boost::iterator_range<typename std::array<typename char_<Tag>::type, 1024>::const_iterator> operator()(boost::iterator_range<typename std::array<typename char_<Tag>::type, 1024>::const_iterator> const& range) {
+    auto iter = boost::begin(range);
+    auto begin = iter;
+    auto pos = boost::begin(buffer);
+
+    while (iter != boost::end(range))
+      switch(state) {
+        case state_t::header:
+          iter = std::find(iter, boost::end(range), '\r');
+          update_chunk_size(boost::make_iterator_range(begin, iter));
+          if (iter != boost::end(range)) {
+            state = state_t::header_end;
+            ++iter;
+          }
+          break;
+
+        case state_t::header_end:
+          BOOST_ASSERT(*iter == '\n');
+          ++iter;
+          state = state_t::data;
+          break;
+
+        case state_t::data:
+          if (chunk_size == 0) {
+            BOOST_ASSERT(*iter == '\r');
+            ++iter;
+            state = state_t::data_end;
+          } else {
+            auto len = std::min(chunk_size, (size_t)std::distance(iter, boost::end(range)));
+            begin = iter;
+            iter = std::next(iter, len);
+            pos = std::copy(begin, iter, pos);
+            chunk_size -= len;
+          }
+          break;
+
+        case state_t::data_end:
+          BOOST_ASSERT (*iter == '\n');
+          ++iter;
+          begin = iter;
+          state = state_t::header;
+          break;
+
+        default:
+          BOOST_ASSERT(false && "Bug, report this to the developers!");
+      }
+    return boost::make_iterator_range(boost::begin(buffer), pos);
+  }
+};
 
 template <class Tag, unsigned version_major, unsigned version_minor>
 struct async_connection_base;
@@ -73,8 +145,10 @@ struct http_async_connection
 
   http_async_connection(resolver_type& resolver, resolve_function resolve,
                         bool follow_redirect, int timeout,
+                        bool remove_chunk_markers,
                         connection_delegate_ptr delegate)
       : timeout_(timeout),
+        remove_chunk_markers_(remove_chunk_markers),
         timer_(resolver.get_io_service()),
         is_timedout_(false),
         follow_redirect_(follow_redirect),
@@ -397,13 +471,23 @@ struct http_async_connection
               callback(make_iterator_range(begin, end), ec);
             } else {
               string_type body_string;
-              std::swap(body_string, this->partial_parsed);
-			  auto it = this->part.begin();
-			  std::advance(it, bytes_transferred);
-              body_string.append(this->part.begin(), it);
-              if (this->is_chunk_encoding) {
-                this->body_promise.set_value(parse_chunk_encoding(body_string));
+              if (this->is_chunk_encoding && remove_chunk_markers_) {
+                for (size_t i = 0; i < this->partial_parsed.size(); i += 1024) {
+                  auto range = parse_chunk_encoding(
+                    boost::make_iterator_range(this->partial_parsed.data() + i, 
+                                               this->partial_parsed.data() + std::min(i+1024, this->partial_parsed.size())));
+                  body_string.append(boost::begin(range), boost::end(range));
+                }
+                this->partial_parsed.clear();
+                auto range = parse_chunk_encoding(boost::make_iterator_range(this->part.begin(), 
+                                                                             this->part.begin() + bytes_transferred));
+                body_string.append(boost::begin(range), boost::end(range));
+                this->body_promise.set_value(body_string);
               } else {
+                std::swap(body_string, this->partial_parsed);
+                auto it = this->part.begin();
+                std::advance(it, bytes_transferred);
+                body_string.append(this->part.begin(), it);
                 this->body_promise.set_value(body_string);
               }
             }
@@ -520,6 +604,7 @@ struct http_async_connection
   }
 
   int timeout_;
+  bool remove_chunk_markers_;
   boost::asio::steady_timer timer_;
   bool is_timedout_;
   bool follow_redirect_;
@@ -529,6 +614,7 @@ struct http_async_connection
   connection_delegate_ptr delegate_;
   boost::asio::streambuf command_streambuf;
   string_type method;
+  chunk_encoding_parser<Tag> parse_chunk_encoding;
 };
 
 }  // namespace impl
