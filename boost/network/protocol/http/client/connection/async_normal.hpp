@@ -433,8 +433,11 @@ struct http_async_connection
 
             // The invocation of the callback is synchronous to allow us to
             // wait before scheduling another read.
-            callback(make_iterator_range(begin, end), ec);
-
+            if (this->is_chunk_encoding && remove_chunk_markers_) {
+              callback(parse_chunk_encoding(make_iterator_range(begin, end)), ec);
+            } else {
+              callback(make_iterator_range(begin, end), ec);
+            }
             auto self = this->shared_from_this();
             delegate_->read_some(
                 boost::asio::mutable_buffers_1(this->part.data(),
@@ -473,7 +476,11 @@ struct http_async_connection
               // We call the callback function synchronously passing the error
               // condition (in this case, end of file) so that it can handle it
               // appropriately.
-              callback(make_iterator_range(begin, end), ec);
+              if (this->is_chunk_encoding && remove_chunk_markers_) {
+                callback(parse_chunk_encoding(make_iterator_range(begin, end)), ec);
+              } else {
+                callback(make_iterator_range(begin, end), ec);
+              }
             } else {
               string_type body_string;
               if (this->is_chunk_encoding && remove_chunk_markers_) {
@@ -490,9 +497,7 @@ struct http_async_connection
                 this->body_promise.set_value(body_string);
               } else {
                 std::swap(body_string, this->partial_parsed);
-                auto it = this->part.begin();
-                std::advance(it, bytes_transferred);
-                body_string.append(this->part.begin(), it);
+                body_string.append(this->part.begin(), this->part.begin() + bytes_transferred);
                 this->body_promise.set_value(body_string);
               }
             }
@@ -514,7 +519,11 @@ struct http_async_connection
                   this->part.begin();
               typename protocol_base::buffer_type::const_iterator end = begin;
               std::advance(end, bytes_transferred);
-              callback(make_iterator_range(begin, end), ec);
+              if (this->is_chunk_encoding && remove_chunk_markers_) {
+                callback(parse_chunk_encoding(make_iterator_range(begin, end)), ec);
+              } else {
+                callback(make_iterator_range(begin, end), ec);
+              }
               auto self = this->shared_from_this();
               delegate_->read_some(
                   boost::asio::mutable_buffers_1(this->part.data(),
@@ -575,37 +584,6 @@ struct http_async_connection
           BOOST_ASSERT(false && "Bug, report this to the developers!");
       }
     }
-  }
-
-  string_type parse_chunk_encoding(string_type& body_string) {
-    string_type body;
-    string_type crlf = "\r\n";
-
-    typename string_type::iterator begin = body_string.begin();
-    for (typename string_type::iterator iter =
-             std::search(begin, body_string.end(), crlf.begin(), crlf.end());
-         iter != body_string.end();
-         iter =
-             std::search(begin, body_string.end(), crlf.begin(), crlf.end())) {
-      string_type line(begin, iter);
-      if (line.empty()) {
-        break;
-      }
-      std::stringstream stream(line);
-      int len;
-      stream >> std::hex >> len;
-      std::advance(iter, 2);
-      if (len == 0) {
-        break;
-      }
-      if (len <= body_string.end() - iter) {
-        body.insert(body.end(), iter, iter + len);
-        std::advance(iter, len + 2);
-      }
-      begin = iter;
-    }
-
-    return body;
   }
 
   int timeout_;
