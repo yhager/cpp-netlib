@@ -64,7 +64,10 @@ void boost::network::http::impl::ssl_delegate::connect(
     context_->use_private_key_file(*private_key_file_, boost::asio::ssl::context::pem);
 
   tcp_socket_.reset(new boost::asio::ip::tcp::socket(
-      service_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), source_port)));
+      service_, boost::asio::ip::tcp::endpoint(endpoint.address().is_v4()
+                                                   ? boost::asio::ip::tcp::v4()
+                                                   : boost::asio::ip::tcp::v6(),
+                                               source_port)));
   socket_.reset(new boost::asio::ssl::stream<boost::asio::ip::tcp::socket &>(
       *(tcp_socket_.get()), *context_));
 
