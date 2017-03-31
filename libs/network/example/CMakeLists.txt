@@ -20,6 +20,8 @@ add_executable(trivial_google trivial_google.cpp)
 
 if (UNIX)
   add_executable(fileserver http/fileserver.cpp)
+  add_executable(async_server_file_upload http/async_server_file_upload.cpp)
+  add_dependencies(async_server_file_upload cppnetlib-server-parsers)
 endif (UNIX)
 add_dependencies(http_client cppnetlib-uri cppnetlib-client-connections)
 add_dependencies(simple_wget cppnetlib-uri cppnetlib-client-connections)
@@ -136,6 +138,17 @@ if (UNIX)
   if (OPENSSL_FOUND)
     target_link_libraries(fileserver ${OPENSSL_LIBRARIES})
   endif(OPENSSL_FOUND)
+
+  target_link_libraries(async_server_file_upload
+    ${Boost_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    cppnetlib-server-parsers)
+  if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(async_server_file_upload rt)
+  endif ()
+  if (OPENSSL_FOUND)
+    target_link_libraries(async_server_file_upload ${OPENSSL_LIBRARIES})
+  endif (OPENSSL_FOUND)
 endif (UNIX)
 
 set_target_properties(http_client PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
@@ -152,4 +165,5 @@ endif (OPENSSL_FOUND)
 
 if (UNIX)
   set_target_properties(fileserver PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
+  set_target_properties(async_server_file_upload PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 endif (UNIX)
