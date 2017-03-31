@@ -46,7 +46,10 @@ target_link_libraries(cppnetlib-client-connections ${Boost_LIBRARIES} ${CMAKE_TH
 if (OPENSSL_FOUND)
     target_link_libraries(cppnetlib-client-connections ${OPENSSL_LIBRARIES})
     if (CPP-NETLIB_STATIC_OPENSSL)
-      if (NOT MSVC AND NOT MINGW AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD") # dynlinker functions are built into libc on FreeBSD
+      if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "OpenBSD")
+        set(BSD ON)
+      endif()
+      if (NOT MSVC AND NOT MINGW AND NOT BSD) # dynlinker functions are built into libc on BSD
         target_link_libraries(cppnetlib-client-connections "-ldl")
       endif()
     endif()
