@@ -273,6 +273,7 @@ struct http_async_connection
           if (!parsed_ok || indeterminate(parsed_ok)) {
             return;
           }
+          // fall-through
         case status:
           if (ec == boost::asio::error::eof) return;
           parsed_ok = this->parse_status(
@@ -286,6 +287,7 @@ struct http_async_connection
           if (!parsed_ok || indeterminate(parsed_ok)) {
             return;
           }
+          // fall-through
         case status_message:
           if (ec == boost::asio::error::eof) return;
           parsed_ok = this->parse_status_message(
@@ -298,6 +300,7 @@ struct http_async_connection
           if (!parsed_ok || indeterminate(parsed_ok)) {
             return;
           }
+          // fall-through
         case headers:
           if (ec == boost::asio::error::eof) return;
           // In the following, remainder is the number of bytes that remain in
@@ -456,13 +459,17 @@ struct http_async_connection
       switch (state) {
         case version:
           this->version_promise.set_exception(std::make_exception_ptr(error));
+          // fall-through
         case status:
           this->status_promise.set_exception(std::make_exception_ptr(error));
+          // fall-through
         case status_message:
           this->status_message_promise.set_exception(
               std::make_exception_ptr(error));
+          // fall-through
         case headers:
           this->headers_promise.set_exception(std::make_exception_ptr(error));
+          // fall-through
         case body:
           if (!callback) {
             // N.B. if callback is non-null, then body_promise has already been
@@ -473,6 +480,7 @@ struct http_async_connection
           else
             callback( char_const_range(), report_code );
           break;
+          // fall-through
         default:
           BOOST_ASSERT(false && "Bug, report this to the developers!");
       }
