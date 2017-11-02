@@ -46,6 +46,31 @@ TYPED_TEST(HTTPClientTest, GetHTTPSTest) {
   }
 }
 
+TYPED_TEST(HTTPClientTest, GetRequestSNI) {
+  using client = TypeParam;
+  // need sni_hostname to be set
+  typename client::request request("https://www.guide-du-chien.com/wp-content/uploads/2016/10/Beagle.jpg");
+  typename client::response response;
+
+  // trying without setting sni_hostname
+  ASSERT_NO_THROW(response = client().get(request));
+  // raise "tlsv1 alert internal error"
+  ASSERT_THROW(response.status(), std::exception_ptr);
+
+  // setting sni_hostname
+  request.sni_hostname(request.host());
+  ASSERT_NO_THROW(response = client().get(request));
+  EXPECT_EQ(200u, response.status());
+
+  try {
+    auto data = body(response);
+    std::cout << "Body size: " << data.size() << std::endl;
+  } catch (...) {
+    FAIL() << "Caught exception while retrieving body from GET request";
+  }
+
+}
+
 #endif
 
 TYPED_TEST(HTTPClientTest, TemporaryClientObjectTest) {
