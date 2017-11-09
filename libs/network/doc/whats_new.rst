@@ -7,6 +7,13 @@
 :mod:`cpp-netlib` 0.13
 ----------------------
 
+* Lots of little fixes.
+* Support for per-request SNI hostnames
+* Fixes to chunk and content-length encoding.
+* Changed default connection buffer size to 4K.
+* Support for IPv6 and HTTPS.
+* Example of large upload handling with the HTTP server.
+* Depend on Boost.Asio again instead of standalone Asio.
 * Added Visual Studio 2015 support.
 * Update minimum Boost to 1.58. Always use shared libs from Boost.
 
