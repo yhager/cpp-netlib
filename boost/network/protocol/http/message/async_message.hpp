@@ -43,6 +43,9 @@ struct async_message {
         destination_(),
         status_(),
         headers_(),
+        retrieved_headers_(),
+        added_headers(),
+        removed_headers(),
         body_() {}
 
   async_message(async_message const& other)
@@ -52,6 +55,9 @@ struct async_message {
         destination_(other.destination_),
         status_(other.status_),
         headers_(other.headers_),
+        retrieved_headers_(other.retrieved_headers_),
+        added_headers(other.added_headers),
+        removed_headers(other.removed_headers),
         body_(other.body_) {}
 
   string_type const status_message() const { return status_message_.get(); }
@@ -123,6 +129,9 @@ struct async_message {
     std::swap(source_, other.source_);
     std::swap(destination_, other.destination_);
     std::swap(headers_, other.headers_);
+    std::swap(retrieved_headers_, other.retrieved_headers_);
+    std::swap(added_headers, other.added_headers);
+    std::swap(removed_headers, other.removed_headers);
     std::swap(body_, other.body_);
   }
 
