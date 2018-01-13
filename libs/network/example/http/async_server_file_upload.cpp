@@ -191,6 +191,7 @@ struct connection_handler {
     void operator()(server::request const& req, const server::connection_ptr& conn) {
         static std::map<std::string, std::string> headers = {
             {"Connection","close"},
+            {"Content-Length", "0"},
             {"Content-Type", "text/plain"}
         };
 
@@ -206,24 +207,29 @@ struct connection_handler {
                 // Wait until the data transfer is done by the IO threads
                 uploader->wait_for_completion();
 
-                // Respond to the client
-                conn->set_status(server::connection::ok);
-                conn->set_headers(headers);
                 auto end = std::chrono::high_resolution_clock::now();
                 std::chrono::duration<double, std::milli> diff = end - start;
                 std::ostringstream stm;
                 stm << "Took " << diff.count() << " milliseconds for the transfer." << std::endl;
-                conn->write(stm.str());
+                auto body = stm.str();
+                // Respond to the client
+                headers["Content-Length"] = std::to_string(body.size());
+                conn->set_status(server::connection::ok);
+                conn->set_headers(headers);
+                conn->write(body);
             } catch (const file_uploader_exception& e) {
+                const std::string err = e.what();
+                headers["Content-Length"] = std::to_string(err.size());
                 conn->set_status(server::connection::bad_request);
                 conn->set_headers(headers);
-                const std::string err = e.what();
                 conn->write(err);
             }
         } else {
+            static std::string body("Only path allowed is /upload");
+            headers["Content-Length"] = std::to_string(body.size());
             conn->set_status(server::connection::bad_request);
             conn->set_headers(headers);
-            conn->write("Only path allowed is /upload.");
+            conn->write(body);
         }
     }
 };

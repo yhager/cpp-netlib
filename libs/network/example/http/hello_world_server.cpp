@@ -30,13 +30,17 @@ struct hello_world {
     std::ostringstream data;
     data << "Hello, " << ip << ':' << port << '!';
 
-    std::map<std::string, std::string> headers = {
+    static std::map<std::string, std::string> headers = {
+      {"Content-Length", "0"},
       {"Content-Type", "text/plain"},
     };
 
+    auto body = data.str();
+    headers["Content-Length"] = std::to_string(body.size());
+
     connection->set_status(server::connection::ok);
     connection->set_headers(headers);
-    connection->write(data.str());
+    connection->write(body);
   }
 };
 

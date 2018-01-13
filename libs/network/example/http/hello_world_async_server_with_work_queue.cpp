@@ -125,13 +125,16 @@ void process_request(work_queue& queue) {
       // some heavy work!
       std::this_thread::sleep_for(std::chrono::seconds(10));
 
-      std::map<std::string, std::string> headers = {
+      static std::map<std::string, std::string> headers = {
+        {"Content-Length", "0"},
         {"Content-Type", "text/plain"},
       };
 
+      std::string body("Hello, world!");
+      headers["Content-Length"] = std::to_string(body.size());
       request->conn->set_status(server::connection::ok);
       request->conn->set_headers(headers);
-      request->conn->write("Hello, world!");
+      request->conn->write(body);
     }
 
     std::this_thread::sleep_for(std::chrono::microseconds(1000));
