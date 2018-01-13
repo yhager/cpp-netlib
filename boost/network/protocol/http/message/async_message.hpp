@@ -145,10 +145,10 @@ struct async_message {
       destination_;
   mutable boost::shared_future<std::uint16_t> status_;
   mutable boost::shared_future<headers_container_type> headers_;
+  mutable boost::optional<headers_container_type> retrieved_headers_;
   mutable headers_container_type added_headers;
   mutable std::set<string_type> removed_headers;
   mutable boost::shared_future<string_type> body_;
-  mutable boost::optional<headers_container_type> retrieved_headers_;
 
   friend struct boost::network::http::impl::ready_wrapper<Tag>;
 };
