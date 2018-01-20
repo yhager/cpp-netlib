@@ -125,7 +125,7 @@ void process_request(work_queue& queue) {
       // some heavy work!
       std::this_thread::sleep_for(std::chrono::seconds(10));
 
-      static std::map<std::string, std::string> headers = {
+      std::map<std::string, std::string> headers = {
         {"Content-Length", "0"},
         {"Content-Type", "text/plain"},
       };

@@ -30,7 +30,7 @@ struct hello_world {
     std::ostringstream data;
     data << "Hello, " << ip << ':' << port << '!';
 
-    static std::map<std::string, std::string> headers = {
+    std::map<std::string, std::string> headers = {
       {"Content-Length", "0"},
       {"Content-Type", "text/plain"},
     };

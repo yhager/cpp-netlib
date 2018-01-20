@@ -189,7 +189,7 @@ struct connection_handler {
     /// @param [in] conn Connection object
     ///
     void operator()(server::request const& req, const server::connection_ptr& conn) {
-        static std::map<std::string, std::string> headers = {
+        std::map<std::string, std::string> headers = {
             {"Connection","close"},
             {"Content-Length", "0"},
             {"Content-Type", "text/plain"}
@@ -225,8 +225,8 @@ struct connection_handler {
                 conn->write(err);
             }
         } else {
-            static std::string body("Only path allowed is /upload");
-            headers["Content-Length"] = std::to_string(body.size());
+            static constexpr char body[] = "Only path allowed is /upload";
+            headers["Content-Length"] = std::to_string(sizeof(body));
             conn->set_status(server::connection::bad_request);
             conn->set_headers(headers);
             conn->write(body);
