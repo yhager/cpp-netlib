@@ -128,13 +128,13 @@ struct http_async_protocol_handler {
                                        << "\"");
 #endif
       std::runtime_error error("Invalid Version Part.");
-      version_promise.set_exception(std::make_exception_ptr(error));
-      status_promise.set_exception(std::make_exception_ptr(error));
-      status_message_promise.set_exception(std::make_exception_ptr(error));
-      headers_promise.set_exception(std::make_exception_ptr(error));
-      source_promise.set_exception(std::make_exception_ptr(error));
-      destination_promise.set_exception(std::make_exception_ptr(error));
-      body_promise.set_exception(std::make_exception_ptr(error));
+      version_promise.set_exception(error);
+      status_promise.set_exception(error);
+      status_message_promise.set_exception(error);
+      headers_promise.set_exception(error);
+      source_promise.set_exception(error);
+      destination_promise.set_exception(error);
+      body_promise.set_exception(error);
     } else {
       partial_parsed.append(std::begin(result_range),
                             std::end(result_range));
@@ -175,12 +175,12 @@ struct http_async_protocol_handler {
                                        << "\"");
 #endif
       std::runtime_error error("Invalid status part.");
-      status_promise.set_exception(std::make_exception_ptr(error));
-      status_message_promise.set_exception(std::make_exception_ptr(error));
-      headers_promise.set_exception(std::make_exception_ptr(error));
-      source_promise.set_exception(std::make_exception_ptr(error));
-      destination_promise.set_exception(std::make_exception_ptr(error));
-      body_promise.set_exception(std::make_exception_ptr(error));
+      status_promise.set_exception(error);
+      status_message_promise.set_exception(error);
+      headers_promise.set_exception(error);
+      source_promise.set_exception(error);
+      destination_promise.set_exception(error);
+      body_promise.set_exception(error);
     } else {
       partial_parsed.append(std::begin(result_range),
                             std::end(result_range));
@@ -221,11 +221,11 @@ struct http_async_protocol_handler {
                                        << "\"");
 #endif
       std::runtime_error error("Invalid status message part.");
-      status_message_promise.set_exception(std::make_exception_ptr(error));
-      headers_promise.set_exception(std::make_exception_ptr(error));
-      source_promise.set_exception(std::make_exception_ptr(error));
-      destination_promise.set_exception(std::make_exception_ptr(error));
-      body_promise.set_exception(std::make_exception_ptr(error));
+      status_message_promise.set_exception(error);
+      headers_promise.set_exception(error);
+      source_promise.set_exception(error);
+      destination_promise.set_exception(error);
+      body_promise.set_exception(error);
     } else {
       partial_parsed.append(std::begin(result_range),
                             std::end(result_range));
@@ -323,10 +323,10 @@ struct http_async_protocol_handler {
                                        << boost::distance(result_range));
 #endif
       std::runtime_error error("Invalid header part.");
-      headers_promise.set_exception(std::make_exception_ptr(error));
-      body_promise.set_exception(std::make_exception_ptr(error));
-      source_promise.set_exception(std::make_exception_ptr(error));
-      destination_promise.set_exception(std::make_exception_ptr(error));
+      headers_promise.set_exception(error);
+      body_promise.set_exception(error);
+      source_promise.set_exception(error);
+      destination_promise.set_exception(error);
     } else {
       partial_parsed.append(std::begin(result_range),
                             std::end(result_range));

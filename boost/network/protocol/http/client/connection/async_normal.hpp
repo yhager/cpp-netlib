@@ -123,13 +123,13 @@ struct http_async_connection
  private:
   void set_errors(boost::system::error_code const& ec, body_callback_function_type callback) {
     boost::system::system_error error(ec);
-    this->version_promise.set_exception(std::make_exception_ptr(error));
-    this->status_promise.set_exception(std::make_exception_ptr(error));
-    this->status_message_promise.set_exception(std::make_exception_ptr(error));
-    this->headers_promise.set_exception(std::make_exception_ptr(error));
-    this->source_promise.set_exception(std::make_exception_ptr(error));
-    this->destination_promise.set_exception(std::make_exception_ptr(error));
-    this->body_promise.set_exception(std::make_exception_ptr(error));
+    this->version_promise.set_exception(error);
+    this->status_promise.set_exception(error);
+    this->status_message_promise.set_exception(error);
+    this->headers_promise.set_exception(error);
+    this->source_promise.set_exception(error);
+    this->destination_promise.set_exception(error);
+    this->body_promise.set_exception(error);
     if ( callback )
       callback( char_const_range(), ec );
     this->timer_.cancel();
@@ -456,28 +456,27 @@ struct http_async_connection
     } else {
       boost::system::error_code report_code = is_timedout_ ? boost::asio::error::timed_out : ec;
       boost::system::system_error error(report_code);
-      this->source_promise.set_exception(std::make_exception_ptr(error));
-      this->destination_promise.set_exception(std::make_exception_ptr(error));
+      this->source_promise.set_exception(error);
+      this->destination_promise.set_exception(error);
       switch (state) {
         case version:
-          this->version_promise.set_exception(std::make_exception_ptr(error));
+          this->version_promise.set_exception(error);
           // fall-through
         case status:
-          this->status_promise.set_exception(std::make_exception_ptr(error));
+          this->status_promise.set_exception(error);
           // fall-through
         case status_message:
-          this->status_message_promise.set_exception(
-              std::make_exception_ptr(error));
+          this->status_message_promise.set_exception(error);
           // fall-through
         case headers:
-          this->headers_promise.set_exception(std::make_exception_ptr(error));
+          this->headers_promise.set_exception(error);
           // fall-through
         case body:
           if (!callback) {
             // N.B. if callback is non-null, then body_promise has already been
             // set to value "" to indicate body is handled by streaming handler
             // so no exception should be set
-            this->body_promise.set_exception(std::make_exception_ptr(error));
+            this->body_promise.set_exception(error);
           }
           else
             callback( char_const_range(), report_code );

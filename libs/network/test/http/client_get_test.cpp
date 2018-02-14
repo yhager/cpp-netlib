@@ -55,7 +55,7 @@ TYPED_TEST(HTTPClientTest, GetRequestSNI) {
   // trying without setting sni_hostname
   ASSERT_NO_THROW(response = client().get(request));
   // raise "tlsv1 alert internal error"
-  ASSERT_THROW(response.status(), std::exception_ptr);
+  ASSERT_THROW(response.status(), boost::system::system_error);
 
   // setting sni_hostname
   request.sni_hostname(request.host());
