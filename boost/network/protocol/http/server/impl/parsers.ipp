@@ -49,9 +49,8 @@ namespace http {
 BOOST_NETWORK_INLINE void parse_version(
     std::string const& partial_parsed,
     std::tuple<std::uint8_t, std::uint8_t>& version_pair) {
-  using namespace boost::spirit::qi;
-  parse(partial_parsed.begin(), partial_parsed.end(),
-        (lit("HTTP/") >> ushort_ >> '.' >> ushort_), version_pair);
+  boost::spirit::qi::parse(partial_parsed.begin(), partial_parsed.end(),
+        (boost::spirit::qi::lit("HTTP/") >> boost::spirit::qi::ushort_ >> '.' >> boost::spirit::qi::ushort_), version_pair);
 }
 
 BOOST_NETWORK_INLINE void parse_headers(
