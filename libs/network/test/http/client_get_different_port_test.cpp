@@ -16,8 +16,6 @@ TYPED_TEST_CASE(HTTPClientTest, ClientTypes);
 
 TYPED_TEST(HTTPClientTest, GetDifferentPort) {
   using client = TypeParam;
-  typename client::options options;
-  options.remove_chunk_markers(true);
   client client_;
   typename TypeParam::request request("http://www.boost.org:80/");
   auto response_ = client_.get(request);

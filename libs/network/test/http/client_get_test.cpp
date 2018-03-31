@@ -15,9 +15,7 @@ TYPED_TEST_CASE(HTTPClientTest, ClientTypes);
 TYPED_TEST(HTTPClientTest, GetTest) {
   using client = TypeParam;
   typename client::request request("http://cpp-netlib.org/");
-  typename client::options options;
-  options.remove_chunk_markers(true);
-  client client_(options);
+  client client_;
   typename client::response response;
   ASSERT_NO_THROW(response = client_.get(request));
   try {
@@ -36,9 +34,7 @@ TYPED_TEST(HTTPClientTest, GetTest) {
 TYPED_TEST(HTTPClientTest, GetHTTPSTest) {
   using client = TypeParam;
   typename client::request request("https://www.github.com/");
-  typename client::options options;
-  options.remove_chunk_markers(true);
-  client client_(options);
+  client client_;
   typename client::response response = client_.get(request);
   EXPECT_TRUE(response.status() == 200 ||
               (response.status() >= 300 && response.status() < 400));
@@ -81,9 +77,7 @@ TYPED_TEST(HTTPClientTest, TemporaryClientObjectTest) {
   using client = TypeParam;
   typename client::request request("http://cpp-netlib.org/");
   typename client::response response;
-  typename client::options options;
-  options.remove_chunk_markers(true);
-  ASSERT_NO_THROW(response = client(options).get(request));
+  ASSERT_NO_THROW(response = client().get(request));
   auto range = headers(response);
   ASSERT_TRUE(!boost::empty(range));
   try {
