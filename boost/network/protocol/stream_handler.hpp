@@ -18,6 +18,7 @@
 #include <boost/asio/detail/push_options.hpp>
 #include <boost/asio/detail/throw_error.hpp>
 #include <boost/asio/error.hpp>
+#include <boost/asio/io_service.hpp>
 #include <boost/asio/stream_socket_service.hpp>
 #include <cstddef>
 
