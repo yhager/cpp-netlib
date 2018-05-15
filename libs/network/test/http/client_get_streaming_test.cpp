@@ -26,7 +26,7 @@ struct body_handler {
 TYPED_TEST_CASE(HTTPClientTest, ClientTypes);
 
 TYPED_TEST(HTTPClientTest, GetStreamingTest) {
-  typename TypeParam::request request("http://www.boost.org");
+  typename TypeParam::request request("https://www.boost.org");
   typename TypeParam::response response;
   typename TypeParam::string_type body_string;
   typename TypeParam::string_type dummy_body;
