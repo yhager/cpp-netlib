@@ -25,6 +25,7 @@ struct body_handler {
 
 TYPED_TEST_CASE(HTTPClientTest, ClientTypes);
 
+#ifdef BOOST_NETWORK_ENABLE_HTTPS
 TYPED_TEST(HTTPClientTest, GetStreamingTest) {
   typename TypeParam::request request("https://www.boost.org");
   typename TypeParam::response response;
@@ -45,3 +46,4 @@ TYPED_TEST(HTTPClientTest, GetStreamingTest) {
   }
   EXPECT_EQ(dummy_body, typename TypeParam::string_type());
 }
+#endif
